@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { FaXTwitter } from "react-icons/fa6";
 import { FaGithub } from "react-icons/fa";
 import { FaTelegram } from "react-icons/fa";
+import { FaYoutube } from "react-icons/fa"; // Import YouTube icon
+
 
 export function Footer() {
   return (
@@ -35,14 +37,17 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Síguenos</h4>
             <div className="flex space-x-4">
+              <Link href="https://t.me/Solana_Colombia" className="text-muted-foreground hover:text-primary transition-colors">
+                <FaTelegram size={20} />
+              </Link>
               <Link href="https://x.com/Solana_Colombia" className="text-muted-foreground hover:text-primary transition-colors">
                 <FaXTwitter size={20} />
               </Link>
+              <Link href="https://www.youtube.com/@SolanaColombia" className="text-muted-foreground hover:text-primary transition-colors">
+                <FaYoutube size={20} />
+              </Link>
               <Link href="https://github.com/Panmoni/solanacolombia-www" className="text-muted-foreground hover:text-primary transition-colors">
                 <FaGithub size={20} />
-              </Link>
-              <Link href="https://t.me/Solana_Colombia" className="text-muted-foreground hover:text-primary transition-colors">
-                <FaTelegram size={20} />
               </Link>
             </div>
           </div>
