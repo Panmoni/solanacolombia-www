@@ -1,0 +1,60 @@
+---
+// Simple header component based on legacy design
+---
+
+<header class="sticky top-0 w-full bg-white/80 backdrop-blur-lg z-50 border-b border-gray-200">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo -->
+      <a href="/" class="font-bold text-xl text-gray-900">
+        Solana Colombia
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex space-x-8">
+        <a href="#eventos" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors duration-200">
+          Eventos
+        </a>
+        <a href="#podcast" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors duration-200">
+          Podcast
+        </a>
+        <a href="#oportunidades" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors duration-200">
+          Oportunidades
+        </a>
+        <a href="#blog" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors duration-200">
+          Blog
+        </a>
+      </nav>
+
+      <!-- Mobile menu button - only visible on mobile/tablet -->
+      <div class="md:hidden">
+        <label for="mobile-menu-toggle" class="cursor-pointer text-gray-700 hover:text-blue-600 focus:outline-none focus:text-blue-600">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </label>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Menu - completely hidden on desktop -->
+    <div class="md:hidden">
+      <input type="checkbox" id="mobile-menu-toggle" class="hidden peer">
+      <div class="hidden peer-checked:block w-full">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200 bg-white">
+          <a href="#eventos" class="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium transition-colors duration-200">
+            Eventos
+          </a>
+          <a href="#podcast" class="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium transition-colors duration-200">
+            Podcast
+          </a>
+          <a href="#oportunidades" class="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium transition-colors duration-200">
+            Oportunidades
+          </a>
+          <a href="#blog" class="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium transition-colors duration-200">
+            Blog
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
