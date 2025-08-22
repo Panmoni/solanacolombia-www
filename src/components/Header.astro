@@ -1,17 +1,20 @@
 ---
 // Simple header component based on legacy design
+import { Image } from 'astro:assets';
+import solanaColombiaLogo from '../images/solanaColombiaLogo.png';
 ---
 
 <header class="sticky top-0 w-full bg-white/80 backdrop-blur-lg z-50 border-b border-gray-200">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
       <!-- Logo -->
       <a href="/" class="font-bold text-xl text-gray-900">
-        Solana Colombia
+        <Image src={solanaColombiaLogo} alt="Solana Colombia logo" class="h-6 w-6 rounded-full inline" /> 
+        <h1 class="inline text-2xl align-middle">Solana Colombia</h1>
       </a>
 
       <!-- Desktop Navigation -->
-      <nav class="hidden md:flex space-x-8">
+      <nav class="hidden md:flex space-x-2">
         <a href="#eventos" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors duration-200">
           Eventos
         </a>
