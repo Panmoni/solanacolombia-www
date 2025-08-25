@@ -1,0 +1,89 @@
+---
+import type { PaginateFunction } from "astro";
+import { getCollection } from "astro:content";
+import { Picture } from "astro:assets";
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import Sectionhead from "@components/SectionHead.astro";
+import Pagination from "@components/Pagination.astro";
+
+// Sort content entries by publication date
+
+export async function getStaticPaths({
+  paginate,
+}: {
+  paginate: PaginateFunction;
+}) {
+  const PAGE_SIZE = 6;
+  const allPosts = await getCollection("blog", ({ data }) => {
+    return !data.draft && data.publishDate < new Date();
+  });
+
+  const allSortedPosts = allPosts.sort(function (a, b) {
+    return b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
+  });
+
+  return paginate(allSortedPosts, {
+    pageSize: PAGE_SIZE,
+  });
+}
+
+const { page } = Astro.props;
+---
+
+<Layout title="Blog">
+  <Container>
+    <Sectionhead>
+      <Fragment slot="title">Solana Colombia Blog</Fragment>
+      <Fragment slot="desc">
+        Crónica del del desarrollo de nuestra comunidad Solana en Colombia.
+      </Fragment>
+    </Sectionhead>
+    <main class="mt-16">
+      <ul class="grid sm:grid-cols-2 md:grid-cols-3 gap-10 lg:gap-16">
+        {
+          page.data.map((post, index) => (
+            <li>
+              <a href={`/blog/${post.slug}`}>
+                <div>
+                  <Picture
+                    formats={["avif", "webp"]}
+                    src={post.data.image.src}
+                    alt={post.data.image.alt}
+                    sizes="(max-width: 800px) 100vw, 800px"
+                    width={800}
+                    height={600}
+                    loading={index <= 2 ? "eager" : "lazy"}
+                    decoding={index <= 2 ? "sync" : "async"}
+                    class="w-full rounded-md object-cover"
+                    transition:name={`post-img-${post.slug}`}
+                  />
+                  <div class="mt-4">
+                    <span class="text-blue-400 uppercase tracking-wider text-xs font-medium">
+                      {post.data.category}
+                    </span>
+
+                    <h2 class="text-xl font-semibold leading-snug tracking-tight mt-1">
+                      {post.data.title}
+                    </h2>
+
+                    <div class="flex gap-2 mt-3 text-sm">
+                      <span class="text-neutral-400">{post.data.author}</span>
+                      <span class="text-neutral-400">• </span>
+                      <time
+                        class="text-neutral-400"
+                        datetime={post.data.publishDate.toISOString()}>
+                        {post.data.publishDate.toDateString()}
+                      </time>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <Pagination url={page.url} />
+    </main>
+  </Container>
+</Layout>
