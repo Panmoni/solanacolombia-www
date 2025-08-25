@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from "astro:transitions";
+import { ClientRouter } from "astro:transitions";
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
@@ -74,7 +74,7 @@ const makeTitle = title
     </style>
     
     <!-- Enable ViewTransitions for smooth page transitions -->
-    <ViewTransitions />
+    <ClientRouter />
   </head>
   <body class="bg-gray-50">
     <Header />
