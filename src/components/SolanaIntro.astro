@@ -1,0 +1,35 @@
+---
+// Solana intro section based on the image layout
+import { Image } from 'astro:assets';
+import solanaSvg from '../images/solanaVerticalLogo.svg';
+---
+
+<section class="py-20 my-4 bg-[#9945FF] rounded-3xl mx-12 sm:mx-24 lg:mx-48">
+  <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <!-- Left Content Area -->
+      <div class="text-white">
+        <h4 class="text-sm font-medium text-purple-200 mb-2">
+          Una red global de valor
+        </h4>
+        <h2 class="text-4xl md:text-6xl font-bold mb-6">
+          ¿Qué es Solana?
+        </h2>
+        <p class="text-lg md:text-xl text-purple-100 mb-8 leading-relaxed">
+          Solana es una red de alto rendimiento que permite transacciones digitales rápidas, seguras y económicas. Impulsa miles de aplicaciones, desde pagos y juegos hasta arte digital y servicios financieros.
+        </p>
+        <button class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition-colors duration-200 uppercase tracking-wide">
+          <a href="https://solana.com/es/learn" target="_blank">Forja tu camino</a>
+        </button>
+      </div>
+
+      <!-- Right Graphic Area -->
+      <div class="bg-black/30 rounded-2xl p-8 relative overflow-hidden">
+        <div class="relative z-10 flex items-center justify-center h-64">
+          <Image src={solanaSvg} alt="Solana logo" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,48 @@
+{
+  "workbench.colorCustomizations": {
+    // Title bar for easy window identification
+    "titleBar.activeBackground": "#9945FF",
+    "titleBar.activeForeground": "#FFFFFF",
+    "titleBar.inactiveBackground": "#9945FF99",
+    "titleBar.inactiveForeground": "#FFFFFF99",
+
+    // Activity Bar (leftmost bar)
+    "activityBar.background": "#14F195", // Solana Green
+    "activityBar.foreground": "#000000",
+    "activityBar.inactiveForeground": "#00000099",
+    "activityBar.border": "#9945FF", // Purple
+    "activityBarBadge.background": "#FFCD00", // Colombian Yellow
+    "activityBarBadge.foreground": "#000000",
+
+    // Status Bar (bottom bar)
+    "statusBar.background": "#FFCD00", // Colombian Yellow
+    "statusBar.foreground": "#000000",
+    "statusBar.noFolderBackground": "#FFCD00",
+    "statusBar.debuggingBackground": "#CE1126", // Colombian Red
+    "statusBar.debuggingForeground": "#FFFFFF",
+    "statusBarItem.remoteBackground": "#9945FF", // Purple
+    "statusBarItem.remoteForeground": "#FFFFFF",
+
+    // Side Bar
+    "sideBar.background": "#252526", // Neutral Dark
+    "sideBar.foreground": "#cccccc",
+    "sideBarSectionHeader.background": "#333333",
+    "sideBarSectionHeader.foreground": "#ffffff",
+
+    // Editor & Tabs
+    "editorGroupHeader.tabsBackground": "#252526",
+    "tab.activeBackground": "#1e1e1e", // Dark editor background
+    "tab.activeBorderTop": "#FFCD00", // Colombian Yellow
+    "tab.activeForeground": "#ffffff",
+    "tab.inactiveBackground": "#2d2d2d",
+    "tab.inactiveForeground": "#cccccc",
+    "panel.border": "#CE1126", // Colombian Red
+    "editor.selectionBackground": "#9945FF4D", // Transparent Purple
+    "editorCursor.foreground": "#FFCD00", // Colombian Yellow
+
+    // Buttons
+    "button.background": "#9945FF", // Purple
+    "button.foreground": "#FFFFFF",
+    "button.hoverBackground": "#9945FFe0"
+  }
+}

@@ -1,0 +1,27 @@
+---
+interface Props {
+  color?: Color;
+  class?: string;
+}
+
+const { color = "DEFAULT", class: className } = Astro.props;
+
+const colors = {
+  DEFAULT: "bg-neutral-200 border-neutral-300 border text-neutral-800",
+  primary: "bg-primary-100 border-primary-200 border text-primary-600",
+  secondary: "bg-secondary-300 border-secondary-400 border text-secondary-500",
+  success: "bg-success/20 border-success/30 border text-success",
+  warning: "bg-warning/20 border-warning/30 border text-warning",
+  error: "bg-error/20 border-error/30 border text-error",
+};
+type Color = keyof typeof colors;
+---
+
+<span
+  class:list={[
+    colors[color],
+    className,
+    "rounded-full text-xs font-medium px-3 py-1 ",
+  ]}>
+  <slot />
+</span>

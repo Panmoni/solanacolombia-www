@@ -1,0 +1,88 @@
+---
+import { ClientRouter } from "astro:transitions";
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  footerMargin?: boolean;
+}
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site).toString();
+
+const resolvedImageWithDomain = new URL(
+  "/opengraph.png",
+  Astro.site
+).toString();
+
+const { 
+  title, 
+  description = "Tu comunidad Solana en Colombia. Comparte, aprende y construye en un espacio abierto y colaborativo.",
+  footerMargin = true 
+} = Astro.props;
+
+const makeTitle = title
+  ? title + " | " + "Solana Colombia"
+  : "Solana Colombia: Eventos, Incubación, Hackathons";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    
+    <!-- SEO -->
+    <title>{makeTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={makeTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={resolvedImageWithDomain} />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={makeTitle} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={resolvedImageWithDomain} />
+    
+    <style is:global>
+      /* Improve Page speed */
+      /* https://css-tricks.com/almanac/properties/c/content-visibility/ */
+      img {
+        content-visibility: auto;
+      }
+      /* Remove arrows from list-style - fix for tailwindcss */
+      details > summary.list-none::-webkit-details-marker,
+      details > summary.list-none::marker {
+        display: none;
+      }
+    </style>
+    
+    <!-- Enable ViewTransitions for smooth page transitions -->
+    <ClientRouter />
+  </head>
+  <body class="bg-gray-50">
+    <Header />
+    
+    <main>
+      <slot />
+    </main>
+    
+    <Footer />
+  </body>
+</html>

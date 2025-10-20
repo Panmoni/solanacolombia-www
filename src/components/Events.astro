@@ -1,0 +1,41 @@
+---
+// Events section matching the style of Hero and Features
+---
+
+<section class="py-20 bg-gray-50 border-b-2 border-dashed border-gray-300" id="eventos">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-12 items-start">
+      <!-- Left Column - Content -->
+      <div>
+        <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          Próximos Eventos
+        </h2>
+        
+        <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+          Mantente al día con los próximos eventos de Solana
+        </p>
+        
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-200 flex items-center gap-2">
+          <a href="https://lu.ma/solanacolombia" target="_blank">Ver todos los eventos</a>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Right Column - Events List -->
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <iframe
+        src="https://lu.ma/embed/calendar/cal-9SneO28RSdV1ukl/events"
+        width="550"
+        height="450"
+        frameborder="0"
+        class="max-w-full max-h-full"
+        style="border: 1px solid #bfcbda88; border-radius: 4px;"
+        allowfullscreen=""
+        aria-hidden="false"
+        tabindex="0"
+      ></iframe>
+    </div>
+  </div>
+</section>
