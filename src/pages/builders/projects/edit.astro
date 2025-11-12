@@ -1,0 +1,190 @@
+---
+// src/pages/builders/projects/edit.astro
+import Layout from '../../../layouts/Layout.astro';
+import { getSession } from '../../../lib/auth';
+
+const session = await getSession(Astro.cookies);
+if (!session?.wallet) {
+  return Astro.redirect('/builders');
+}
+
+const url = new URL(Astro.request.url);
+const projectId = url.searchParams.get('id');
+
+if (!projectId) {
+  return Astro.redirect('/builders/dashboard');
+}
+---
+
+<Layout title="Editar Proyecto | Construyendo Juntos">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="mb-6">
+      <a href="/builders/dashboard" class="text-purple-600 hover:text-purple-700">← Volver al Dashboard</a>
+    </div>
+
+    <section class="hero mb-12 text-center">
+      <h1 class="text-4xl font-bold mb-4">Editar Proyecto</h1>
+      <p class="text-xl text-gray-600">
+        Actualiza la información de tu proyecto
+      </p>
+    </section>
+
+    <section class="signup bg-white rounded-lg shadow-lg p-8">
+      <form id="project-form" class="space-y-4" method="POST">
+        <input type="hidden" name="project_id" value={projectId} />
+        <input type="hidden" name="wallet" value={session.wallet} />
+
+        <div>
+          <label for="project_name" class="block text-sm font-medium text-gray-700 mb-1">Nombre del proyecto *</label>
+          <input 
+            id="project_name"
+            name="project_name" 
+            type="text"
+            placeholder="Nombre del proyecto" 
+            required 
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          />
+        </div>
+
+        <div>
+          <label for="project_description" class="block text-sm font-medium text-gray-700 mb-1">Descripción *</label>
+          <textarea 
+            id="project_description"
+            name="project_description" 
+            placeholder="¿Qué estás construyendo?" 
+            rows="4"
+            required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          ></textarea>
+        </div>
+
+        <div>
+          <label for="project_website" class="block text-sm font-medium text-gray-700 mb-1">Sitio web</label>
+          <input 
+            id="project_website"
+            name="project_website" 
+            type="url"
+            placeholder="https://tuproyecto.com" 
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          />
+        </div>
+
+        <div>
+          <label for="project_twitter" class="block text-sm font-medium text-gray-700 mb-1">Twitter del proyecto</label>
+          <input 
+            id="project_twitter"
+            name="project_twitter" 
+            type="text"
+            placeholder="@tuproyecto" 
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          />
+        </div>
+
+        <div>
+          <label for="project_discord" class="block text-sm font-medium text-gray-700 mb-1">Discord del proyecto</label>
+          <input 
+            id="project_discord"
+            name="project_discord" 
+            type="text"
+            placeholder="https://discord.gg/..." 
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+          />
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full mt-6 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
+        >
+          Guardar Cambios 💾
+        </button>
+      </form>
+
+      <p class="success hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800" id="success-msg">
+        ¡Proyecto actualizado exitosamente!
+      </p>
+    </section>
+  </div>
+</Layout>
+
+<script>
+  // Load current project data
+  const loadProject = async () => {
+    const url = new URL(window.location.href);
+    const projectId = url.searchParams.get('id');
+    
+    if (!projectId) return;
+    
+    try {
+      const res = await fetch(`/api/projects/get?id=${encodeURIComponent(projectId)}`);
+      const data = await res.json();
+      
+      if (res.ok && data.project) {
+        const form = document.getElementById('project-form') as HTMLFormElement;
+        if (form) {
+          (form.querySelector('#project_name') as HTMLInputElement).value = data.project.name || '';
+          (form.querySelector('#project_description') as HTMLTextAreaElement).value = data.project.description || '';
+          (form.querySelector('#project_website') as HTMLInputElement).value = data.project.website || '';
+          (form.querySelector('#project_twitter') as HTMLInputElement).value = data.project.twitter || '';
+          (form.querySelector('#project_discord') as HTMLInputElement).value = data.project.discord || '';
+        }
+      } else {
+        alert('Error: ' + (data.error || 'No se pudo cargar el proyecto'));
+        window.location.href = '/builders/dashboard';
+      }
+    } catch (err) {
+      console.error('Error loading project:', err);
+      alert('Error al cargar el proyecto');
+      window.location.href = '/builders/dashboard';
+    }
+  };
+
+  // Set up form
+  const setupProjectForm = () => {
+    const form = document.getElementById('project-form') as HTMLFormElement;
+    
+    if (form) {
+      // Remove existing listener to avoid duplicates
+      const newForm = form.cloneNode(true) as HTMLFormElement;
+      form.parentNode?.replaceChild(newForm, form);
+      
+      newForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = new FormData(newForm);
+        
+        const res = await fetch('/api/projects/update', { method: 'POST', body: data });
+        const result = await res.json();
+        
+        if (res.ok) {
+          newForm.classList.add('hidden');
+          const successMsg = document.getElementById('success-msg');
+          if (successMsg) {
+            successMsg.classList.remove('hidden');
+            setTimeout(() => {
+              window.location.href = '/builders/dashboard';
+            }, 2000);
+          }
+        } else {
+          alert('Error: ' + (result.error || 'Unknown error'));
+        }
+      });
+    }
+  };
+
+  // Run on initial load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProject();
+      setupProjectForm();
+    });
+  } else {
+    loadProject();
+    setupProjectForm();
+  }
+
+  // Also listen for Astro navigation events
+  document.addEventListener('astro:page-load', () => {
+    loadProject();
+    setupProjectForm();
+  });
+</script>
+
