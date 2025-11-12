@@ -8,10 +8,17 @@ binding = "DB"
 database_name = "solana_builders"
 database_id = "dcb2f24a-d72d-4632-8e57-46e53ffcd865"
 
-# For local development
-[env.development]
-[[env.development.d1_databases]]
+# For preview deployments (pull requests, preview branches)
+[env.preview]
+[[env.preview.d1_databases]]
 binding = "DB"
 database_name = "solana_builders"
-database_id = "dcb2f24a-d72d-4632-8e57-46e53ffcd865"  # Use same ID as main config
+database_id = "dcb2f24a-d72d-4632-8e57-46e53ffcd865"  # Use same ID as production
+
+# For production
+[env.production]
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "solana_builders"
+database_id = "dcb2f24a-d72d-4632-8e57-46e53ffcd865"
 
