@@ -1,0 +1,284 @@
+---
+// Uses @solana/wallet-adapter for client-side wallet connection
+---
+
+<div class="wallet-connect-container">
+  <button id="connect-wallet" class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+    Conectar Wallet Solana
+  </button>
+  <p class="text-sm text-gray-600 mt-2">Conecta tu wallet para continuar</p>
+</div>
+
+<script>
+  // Wallet connection state management
+  const WALLET_STORAGE_KEY = 'solana_wallet_connected';
+  const WALLET_PROVIDER_KEY = 'solana_wallet_provider';
+
+  // Store wallet connection info
+  function saveWalletConnection(address: string, provider: string) {
+    localStorage.setItem(WALLET_STORAGE_KEY, address);
+    localStorage.setItem(WALLET_PROVIDER_KEY, provider);
+  }
+
+  // Clear wallet connection info
+  function clearWalletConnection() {
+    localStorage.removeItem(WALLET_STORAGE_KEY);
+    localStorage.removeItem(WALLET_PROVIDER_KEY);
+  }
+
+  // Get stored wallet connection
+  function getStoredWallet() {
+    return {
+      address: localStorage.getItem(WALLET_STORAGE_KEY),
+      provider: localStorage.getItem(WALLET_PROVIDER_KEY)
+    };
+  }
+
+  // Check if wallet is already connected
+  async function checkExistingConnection() {
+    const stored = getStoredWallet();
+    if (!stored.address || !stored.provider) return null;
+
+    // Wait for wallet providers to load (they might not be ready immediately)
+    let attempts = 0;
+    const maxAttempts = 15; // Wait up to 3 seconds (15 * 200ms)
+    
+    return new Promise((resolve) => {
+      const checkProvider = () => {
+        attempts++;
+        
+        try {
+          let provider: any = null;
+          
+          if (stored.provider === 'phantom' && (window as any).phantom?.solana) {
+            provider = (window as any).phantom.solana;
+          } else if (stored.provider === 'solflare' && (window as any).solflare) {
+            provider = (window as any).solflare;
+          }
+
+          if (provider) {
+            // Check if provider is connected and matches stored address
+            if (provider.isConnected && provider.publicKey) {
+              const currentAddress = provider.publicKey.toString();
+              if (currentAddress === stored.address) {
+                // Perfect match - return the connection
+                resolve({ address: currentAddress, provider: stored.provider });
+                return;
+              } else {
+                // Address mismatch - clear storage
+                console.log('Wallet address mismatch, clearing storage');
+                clearWalletConnection();
+                resolve(null);
+                return;
+              }
+            }
+          }
+          
+          // Provider not ready yet or not connected - retry
+          if (attempts < maxAttempts) {
+            setTimeout(checkProvider, 200);
+          } else {
+            // Provider never became available or connected
+            // Don't clear storage - might just be slow to load
+            // The UI will be restored from localStorage anyway
+            console.log('Provider not available after retries, but keeping localStorage');
+            resolve({ address: stored.address, provider: stored.provider });
+          }
+        } catch (err) {
+          console.error('Error checking existing connection:', err);
+          if (attempts < maxAttempts) {
+            setTimeout(checkProvider, 200);
+          } else {
+            resolve(null);
+          }
+        }
+      };
+      
+      checkProvider();
+    });
+  }
+
+  // Disconnect from wallet provider
+  async function disconnectWallet(providerName: string) {
+    try {
+      if (providerName === 'phantom' && (window as any).phantom?.solana) {
+        const provider = (window as any).phantom.solana;
+        if (provider.disconnect) {
+          await provider.disconnect();
+        }
+      } else if (providerName === 'solflare' && (window as any).solflare) {
+        const provider = (window as any).solflare;
+        if (provider.disconnect) {
+          await provider.disconnect();
+        }
+      }
+    } catch (err) {
+      console.error('Error disconnecting wallet:', err);
+    }
+    // Always clear localStorage, even if disconnect fails
+    clearWalletConnection();
+    
+    // Also try to disconnect any provider that might be connected
+    try {
+      if ((window as any).phantom?.solana?.disconnect) {
+        await (window as any).phantom.solana.disconnect();
+      }
+      if ((window as any).solflare?.disconnect) {
+        await (window as any).solflare.disconnect();
+      }
+    } catch (e) {
+      // Ignore errors
+    }
+  }
+
+  // Function to initialize wallet connection - works on both initial load and navigation
+  const initWalletConnect = async () => {
+    const connectBtn = document.getElementById('connect-wallet');
+    if (!connectBtn) return;
+
+    // Remove existing listener to avoid duplicates
+    const newBtn = connectBtn.cloneNode(true) as HTMLElement;
+    connectBtn.parentNode?.replaceChild(newBtn, connectBtn);
+
+    // Check for existing connection on page load
+    const existing = await checkExistingConnection();
+    if (existing) {
+      window.dispatchEvent(new CustomEvent('wallet-connected', { 
+        detail: { address: existing.address, provider: existing.provider } 
+      }));
+    }
+
+    const actualBtn = document.getElementById('connect-wallet');
+    if (!actualBtn) return;
+    
+    actualBtn.addEventListener('click', async () => {
+      try {
+        let provider: any = null;
+        let providerName = '';
+        
+        // Try Phantom first
+        if (typeof window !== 'undefined' && (window as any).phantom?.solana) {
+          provider = (window as any).phantom.solana;
+          providerName = 'phantom';
+        }
+        // Try Solflare
+        else if (typeof window !== 'undefined' && (window as any).solflare) {
+          provider = (window as any).solflare;
+          providerName = 'solflare';
+        }
+
+        if (!provider) {
+          alert('No wallet found. Por favor instala Phantom o Solflare.');
+          return;
+        }
+
+        // ALWAYS disconnect first to force a fresh connection prompt
+        // This ensures the user always gets prompted, even if wallet has cached connection
+        console.log('Disconnecting any existing wallet connection...');
+        try {
+          // Always try to disconnect, regardless of isConnected state
+          // Some wallets might have cached connections that don't show in isConnected
+          if (provider.disconnect) {
+            await provider.disconnect();
+          }
+        } catch (e) {
+          console.log('Disconnect attempt (may not be connected):', e);
+          // Ignore disconnect errors - wallet might not be connected
+        }
+        
+        // Also try disconnecting from all providers to be thorough
+        try {
+          if ((window as any).phantom?.solana?.disconnect) {
+            await (window as any).phantom.solana.disconnect();
+          }
+          if ((window as any).solflare?.disconnect) {
+            await (window as any).solflare.disconnect();
+          }
+        } catch (e) {
+          // Ignore
+        }
+        
+        // Wait a moment for disconnect to complete
+        await new Promise(resolve => setTimeout(resolve, 300));
+
+        // Verify provider is actually disconnected
+        if (provider.isConnected) {
+          console.warn('Provider still connected after disconnect attempt!');
+          // Try one more time
+          try {
+            await provider.disconnect();
+            await new Promise(resolve => setTimeout(resolve, 200));
+          } catch (e) {
+            console.error('Second disconnect attempt failed:', e);
+          }
+        }
+
+        // Clear localStorage before connecting
+        clearWalletConnection();
+
+        // Connect to wallet - this should now ALWAYS prompt
+        // Using onlyIfTrusted: false ensures we get a prompt even if wallet remembers the site
+        console.log('Requesting wallet connection with prompt...');
+        console.log('Provider state before connect:', {
+          isConnected: provider.isConnected,
+          publicKey: provider.publicKey?.toString()
+        });
+        
+        // Verify we're actually disconnected before connecting
+        if (provider.isConnected) {
+          alert('El wallet aún está conectado. Por favor desconéctalo manualmente desde la extensión del wallet y vuelve a intentar.');
+          return;
+        }
+        
+        // For Phantom, use the explicit prompt option
+        let response;
+        if (providerName === 'phantom') {
+          // Phantom supports onlyIfTrusted option - this should force a prompt
+          response = await provider.connect({ onlyIfTrusted: false });
+        } else {
+          // Solflare and others
+          response = await provider.connect({ onlyIfTrusted: false });
+        }
+        
+        const address = response.publicKey?.toString() || provider.publicKey?.toString();
+        console.log('Connection response:', { address, hasPublicKey: !!response.publicKey });
+        
+        if (address) {
+          console.log('Wallet connected:', address);
+          saveWalletConnection(address, providerName);
+          window.dispatchEvent(new CustomEvent('wallet-connected', { 
+            detail: { address, provider: providerName } 
+          }));
+        }
+      } catch (err: any) {
+        console.error('Wallet connection error:', err);
+        if (err.code === 4001) {
+          // User rejected the connection
+          alert('Conexión cancelada. Por favor acepta la conexión en tu wallet.');
+          return;
+        }
+        alert('Error al conectar wallet. Por favor intenta de nuevo.');
+      }
+    });
+
+    // Listen for disconnect events
+    window.addEventListener('wallet-disconnect', async () => {
+      const stored = getStoredWallet();
+      if (stored.provider) {
+        await disconnectWallet(stored.provider);
+      }
+    });
+  };
+
+  // Run on initial load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initWalletConnect);
+  } else {
+    // DOM already loaded (client-side navigation)
+    initWalletConnect();
+  }
+
+  // Also listen for Astro navigation events
+  document.addEventListener('astro:page-load', initWalletConnect);
+</script>
+
