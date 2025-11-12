@@ -12,8 +12,20 @@
     "node": ">=18.20.8"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^12.6.10",
+    "@cloudflare/workers-types": "^4.20251111.0",
+    "@solana/wallet-adapter-base": "^0.9.27",
+    "@solana/wallet-adapter-phantom": "^0.9.28",
+    "@solana/wallet-adapter-solflare": "^0.6.32",
+    "@solana/web3.js": "^1.98.4",
     "@tailwindcss/vite": "^4.1.12",
     "astro": "^5.13.2",
-    "tailwindcss": "^4.1.12"
+    "resend": "^6.4.2",
+    "tailwindcss": "^4.1.12",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^10.0.0",
+    "wrangler": "^4.47.0"
   }
 }

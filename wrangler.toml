@@ -1,0 +1,17 @@
+name = "solanacolombia-www"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "solana_builders"
+database_id = "dcb2f24a-d72d-4632-8e57-46e53ffcd865"
+
+# For local development
+[env.development]
+[[env.development.d1_databases]]
+binding = "DB"
+database_name = "solana_builders"
+database_id = "dcb2f24a-d72d-4632-8e57-46e53ffcd865"  # Use same ID as main config
+
