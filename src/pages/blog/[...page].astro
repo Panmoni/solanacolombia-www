@@ -28,7 +28,46 @@ export async function getStaticPaths({
   });
 }
 
-const { page } = Astro.props;
+// In SSR mode, getStaticPaths is ignored, so we need to fetch posts dynamically
+let page;
+if (Astro.props.page) {
+  // Prerendered mode - use prop
+  page = Astro.props.page;
+} else {
+  // SSR mode - fetch and paginate manually
+  const PAGE_SIZE = 6;
+  // Handle route: /blog/ (page 1) or /blog/2 (page 2), etc.
+  const pageParam = Astro.params.page;
+  const currentPage = pageParam && pageParam !== "" ? parseInt(pageParam) : 1;
+  
+  const allPosts = await getCollection("blog", ({ data }) => {
+    return !data.draft && data.publishDate < new Date();
+  });
+
+  const allSortedPosts = allPosts.sort(function (a, b) {
+    return b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
+  });
+
+  const totalPages = Math.ceil(allSortedPosts.length / PAGE_SIZE);
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const endIndex = startIndex + PAGE_SIZE;
+  const paginatedPosts = allSortedPosts.slice(startIndex, endIndex);
+
+  page = {
+    data: paginatedPosts,
+    url: {
+      current: currentPage,
+      prev: currentPage > 1 ? (currentPage === 2 ? `/blog/` : `/blog/${currentPage - 1}`) : undefined,
+      next: currentPage < totalPages ? `/blog/${currentPage + 1}` : undefined,
+    },
+    start: startIndex,
+    end: endIndex,
+    size: PAGE_SIZE,
+    total: allSortedPosts.length,
+    currentPage: currentPage,
+    lastPage: totalPages,
+  };
+}
 ---
 
 <Layout title="Blog">
