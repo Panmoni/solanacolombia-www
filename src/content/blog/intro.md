@@ -1,131 +1,65 @@
 ---
 draft: false
-title: "Solana Colombia Te Saluda"
-snippet: ""
-publishDate: "2025-08-25 10:36"
+title: "¡Bienvenidos a Solana Colombia! 🇨🇴"
+snippet: "Hola builders, desarrolladores y visionarios de Colombia. Somos Solana Colombia, tu comunidad local para construir el futuro de Web3 en nuestro país."
+publishDate: "2025-11-11 10:36"
 image:
   {
     src: "/blog/1/1.png",
-    alt: "",
+    alt: "Bienvenidos a Solana Colombia",
   }
 category: "Anuncio"
 author: "George Donnelly"
-tags: ["x", "y"]
+tags: ["livestream", "space", "aprender"]
 ---
 
+Hola builders, desarrolladores y visionarios de Colombia. Somos Solana Colombia, tu comunidad local para construir el futuro de Web3 en nuestro país.
 
-# 🌎 Creciendo el Ecosistema de Solana en Medellín: Educación, Comunidad y Hackathons
+## ¿Quiénes Somos?
 
-## 🟣 Resumen Breve
-Durante octubre y noviembre de 2025, **Solana Colombia** lidera un programa integral de educación, comunidad y eventos para expandir el ecosistema de desarrolladores de **Solana** en Medellín y otras ciudades de Colombia.  
-Con talleres universitarios, el **Bootcamp UdeA**, espacios virtuales semanales en **X Spaces**, y nuestra participación en el **Blockchain Summit Latam (BSL)** y el **Hackathon FinHub EIA‑EAFIT**, nuestro objetivo es inspirar y preparar a la próxima generación de constructores Web3 en el país.
+Somos una comunidad vibrante de desarrolladores, emprendedores y entusiastas de blockchain que creemos en el potencial transformador de Solana. Nuestro objetivo es claro: formar la próxima generación de builders Web3 en Colombia y posicionar a nuestro país como un referente tecnológico en América Latina.
 
----
+## Nuestra Misión
 
-## 🚀 Acerca del Proyecto
-El proyecto **“Growing the Solana Ecosystem in Medellín: Education, Community and Hackathon Engagement”** busca consolidar la presencia de Solana en Colombia mediante una estrategia práctica y colaborativa.
+En Solana Colombia nos enfocamos en tres pilares fundamentales:
 
-Estamos:
-- Ofreciendo **presentaciones técnicas** y **talleres prácticos** en universidades como **UdeA, EAFIT, EIA, UPB, UDEM, UniRemington** y más.  
-- Desarrollando el **Bootcamp Universitario en Solana** en la Universidad de Antioquia con transmisión nacional.  
-- Apoyando el **Hackathon FinHub EIA‑EAFIT** como mentores y socios técnicos.  
-- Organizando **encuentros comunitarios** (meetups) en varias ciudades del país.  
-- Manteniendo una conversación activa en **X (@Solana_Colombia)** con espacios semanales y actualizaciones constantes.  
+### 🎓 Educación Técnica
+Ofrecemos bootcamps intensivos, talleres prácticos y cursos especializados donde aprenderás a construir aplicaciones descentralizadas desde cero. Nuestro enfoque es 100% práctico: cada semana construyes proyectos reales que puedes agregar a tu portafolio.
 
-El enfoque es **educación abierta**, **formación de talento local** y **creación de comunidad** para que más desarrolladores colombianos puedan innovar sobre la red Solana.
+### 🤝 Comunidad y Networking
+Conectamos a developers, founders e inversionistas en un ecosistema colaborativo. Aquí no solo aprendes tecnología, sino que formas parte de una red global de builders que se apoyan mutuamente.
 
----
+### 🚀 Oportunidades Reales
+Desde hackathons internacionales hasta conexiones con inversionistas, creamos puentes hacia oportunidades concretas de crecimiento profesional y empresarial.
 
-## 🧩 El Bootcamp Solana Colombia 2025
+## Lo Que Está Pasando Ahora
 
-El **Bootcamp en Solana** es el corazón de todo nuestro esfuerzo.  
-Diseñado para estudiantes, desarrolladores y entusiastas, combina teoría y práctica para enseñar los fundamentos del desarrollo en Solana, desde la instalación de herramientas hasta el despliegue de contratos inteligentes y dApps.
+### 📚 Alianzas Universitarias
+Estamos trabajando activamente con universidades como la Universidad de Antioquia e IUMAFIS para llevar educación blockchain de calidad directamente a los estudiantes. Nuestras presentaciones y talleres están formando la próxima generación de desarrolladores Web3.
 
-### 📍 Detalles principales
-- **Fechas:** Sábados 18 y 25 de octubre | 1, 8 y 29 de noviembre  
-- **Horario:** 8:00 AM – 12:00 PM  
-- **Lugar:** Universidad de Antioquia – Aula 19‑211 (Medellín)  
-- **Modalidad:** Presencial + livestream para todo el país  
-- **Registro:** [SolanaColombia.com/bootcamp](https://SolanaColombia.com/bootcamp)
+### 🎙️ Eventos Semanales
+- X Spaces: Todos los jueves a las 12PM hablamos sobre oportunidades laborales, proyectos destacados y el panorama crypto en Latam
+- "Construyendo Juntos": Viernes a las 4PM - livestreams donde programamos en vivo, resolvemos bugs reales y construimos dApps funcionales
 
-Cada sesión permitirá construir aplicaciones sobre Solana paso a paso y culminará con un **Demo Day** donde los participantes presentarán sus proyectos.
+## ¿Por Qué Solana?
 
----
+Solana no es solo otra blockchain. Es una red de alto rendimiento que procesa miles de transacciones por segundo a costos mínimos. Esto la convierte en la plataforma ideal para construir aplicaciones que realmente pueden escalar y competir con soluciones Web2.
 
-## 💬 Conversaciones Semanales en X Spaces
-Todos los **jueves a las 12 PM (hora Colombia)** nos reunimos en **X Spaces** con miembros del equipo (@Solana_Colombia) y aliados invitados.  
-Allí compartimos aprendizajes, noticias del ecosistema, avances del proyecto y consejos para los participantes del bootcamp y el hackathon.
+Además, los desarrolladores latinoamericanos tenemos una ventaja competitiva en este ecosistema global. Nuestra creatividad, adaptabilidad y hambre de innovación nos posicionan perfectamente para liderar la próxima ola de innovación en Web3.
 
-**Próximas ediciones confirmadas:**
-- 23 oct – X Space #1 🎙️  
-- 30 oct – X Space #2  
-- 6 nov – X Space #3  
-- 13 nov, 20 nov, 27 nov y 4 dic – X Space #4‑7  
+## Únete a Nosotros
 
----
+Si eres developer, emprendedor, estudiante o simplemente alguien curioso sobre el futuro de la tecnología, este es tu lugar.
 
-## 🏫 Talleres Universitarios
-Estamos visitando universidades para promover educación descentralizada y participación en el ecosistema de Solana:
+- 💬 **[Únete a nuestro Telegram](https://t.me/solana_colombia)**: Conecta con la comunidad diariamente
+- 🌐 **Visita SolanaColombia.com**: Explora nuestros recursos y oportunidades
+- 📝 **[Regístrate como Builder](/builders)**: Agrega tu proyecto y encuentra colaboradores
+- 📅 **[Asiste a nuestros eventos](https://luma.com/solanacolombia)**: Aprende, conecta y construye junto a nosotros
 
-| Fecha | Universidad | Ciudad | Estado |
-|-------|--------------|--------|--------|
-| 24 oct | **EAFIT** | Medellín | ✅ Confirmado |
-| 28 oct | **EIA (Palmas)** | Medellín | ✅ Confirmado |
-| TBD nov | **Universidad Nacional** | Medellín | En gestión |
-| TBD nov | **UniRemington** | Medellín | En gestión |
-| TBD nov | **UPB** | Medellín | En gestión |
-| TBD nov | **UDEM** | Medellín | En gestión |
-| TBD nov | **IU Marco Fidel Suárez** | Medellín | En gestión |
+## El Futuro Se Construye Hoy
 
-Estos talleres son el punto de entrada al bootcamp y al hackathon, y atraen a nuevos desarrolladores a sumarse a la comunidad Solana.
+La tecnología de mañana se está construyendo hoy, y tú puedes ser parte de ella. En Solana Colombia no solo creamos cursos; creamos comunidades y oportunidades infinitas para crear y crecer.
 
----
+¿Estás listo para construir el futuro? 
 
-## 💻 Talleres Pre‑Hackathon y FinHub EIA‑EAFIT
-En la semana del **3 al 6 de noviembre**, ofreceremos una serie de **talleres en EAFIT y virtuales** para ayudar a los participantes del **Hackathon FinHub EIA‑EAFIT** a integrar sus proyectos con la blockchain Solana.  
-Durante el hackathon formal (13‑14 de nov) estaremos presentes como mentores, brindando soporte técnico y compartiendo recursos con los equipos.
-
----
-
-## 🤝 Comunidad y Meetups
-El crecimiento de Solana en Colombia también depende de conexiones humanas.  
-Por eso, planeamos **meetups comunitarios** en varias ciudades:
-
-- **Cartagena** – 30 de oct 🌴  
-- **Bucaramanga** – 6 de nov  
-- **Medellín / El Poblado** – 13 de nov (Side‑Event BSL Solana)  
-- **Bogotá** – 20 de nov  
-- **Cali** – 27 de nov  
-- **Barranquilla y Villavicencio** – fechas por confirmar  
-
-Cada encuentro ofrecerá charlas introductorias, demostraciones y oportunidades de networking.
-
----
-
-## 🎤 Participación en Blockchain Summit Latam (BSL)
-Del **12 al 14 de noviembre**, parte de nuestro equipo asistirá al **Blockchain Summit Latam 2025** en Medellín, donde representaremos a Solana, participaremos en paneles y conectaremos con comunidades Web3 de toda Latinoamérica.  
-Durante ese mismo evento realizaremos un **meetup Solana Colombia BSL Side‑Event** para seguir atrayendo y educando a nuevos builders.
-
----
-
-## 🧠 Nuestro Equipo
-- **George Donnelly** — Educación, gestión de proyecto, mentoría, redes sociales.  
-- **Milton Henao** — Desarrollo de alianzas y negocios.  
-- **Wilder Rosero** — Estudiante líder y asistente técnico UdeA.  
-- Apoyo académico de **Dr. Edison Montoya (EIA‑FinHub)** y colaboradores universitarios.
-
----
-
-## 📢 Cómo Participar
-1. **Regístrate** en el bootcamp: [SolanaColombia.com/bootcamp](https://SolanaColombia.com/bootcamp)  
-2. **Síguenos** en **X [@Solana_Colombia](https://x.com/Solana_Colombia)** para mantenerte al día.  
-3. **Únete a la comunidad en Telegram:** [t.me/SolanaColombia](https://t.me/SolanaColombia)  
-4. **Asiste** a los talleres y meetups presenciales o virtuales.  
-
----
-
-## 🌟 Conclusión
-El ecosistema Solana en Colombia está creciendo, y esta iniciativa marca un nuevo capítulo para los constructores locales en blockchain.  
-A través de educación técnica, mentoría y eventos comunitarios, **Solana Colombia 2025** busca formar la próxima generación de desarrolladores Web3 latinoamericanos.
-
-**Si quieres ser parte, este es el momento de unirte.**
+¡Nos vemos en la comunidad! 🚀
