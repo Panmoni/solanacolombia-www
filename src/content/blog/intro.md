@@ -10,7 +10,7 @@ image:
   }
 category: "Anuncio"
 author: "George Donnelly"
-tags: [x, y]
+tags: ["x", "y"]
 ---
 
 
