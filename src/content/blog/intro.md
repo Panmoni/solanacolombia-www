@@ -52,7 +52,7 @@ Además, los desarrolladores latinoamericanos tenemos una ventaja competitiva en
 Si eres developer, emprendedor, estudiante o simplemente alguien curioso sobre el futuro de la tecnología, este es tu lugar.
 
 - 💬 **[Únete a nuestro Telegram](https://t.me/solana_colombia)**: Conecta con la comunidad diariamente
-- 🌐 **Visita SolanaColombia.com**: Explora nuestros recursos y oportunidades
+- 🌐 **[Visita SolanaColombia.com](https://solanacolombia.com/)**: Explora nuestros recursos y oportunidades
 - 📝 **[Regístrate como Builder](/builders)**: Agrega tu proyecto y encuentra colaboradores
 - 📅 **[Asiste a nuestros eventos](https://luma.com/solanacolombia)**: Aprende, conecta y construye junto a nosotros
 
