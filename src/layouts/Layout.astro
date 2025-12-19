@@ -7,21 +7,26 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  ogType?: string;
   footerMargin?: boolean;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site).toString();
 
-const resolvedImageWithDomain = new URL(
-  "/opengraph.png",
-  Astro.site
-).toString();
-
 const { 
   title, 
   description = "Tu comunidad Solana en Colombia. Comparte, aprende y construye en un espacio abierto y colaborativo.",
+  image,
+  ogType = "website",
   footerMargin = true 
 } = Astro.props;
+
+const imagePath = image || "/opengraph.png";
+const resolvedImageWithDomain = new URL(
+  imagePath,
+  Astro.site
+).toString();
 
 const makeTitle = title
   ? title + " | " + "Solana Colombia"
@@ -47,7 +52,7 @@ const makeTitle = title
     <link rel="canonical" href={canonicalURL} />
     
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={makeTitle} />
     <meta property="og:description" content={description} />
