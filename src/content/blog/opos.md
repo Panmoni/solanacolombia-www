@@ -88,4 +88,4 @@ A dejar de construir solo para la vitrina y empezar a diseñar experiencias que 
 
 > 💬 ¿Tienes una idea OPOS? ¿Conoces una app que solo funcionaría en Solana? Compártela con nosotros en redes o en los comentarios.
 
-🧵 Lee más artículos técnicos y humanos sobre Solana en nuestro [blog oficial](https://solanacolombia.com/blog).
+🧵 Lee más artículos técnicos sobre Solana en nuestro [blog oficial](https://solanacolombia.com/blog).
