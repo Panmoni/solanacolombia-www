@@ -2,7 +2,7 @@
 draft: false
 title: "¿Cuáles son las app's más innovadoras en Solana?."
 snippet: "Hola builders, desarrolladores y visionarios de Colombia. Somos Solana Colombia, tu comunidad local para construir el futuro de Web3 en nuestro país."
-publishDate: "2025-12-09 10:36"
+publishDate: "2025-12-19 10:36"
 image:
   {
     src: "/blog/6/6.png",
