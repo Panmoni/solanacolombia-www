@@ -14,8 +14,18 @@ const latestPosts = allPosts
   .slice(0, 4); // Show latest 4 posts
 ---
 
-<section class="pt-20 pb-12 bg-white" id="blog">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="py-24 bg-[#F8F5FF] relative overflow-hidden" id="blog">
+  <!-- Subtle background accents -->
+  <div
+    class="absolute top-0 left-0 w-[500px] h-[500px] bg-[#9945FF]/5 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2"
+  >
+  </div>
+  <div
+    class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-[#14F195]/5 rounded-full blur-[100px] translate-x-1/4 translate-y-1/4"
+  >
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
     <!-- Section Header -->
     <div class="text-center mb-16">
       <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Blog</h2>
