@@ -12,16 +12,15 @@ const url = new URL(Astro.request.url);
 const projectId = url.searchParams.get("id");
 
 if (!projectId) {
-  return Astro.redirect("/builders/dashboard");
+  return Astro.redirect("/builders");
 }
 ---
 
 <Layout title="Editar Proyecto | Construyendo Juntos">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="mb-6">
-      <a
-        href="/builders/dashboard"
-        class="text-[#9945FF] hover:text-[#8338EB]">← Volver al Dashboard</a
+      <a href="/builders" class="text-[#9945FF] hover:text-[#8338EB]"
+        >← Volver</a
       >
     </div>
 
@@ -163,12 +162,12 @@ if (!projectId) {
         }
       } else {
         alert("Error: " + (data.error || "No se pudo cargar el proyecto"));
-        window.location.href = "/builders/dashboard";
+        window.location.href = "/builders";
       }
     } catch (err) {
       console.error("Error loading project:", err);
       alert("Error al cargar el proyecto");
-      window.location.href = "/builders/dashboard";
+      window.location.href = "/builders";
     }
   };
 
@@ -197,7 +196,7 @@ if (!projectId) {
           if (successMsg) {
             successMsg.classList.remove("hidden");
             setTimeout(() => {
-              window.location.href = "/builders/dashboard";
+              window.location.href = "/builders";
             }, 2000);
           }
         } else {

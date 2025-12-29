@@ -1,6 +1,6 @@
 // src/pages/api/builders/update.ts
 import type { APIRoute } from 'astro';
-import { getSession } from '../../../lib/auth';
+import { getSession, setSession } from '../../../lib/auth';
 
 export const POST: APIRoute = async ({ request, locals, cookies }) => {
   try {
@@ -42,7 +42,7 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
     if (email) {
       const existingEmail = await db.prepare('SELECT id FROM builders WHERE email = ? AND wallet_address != ?')
         .bind(email, session.wallet).first();
-      
+
       if (existingEmail) {
         return new Response(JSON.stringify({ error: 'Este email ya está en uso' }), {
           status: 409,
@@ -61,10 +61,13 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
     `).bind(name, email, telegram, twitter, university, now, session.wallet).run();
 
     // Update session
-    await fetch('/api/builders/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ wallet: session.wallet })
+    setSession(cookies, {
+      wallet: session.wallet,
+      name: name,
+      role: session.role,
+      university: university || undefined,
+      telegram: telegram || undefined,
+      twitter: twitter || undefined
     });
 
     return new Response(JSON.stringify({ success: true }), {

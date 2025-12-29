@@ -37,12 +37,27 @@ if (!session?.wallet || session.wallet !== ADMIN_WALLET) {
       </a>
     </div>
 
-    <section class="">
-      <div class="p-6 border-b border-gray-200">
-        <h2 class="text-2xl font-semibold">Builders Registrados</h2>
+    <section
+      class="mb-12 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+    >
+      <div class="p-6 border-b border-gray-200 bg-gray-50">
+        <h2 class="text-2xl font-semibold text-gray-900">
+          Builders Registrados
+        </h2>
       </div>
-      <div id="builders-list" class="p-6">
-        <p class="text-gray-600">Cargando...</p>
+      <div id="builders-list" class="p-0">
+        <p class="p-6 text-gray-600">Cargando builders...</p>
+      </div>
+    </section>
+
+    <section
+      class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+    >
+      <div class="p-6 border-b border-gray-200 bg-gray-50">
+        <h2 class="text-2xl font-semibold text-gray-900">Proyectos</h2>
+      </div>
+      <div id="admin-projects-list" class="p-0">
+        <p class="p-6 text-gray-600">Cargando proyectos...</p>
       </div>
     </section>
   </div>
@@ -155,5 +170,99 @@ if (!session?.wallet || session.wallet !== ADMIN_WALLET) {
         list.innerHTML =
           '<p class="text-red-600">Error al cargar builders.</p>';
       }
+    });
+
+  // Load projects list
+  fetch("/api/projects/list")
+    .then((res) => res.json())
+    .then((data) => {
+      const list = document.getElementById("admin-projects-list");
+      if (list && data.projects) {
+        if (data.projects.length === 0) {
+          list.innerHTML =
+            '<p class="p-6 text-gray-600">No hay proyectos registrados aún.</p>';
+          return;
+        }
+
+        const container = document.createElement("div");
+        container.className = "overflow-x-auto";
+
+        const table = document.createElement("table");
+        table.className = "min-w-full divide-y divide-gray-200";
+
+        const thead = document.createElement("thead");
+        thead.className = "bg-gray-50";
+        const headerRow = document.createElement("tr");
+        ["ID", "Proyecto", "Propietario", "Estado"].forEach((text) => {
+          const th = document.createElement("th");
+          th.className =
+            "px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider";
+          th.textContent = text;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        const tbody = document.createElement("tbody");
+        tbody.className = "bg-white divide-y divide-gray-200";
+
+        data.projects.forEach((p: any) => {
+          const tr = document.createElement("tr");
+          tr.className = "hover:bg-gray-50";
+
+          // ID (with copy button)
+          const tdId = document.createElement("td");
+          tdId.className =
+            "px-6 py-4 whitespace-nowrap text-xs font-mono text-gray-500";
+          tdId.innerHTML = `
+            <div class="flex items-center gap-2">
+              <span>${p.id.slice(0, 8)}...</span>
+              <button class="text-[#9945FF] hover:text-[#8338EB]" onclick="navigator.clipboard.writeText('${p.id}'); alert('ID copiado');" title="Copiar ID completo">
+                📋
+              </button>
+            </div>
+          `;
+          tr.appendChild(tdId);
+
+          // Name
+          const tdName = document.createElement("td");
+          tdName.className =
+            "px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900";
+          tdName.textContent = p.name;
+          tr.appendChild(tdName);
+
+          // Owner
+          const tdOwner = document.createElement("td");
+          tdOwner.className =
+            "px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono";
+          tdOwner.textContent = `${p.owner_wallet.slice(0, 6)}...${p.owner_wallet.slice(-4)}`;
+          tr.appendChild(tdOwner);
+
+          // Status
+          const tdStatus = document.createElement("td");
+          tdStatus.className = "px-6 py-4 whitespace-nowrap text-sm";
+          const statusSpan = document.createElement("span");
+          statusSpan.className =
+            "px-2 py-1 text-xs rounded-full font-bold uppercase";
+          if (p.status === "active" || p.status === "verified") {
+            statusSpan.className += " bg-green-100 text-green-800";
+          } else {
+            statusSpan.className += " bg-yellow-100 text-yellow-800";
+          }
+          statusSpan.textContent = p.status;
+          tdStatus.appendChild(statusSpan);
+          tr.appendChild(tdStatus);
+
+          tbody.appendChild(tr);
+        });
+
+        table.appendChild(tbody);
+        container.appendChild(table);
+        list.innerHTML = "";
+        list.appendChild(container);
+      }
+    })
+    .catch((err) => {
+      console.error("Error loading projects:", err);
     });
 </script>

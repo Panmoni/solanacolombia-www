@@ -16,14 +16,17 @@ export const POST: APIRoute = async ({ request, cookies, locals }) => {
     // Get builder info from database
     const db = locals.runtime?.env?.DB;
     if (db) {
-      const builder = await db.prepare('SELECT name, role FROM builders WHERE wallet_address = ?')
+      const builder = await db.prepare('SELECT name, role, university, telegram, twitter FROM builders WHERE wallet_address = ?')
         .bind(wallet).first();
 
       if (builder) {
         setSession(cookies, {
           wallet,
           name: (builder as any).name,
-          role: (builder as any).role
+          role: (builder as any).role,
+          university: (builder as any).university,
+          telegram: (builder as any).telegram,
+          twitter: (builder as any).twitter
         });
       } else {
         // Set session with just wallet if not registered yet
