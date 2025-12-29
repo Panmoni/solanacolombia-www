@@ -1,7 +1,7 @@
 ---
 // src/pages/builders/index.astro
-import Layout from '../../layouts/Layout.astro';
-import WalletConnect from '../../components/WalletConnect.astro';
+import Layout from "../../layouts/Layout.astro";
+import WalletConnect from "../../components/WalletConnect.astro";
 ---
 
 <Layout title="Construyendo Juntos | Solana Colombia">
@@ -9,7 +9,8 @@ import WalletConnect from '../../components/WalletConnect.astro';
     <section class="hero mb-12 text-center">
       <h1 class="text-4xl font-bold mb-4">Construyendo Juntos</h1>
       <p class="text-xl text-gray-600">
-        Únete a la comunidad de builders de Solana en Colombia. Acceso prioritario a grants, eventos y Superteam.
+        Únete a la comunidad de builders de Solana en Colombia. Acceso
+        prioritario a grants, eventos y Superteam.
       </p>
     </section>
 
@@ -23,21 +24,37 @@ import WalletConnect from '../../components/WalletConnect.astro';
         </div>
 
         <!-- Wallet Status Display -->
-        <div id="wallet-status" class="hidden mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+        <div
+          id="wallet-status"
+          class="hidden mb-6 p-4 bg-green-50 border border-green-200 rounded-lg"
+        >
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
               <div class="flex-shrink-0">
-                <svg class="h-5 w-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                <svg
+                  class="h-5 w-5 text-green-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"></path>
                 </svg>
               </div>
               <div>
-                <p class="text-sm font-medium text-green-800">Wallet conectado</p>
-                <p class="text-xs font-mono text-green-600" id="wallet-status-address"></p>
+                <p class="text-sm font-medium text-green-800">
+                  Wallet conectado
+                </p>
+                <p
+                  class="text-xs font-mono text-green-600"
+                  id="wallet-status-address"
+                >
+                </p>
               </div>
             </div>
-            <button 
-              id="disconnect-wallet" 
+            <button
+              id="disconnect-wallet"
               class="text-sm text-green-700 hover:text-green-900 underline"
               type="button"
             >
@@ -53,69 +70,92 @@ import WalletConnect from '../../components/WalletConnect.astro';
 
           <!-- Individual Registration Fields -->
           <div class="space-y-4">
-          <div>
-            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nombre completo *</label>
-            <input 
-              id="name"
-              name="name" 
-              type="text"
-              placeholder="Nombre completo" 
-              required 
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-            <input 
-              id="email"
-              name="email" 
-              type="email" 
-              placeholder="tu@email.com" 
-              required 
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label for="telegram" class="block text-sm font-medium text-gray-700 mb-1">Telegram</label>
-            <input 
-              id="telegram"
-              name="telegram" 
-              type="text"
-              placeholder="@tu_usuario" 
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label for="twitter" class="block text-sm font-medium text-gray-700 mb-1">Twitter/X</label>
-            <input 
-              id="twitter"
-              name="twitter" 
-              type="text"
-              placeholder="@tu_usuario" 
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            />
-          </div>
-          <div>
-            <label for="university" class="block text-sm font-medium text-gray-700 mb-1">Universidad (opcional)</label>
-            <input 
-              id="university"
-              name="university" 
-              type="text"
-              placeholder="Universidad" 
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            />
-          </div>
+            <div>
+              <label
+                for="name"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Nombre completo *</label
+              >
+              <input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Nombre completo"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label
+                for="email"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Email *</label
+              >
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="tu@email.com"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label
+                for="telegram"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Telegram</label
+              >
+              <input
+                id="telegram"
+                name="telegram"
+                type="text"
+                placeholder="@tu_usuario"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label
+                for="twitter"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Twitter/X</label
+              >
+              <input
+                id="twitter"
+                name="twitter"
+                type="text"
+                placeholder="@tu_usuario"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label
+                for="university"
+                class="block text-sm font-medium text-gray-700 mb-1"
+                >Universidad (opcional)</label
+              >
+              <input
+                id="university"
+                name="university"
+                type="text"
+                placeholder="Universidad"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             class="w-full mt-6 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
           >
             Registrarme como Builder 🚀
           </button>
         </form>
 
-        <p class="success hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800" id="success-msg">
+        <p
+          class="success hidden mt-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800"
+          id="success-msg"
+        >
           ¡Listo! Revisa tu correo. Te damos la bienvenida pronto.
         </p>
       </div>
@@ -123,23 +163,39 @@ import WalletConnect from '../../components/WalletConnect.astro';
       <!-- Post-Registration Section (shown after successful registration) -->
       <div id="post-registration-section" class="hidden">
         <h2 class="text-2xl font-semibold mb-6">¡Bienvenido a la Comunidad!</h2>
-        
+
         <!-- Wallet Status in Post-Registration Section -->
-        <div id="post-reg-wallet-status" class="hidden mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+        <div
+          id="post-reg-wallet-status"
+          class="hidden mb-6 p-4 bg-green-50 border border-green-200 rounded-lg"
+        >
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-3">
               <div class="flex-shrink-0">
-                <svg class="h-5 w-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                <svg
+                  class="h-5 w-5 text-green-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"></path>
                 </svg>
               </div>
               <div>
-                <p class="text-sm font-medium text-green-800">Wallet conectado</p>
-                <p class="text-xs font-mono text-green-600" id="post-reg-wallet-address"></p>
+                <p class="text-sm font-medium text-green-800">
+                  Wallet conectado
+                </p>
+                <p
+                  class="text-xs font-mono text-green-600"
+                  id="post-reg-wallet-address"
+                >
+                </p>
               </div>
             </div>
-            <button 
-              id="post-reg-disconnect-wallet" 
+            <button
+              id="post-reg-disconnect-wallet"
               class="text-sm text-green-700 hover:text-green-900 underline"
               type="button"
             >
@@ -147,32 +203,53 @@ import WalletConnect from '../../components/WalletConnect.astro';
             </button>
           </div>
         </div>
-        
+
         <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <p class="text-green-800 mb-4">Tu registro como builder individual ha sido exitoso.</p>
-          <p class="text-sm text-green-700">Ahora puedes gestionar tus proyectos:</p>
+          <p class="text-green-800 mb-4">
+            Tu registro como builder individual ha sido exitoso.
+          </p>
+          <p class="text-sm text-green-700">
+            Ahora puedes gestionar tus proyectos:
+          </p>
         </div>
 
         <div class="grid md:grid-cols-2 gap-4">
-          <div class="border border-gray-200 rounded-lg p-6 hover:border-purple-300 transition-colors">
+          <div
+            class="border border-gray-200 rounded-lg p-6 hover:border-purple-300 transition-colors"
+          >
             <h3 class="text-lg font-semibold mb-2">Crear un Proyecto</h3>
-            <p class="text-sm text-gray-600 mb-4">Registra un nuevo proyecto del cual eres propietario.</p>
-            <a href="/builders/projects/new" class="inline-block px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm">
+            <p class="text-sm text-gray-600 mb-4">
+              Registra un nuevo proyecto del cual eres propietario.
+            </p>
+            <a
+              href="/builders/projects/new"
+              class="inline-block px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm"
+            >
               Crear Proyecto
             </a>
           </div>
 
-          <div class="border border-gray-200 rounded-lg p-6 hover:border-purple-300 transition-colors">
+          <div
+            class="border border-gray-200 rounded-lg p-6 hover:border-purple-300 transition-colors"
+          >
             <h3 class="text-lg font-semibold mb-2">Unirse a un Proyecto</h3>
-            <p class="text-sm text-gray-600 mb-4">Solicita unirte a un proyecto existente.</p>
-            <a href="/builders/projects/join" class="inline-block px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm">
+            <p class="text-sm text-gray-600 mb-4">
+              Solicita unirte a un proyecto existente.
+            </p>
+            <a
+              href="/builders/projects/join"
+              class="inline-block px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm"
+            >
               Ver Proyectos
             </a>
           </div>
         </div>
 
         <div class="mt-6 text-center">
-          <a href="/builders/dashboard" class="text-purple-600 hover:text-purple-700 underline">
+          <a
+            href="/builders/dashboard"
+            class="text-purple-600 hover:text-purple-700 underline"
+          >
             Ir a mi Dashboard →
           </a>
         </div>
@@ -186,266 +263,339 @@ import WalletConnect from '../../components/WalletConnect.astro';
   // This script handles form interactions
   // IMPORTANT: This must work on both initial load AND client-side navigation
   // Wrap everything in IIFE to prevent initialization issues on client-side navigation
-  
-  (function() {
-    'use strict';
-  
+
+  (function () {
+    "use strict";
+
     // Define all functions first, before they're called
-  
+
     // Check if user is already registered
     const checkRegistrationStatus = async (wallet: string) => {
       try {
-      const res = await fetch(`/api/builders/check?wallet=${encodeURIComponent(wallet)}`);
-      const data = await res.json();
-      
-      if (data.registered) {
-        // User is already registered, show post-registration section
-        const registrationSection = document.getElementById('registration-section');
-        const postRegistrationSection = document.getElementById('post-registration-section');
-        if (registrationSection) registrationSection.classList.add('hidden');
-        if (postRegistrationSection) postRegistrationSection.classList.remove('hidden');
-      } else {
-        // User not registered, show registration section and form (but keep wallet status visible)
-        const registrationSection = document.getElementById('registration-section');
-        const currentForm = document.getElementById('builder-form') as HTMLFormElement;
+        const res = await fetch(
+          `/api/builders/check?wallet=${encodeURIComponent(wallet)}`,
+        );
+        const data = await res.json();
+
+        if (data.registered) {
+          // User is already registered, show post-registration section
+          const registrationSection = document.getElementById(
+            "registration-section",
+          );
+          const postRegistrationSection = document.getElementById(
+            "post-registration-section",
+          );
+          if (registrationSection) registrationSection.classList.add("hidden");
+          if (postRegistrationSection)
+            postRegistrationSection.classList.remove("hidden");
+        } else {
+          // User not registered, show registration section and form (but keep wallet status visible)
+          const registrationSection = document.getElementById(
+            "registration-section",
+          );
+          const currentForm = document.getElementById(
+            "builder-form",
+          ) as HTMLFormElement;
+          if (registrationSection) {
+            registrationSection.classList.remove("hidden");
+          }
+          if (currentForm) {
+            currentForm.classList.remove("hidden");
+            // Ensure wallet status stays visible
+            const walletStatus = document.getElementById("wallet-status");
+            if (walletStatus) walletStatus.classList.remove("hidden");
+          }
+        }
+      } catch (err) {
+        console.error("Error checking registration status:", err);
+        // On error, show registration section and form anyway
+        const registrationSection = document.getElementById(
+          "registration-section",
+        );
+        const currentForm = document.getElementById(
+          "builder-form",
+        ) as HTMLFormElement;
         if (registrationSection) {
-          registrationSection.classList.remove('hidden');
+          registrationSection.classList.remove("hidden");
         }
-        if (currentForm) {
-          currentForm.classList.remove('hidden');
-          // Ensure wallet status stays visible
-          const walletStatus = document.getElementById('wallet-status');
-          if (walletStatus) walletStatus.classList.remove('hidden');
-        }
-      }
-    } catch (err) {
-      console.error('Error checking registration status:', err);
-      // On error, show registration section and form anyway
-      const registrationSection = document.getElementById('registration-section');
-      const currentForm = document.getElementById('builder-form') as HTMLFormElement;
-      if (registrationSection) {
-        registrationSection.classList.remove('hidden');
-      }
-      if (currentForm) currentForm.classList.remove('hidden');
+        if (currentForm) currentForm.classList.remove("hidden");
       }
     };
 
-  // Handle wallet connection (extracted to function for reuse)
-  const handleWalletConnected = (address: string) => {
-    if (!address) return;
-    
-    console.log('handleWalletConnected called with:', address);
-    
-    const walletInput = document.getElementById('wallet-address') as HTMLInputElement;
-    if (walletInput) {
-      walletInput.value = address;
-    }
-    
-    // Format address for display
-    const formattedAddress = address.length > 8 
-      ? `${address.slice(0, 4)}...${address.slice(-4)}`
-      : address;
-    
-    // Hide wallet connect button
-    const walletConnectDiv = document.getElementById('wallet-connect');
-    if (walletConnectDiv) {
-      walletConnectDiv.classList.add('hidden');
-      console.log('Hid wallet connect button');
-    }
-    
-    // Show wallet status in registration section
-    const walletStatus = document.getElementById('wallet-status');
-    const walletStatusAddress = document.getElementById('wallet-status-address');
-    if (walletStatus && walletStatusAddress) {
-      walletStatusAddress.textContent = formattedAddress;
-      walletStatusAddress.title = address; // Full address on hover
-      walletStatus.classList.remove('hidden');
-      console.log('Showed wallet status in registration section');
-    }
-    
-    // Show wallet status in post-registration section
-    const postRegWalletStatus = document.getElementById('post-reg-wallet-status');
-    const postRegWalletAddress = document.getElementById('post-reg-wallet-address');
-    if (postRegWalletStatus && postRegWalletAddress) {
-      postRegWalletAddress.textContent = formattedAddress;
-      postRegWalletStatus.classList.remove('hidden');
-      console.log('Showed wallet status in post-registration section');
-    }
-    
-    // Wait a moment to ensure wallet status is visible, then check registration
-    setTimeout(() => {
-      checkRegistrationStatus(address);
-    }, 100);
-  };
+    // Handle wallet connection (extracted to function for reuse)
+    const handleWalletConnected = async (address: string) => {
+      if (!address) return;
 
-  // Check for existing wallet connection on page load (in case WalletConnect hasn't loaded yet)
-  const checkStoredWallet = async () => {
-    const storedAddress = localStorage.getItem('solana_wallet_connected');
-    const storedProvider = localStorage.getItem('solana_wallet_provider');
-    
-    if (storedAddress && storedProvider) {
-      console.log('Found stored wallet connection, restoring UI...', { storedAddress, storedProvider });
-      
-      // Immediately restore UI from localStorage (optimistic restore)
-      // This ensures the UI is updated even if the wallet provider is slow to load
-      // Use a small delay to ensure DOM is ready
+      console.log("handleWalletConnected called with:", address);
+
+      // Set server-side session immediately
+      try {
+        await fetch("/api/builders/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ wallet: address }),
+        });
+        console.log("Session cookie set via /api/builders/login");
+      } catch (err) {
+        console.error("Error setting session cookie:", err);
+      }
+
+      const walletInput = document.getElementById(
+        "wallet-address",
+      ) as HTMLInputElement;
+      if (walletInput) {
+        walletInput.value = address;
+      }
+
+      // Format address for display
+      const formattedAddress =
+        address.length > 8
+          ? `${address.slice(0, 4)}...${address.slice(-4)}`
+          : address;
+
+      // Hide wallet connect button
+      const walletConnectDiv = document.getElementById("wallet-connect");
+      if (walletConnectDiv) {
+        walletConnectDiv.classList.add("hidden");
+        console.log("Hid wallet connect button");
+      }
+
+      // Show wallet status in registration section
+      const walletStatus = document.getElementById("wallet-status");
+      const walletStatusAddress = document.getElementById(
+        "wallet-status-address",
+      );
+      if (walletStatus && walletStatusAddress) {
+        walletStatusAddress.textContent = formattedAddress;
+        walletStatusAddress.title = address; // Full address on hover
+        walletStatus.classList.remove("hidden");
+        console.log("Showed wallet status in registration section");
+      }
+
+      // Show wallet status in post-registration section
+      const postRegWalletStatus = document.getElementById(
+        "post-reg-wallet-status",
+      );
+      const postRegWalletAddress = document.getElementById(
+        "post-reg-wallet-address",
+      );
+      if (postRegWalletStatus && postRegWalletAddress) {
+        postRegWalletAddress.textContent = formattedAddress;
+        postRegWalletStatus.classList.remove("hidden");
+        console.log("Showed wallet status in post-registration section");
+      }
+
+      // Wait a moment to ensure wallet status is visible, then check registration
       setTimeout(() => {
-        handleWalletConnected(storedAddress);
-      }, 50);
-      
-      // Then verify with the actual wallet provider in the background
-      let attempts = 0;
-      const maxAttempts = 20; // Wait up to 4 seconds
-      
-      const verifyProvider = () => {
-        attempts++;
-        let provider: any = null;
-        
-        if (storedProvider === 'phantom' && (window as any).phantom?.solana) {
-          provider = (window as any).phantom.solana;
-        } else if (storedProvider === 'solflare' && (window as any).solflare) {
-          provider = (window as any).solflare;
-        }
-        
-        if (provider) {
-          // Check if connected and matches
-          if (provider.isConnected && provider.publicKey) {
-            const currentAddress = provider.publicKey.toString();
-            if (currentAddress === storedAddress) {
-              // Verified - wallet is actually connected
-              console.log('Wallet connection verified with provider');
-              return;
-            } else {
-              // Address mismatch - clear and reset UI
-              console.log('Wallet address mismatch, clearing connection');
-              localStorage.removeItem('solana_wallet_connected');
-              localStorage.removeItem('solana_wallet_provider');
-              window.location.reload(); // Reload to reset UI
-              return;
+        checkRegistrationStatus(address);
+      }, 100);
+    };
+
+    // Check for existing wallet connection on page load (in case WalletConnect hasn't loaded yet)
+    const checkStoredWallet = async () => {
+      const storedAddress = localStorage.getItem("solana_wallet_connected");
+      const storedProvider = localStorage.getItem("solana_wallet_provider");
+
+      if (storedAddress && storedProvider) {
+        console.log("Found stored wallet connection, restoring UI...", {
+          storedAddress,
+          storedProvider,
+        });
+
+        // Immediately restore UI from localStorage (optimistic restore)
+        // This ensures the UI is updated even if the wallet provider is slow to load
+        // Use a small delay to ensure DOM is ready
+        setTimeout(() => {
+          handleWalletConnected(storedAddress);
+        }, 50);
+
+        // Then verify with the actual wallet provider in the background
+        let attempts = 0;
+        const maxAttempts = 20; // Wait up to 4 seconds
+
+        const verifyProvider = () => {
+          attempts++;
+          let provider: any = null;
+
+          if (storedProvider === "phantom" && (window as any).phantom?.solana) {
+            provider = (window as any).phantom.solana;
+          } else if (
+            storedProvider === "solflare" &&
+            (window as any).solflare
+          ) {
+            provider = (window as any).solflare;
+          }
+
+          if (provider) {
+            // Check if connected and matches
+            if (provider.isConnected && provider.publicKey) {
+              const currentAddress = provider.publicKey.toString();
+              if (currentAddress === storedAddress) {
+                // Verified - wallet is actually connected
+                console.log("Wallet connection verified with provider");
+                return;
+              } else {
+                // Address mismatch - clear and reset UI
+                console.log("Wallet address mismatch, clearing connection");
+                localStorage.removeItem("solana_wallet_connected");
+                localStorage.removeItem("solana_wallet_provider");
+                window.location.reload(); // Reload to reset UI
+                return;
+              }
             }
           }
-        }
-        
-        // Retry if provider not ready yet
-        if (attempts < maxAttempts) {
-          setTimeout(verifyProvider, 200);
-        } else {
-          // Provider never became available - but UI is already restored from localStorage
-          console.log('Provider verification timeout, but UI already restored from localStorage');
-        }
-      };
-      
-      // Start verification after a short delay
-      setTimeout(verifyProvider, 100);
-    }
-  };
 
-  // Handle wallet disconnect (both buttons) - must be defined before setupDisconnectButtons
-  const handleDisconnect = async () => {
-    // Dispatch disconnect event to WalletConnect component
-    window.dispatchEvent(new CustomEvent('wallet-disconnect'));
-    
-    // Hide status, form, and post-registration section
-    const walletStatus = document.getElementById('wallet-status');
-    const postRegWalletStatus = document.getElementById('post-reg-wallet-status');
-    const walletConnectDiv = document.getElementById('wallet-connect');
-    const registrationSection = document.getElementById('registration-section');
-    const postRegistrationSection = document.getElementById('post-registration-section');
-    
-    if (walletStatus) walletStatus.classList.add('hidden');
-    if (postRegWalletStatus) postRegWalletStatus.classList.add('hidden');
-    if (walletConnectDiv) walletConnectDiv.classList.remove('hidden');
-    if (registrationSection) registrationSection.classList.remove('hidden');
-    if (postRegistrationSection) postRegistrationSection.classList.add('hidden');
-    
-    const currentForm = document.getElementById('builder-form') as HTMLFormElement;
-    if (currentForm) {
-      currentForm.classList.add('hidden');
-      currentForm.reset();
-    }
-    const walletInput = document.getElementById('wallet-address') as HTMLInputElement;
-    if (walletInput) walletInput.value = '';
-  };
-
-  // Set up disconnect buttons - needs to be re-run on navigation
-  const setupDisconnectButtons = () => {
-    const disconnectBtn = document.getElementById('disconnect-wallet');
-    if (disconnectBtn) {
-      disconnectBtn.replaceWith(disconnectBtn.cloneNode(true));
-      document.getElementById('disconnect-wallet')?.addEventListener('click', handleDisconnect);
-    }
-
-    const postRegDisconnectBtn = document.getElementById('post-reg-disconnect-wallet');
-    if (postRegDisconnectBtn) {
-      postRegDisconnectBtn.replaceWith(postRegDisconnectBtn.cloneNode(true));
-      document.getElementById('post-reg-disconnect-wallet')?.addEventListener('click', handleDisconnect);
-    }
-  };
-
-  // Function to initialize page state - runs on both initial load and navigation
-  const initPage = () => {
-    // Check for stored wallet connection
-    checkStoredWallet();
-    
-    // Set up form handler if form exists
-    const currentForm = document.getElementById('builder-form') as HTMLFormElement;
-    if (currentForm) {
-      // Remove existing listener to avoid duplicates by cloning
-      const newForm = currentForm.cloneNode(true) as HTMLFormElement;
-      currentForm.parentNode?.replaceChild(newForm, currentForm);
-      
-      newForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const data = new FormData(newForm);
-        const walletInput = document.getElementById('wallet-address') as HTMLInputElement;
-        const wallet = walletInput?.value;
-        
-        // Register builder
-        const res = await fetch('/api/builders/register', { method: 'POST', body: data });
-        const result = await res.json();
-        
-        if (res.ok) {
-          // Set session by calling login API
-          if (wallet) {
-            await fetch('/api/builders/login', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ wallet })
-            });
+          // Retry if provider not ready yet
+          if (attempts < maxAttempts) {
+            setTimeout(verifyProvider, 200);
+          } else {
+            // Provider never became available - but UI is already restored from localStorage
+            console.log(
+              "Provider verification timeout, but UI already restored from localStorage",
+            );
           }
-          
-          // Hide registration section and show post-registration section
-          const registrationSection = document.getElementById('registration-section');
-          const postRegistrationSection = document.getElementById('post-registration-section');
-          if (registrationSection) registrationSection.classList.add('hidden');
-          if (postRegistrationSection) postRegistrationSection.classList.remove('hidden');
-        } else {
-          alert('Error: ' + (result.error || 'Unknown error'));
-        }
-      });
+        };
+
+        // Start verification after a short delay
+        setTimeout(verifyProvider, 100);
+      }
+    };
+
+    // Handle wallet disconnect (both buttons) - must be defined before setupDisconnectButtons
+    const handleDisconnect = async () => {
+      // Dispatch disconnect event to WalletConnect component
+      window.dispatchEvent(new CustomEvent("wallet-disconnect"));
+
+      // Hide status, form, and post-registration section
+      const walletStatus = document.getElementById("wallet-status");
+      const postRegWalletStatus = document.getElementById(
+        "post-reg-wallet-status",
+      );
+      const walletConnectDiv = document.getElementById("wallet-connect");
+      const registrationSection = document.getElementById(
+        "registration-section",
+      );
+      const postRegistrationSection = document.getElementById(
+        "post-registration-section",
+      );
+
+      if (walletStatus) walletStatus.classList.add("hidden");
+      if (postRegWalletStatus) postRegWalletStatus.classList.add("hidden");
+      if (walletConnectDiv) walletConnectDiv.classList.remove("hidden");
+      if (registrationSection) registrationSection.classList.remove("hidden");
+      if (postRegistrationSection)
+        postRegistrationSection.classList.add("hidden");
+
+      const currentForm = document.getElementById(
+        "builder-form",
+      ) as HTMLFormElement;
+      if (currentForm) {
+        currentForm.classList.add("hidden");
+        currentForm.reset();
+      }
+      const walletInput = document.getElementById(
+        "wallet-address",
+      ) as HTMLInputElement;
+      if (walletInput) walletInput.value = "";
+    };
+
+    // Set up disconnect buttons - needs to be re-run on navigation
+    const setupDisconnectButtons = () => {
+      const disconnectBtn = document.getElementById("disconnect-wallet");
+      if (disconnectBtn) {
+        disconnectBtn.replaceWith(disconnectBtn.cloneNode(true));
+        document
+          .getElementById("disconnect-wallet")
+          ?.addEventListener("click", handleDisconnect);
+      }
+
+      const postRegDisconnectBtn = document.getElementById(
+        "post-reg-disconnect-wallet",
+      );
+      if (postRegDisconnectBtn) {
+        postRegDisconnectBtn.replaceWith(postRegDisconnectBtn.cloneNode(true));
+        document
+          .getElementById("post-reg-disconnect-wallet")
+          ?.addEventListener("click", handleDisconnect);
+      }
+    };
+
+    // Function to initialize page state - runs on both initial load and navigation
+    const initPage = () => {
+      // Check for stored wallet connection
+      checkStoredWallet();
+
+      // Set up form handler if form exists
+      const currentForm = document.getElementById(
+        "builder-form",
+      ) as HTMLFormElement;
+      if (currentForm) {
+        // Remove existing listener to avoid duplicates by cloning
+        const newForm = currentForm.cloneNode(true) as HTMLFormElement;
+        currentForm.parentNode?.replaceChild(newForm, currentForm);
+
+        newForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const data = new FormData(newForm);
+          const walletInput = document.getElementById(
+            "wallet-address",
+          ) as HTMLInputElement;
+          const wallet = walletInput?.value;
+
+          // Register builder
+          const res = await fetch("/api/builders/register", {
+            method: "POST",
+            body: data,
+          });
+          const result = await res.json();
+
+          if (res.ok) {
+            // Set session by calling login API
+            if (wallet) {
+              await fetch("/api/builders/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ wallet }),
+              });
+            }
+
+            // Hide registration section and show post-registration section
+            const registrationSection = document.getElementById(
+              "registration-section",
+            );
+            const postRegistrationSection = document.getElementById(
+              "post-registration-section",
+            );
+            if (registrationSection)
+              registrationSection.classList.add("hidden");
+            if (postRegistrationSection)
+              postRegistrationSection.classList.remove("hidden");
+          } else {
+            alert("Error: " + (result.error || "Unknown error"));
+          }
+        });
+      }
+
+      // Set up disconnect buttons
+      setupDisconnectButtons();
+    };
+
+    // Run on initial load
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initPage);
+    } else {
+      // DOM already loaded (client-side navigation)
+      initPage();
     }
-    
-    // Set up disconnect buttons
-    setupDisconnectButtons();
-  };
 
-  // Run on initial load
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPage);
-  } else {
-    // DOM already loaded (client-side navigation)
-    initPage();
-  }
-
-  // Also listen for Astro navigation events
-  document.addEventListener('astro:page-load', initPage);
+    // Also listen for Astro navigation events
+    document.addEventListener("astro:page-load", initPage);
 
     // Listen for wallet connection from WalletConnect component
-    window.addEventListener('wallet-connected', ((e: CustomEvent) => {
+    window.addEventListener("wallet-connected", ((e: CustomEvent) => {
       const address = e.detail.address;
-      console.log('Wallet connected:', address);
+      console.log("Wallet connected:", address);
       handleWalletConnected(address);
     }) as EventListener);
   })(); // End IIFE
 </script>
-
