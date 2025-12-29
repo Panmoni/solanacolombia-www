@@ -1,50 +1,209 @@
 ---
-// Event gallery component inspired by page.tsx gallery section
+// Event gallery component with content collection data
+import { getCollection } from "astro:content";
+
+const galleryItems = await getCollection("gallery");
+const sortedGallery = galleryItems.sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
 ---
 
-<section class="py-20 bg-white border-b-2 border-dashed border-gray-300">
+<section class="py-24 bg-white border-b-2 border-dashed border-gray-300" id="galeria">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Section Header -->
     <div class="text-center mb-16">
-      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-        Eventos Pasados
+      <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
+        Eventos <span class="text-[#9945FF]">Pasados</span>
       </h2>
       <div
         class="w-20 h-1.5 bg-gradient-to-r from-[#9945FF] to-[#14F195] mx-auto rounded-full mb-6"
       >
       </div>
-      <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-        Revive los momentos especiales de nuestra comunidad Solana en Colombia
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+        Revive los momentos especiales y la energía de nuestra comunidad.
       </p>
     </div>
 
     <!-- Gallery Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {
-        [1, 2, 3, 4, 5, 6].map((num) => (
-          <div class="group relative overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-all duration-300">
+        sortedGallery.map((item, index) => (
+          <div 
+            class="gallery-item cursor-pointer group relative overflow-hidden rounded-[2rem] shadow-lg hover:shadow-2xl transition-all duration-500 bg-gray-100 aspect-[4/3]"
+            data-index={index}
+            data-src={item.data.image.src}
+            data-alt={item.data.image.alt}
+            data-title={item.data.title}
+          >
             <img
-              src={`/img/${num}.jpg`}
-              alt={`Evento ${num}`}
-              class="object-cover w-full h-[300px] transition-transform duration-300 group-hover:scale-110"
+              src={item.data.image.src}
+              alt={item.data.image.alt}
+              class="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
+              loading="lazy"
             />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <div class="absolute bottom-4 left-4 text-white">
-                <h3 class="font-semibold text-lg">Evento {num}</h3>
-                <p class="text-sm text-gray-200">Comunidad Solana Colombia</p>
+            
+            <!-- Gradient Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
+              <div class="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                <h3 class="font-black text-white text-2xl mb-2 tracking-tight">
+                  {item.data.title}
+                </h3>
+                <p class="text-gray-200 text-sm leading-relaxed font-medium">
+                  {item.data.description}
+                </p>
+                <div class="mt-4 w-12 h-1 bg-[#14F195] rounded-full"></div>
               </div>
             </div>
           </div>
         ))
       }
     </div>
+  </div>
 
-    <!-- View More Button -->
-    <!-- <div class="text-center mt-12">
-      <button class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-200">
-        Ver más fotos
-      </button>
+  <!-- Fullscreen Modal Lightbox -->
+  <div id="gallery-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/95 p-4 md:p-12 transition-all duration-300 backdrop-blur-sm opacity-0">
+    <!-- Controls -->
+    <button id="modal-close" class="absolute top-6 right-6 text-white hover:text-[#14F195] transition-colors z-[110]" aria-label="Cerrar">
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <button id="modal-prev" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] p-2" aria-label="Anterior">
+      <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <button id="modal-next" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] p-2" aria-label="Siguiente">
+      <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+
+    <!-- Content -->
+    <div class="relative w-full max-w-5xl flex flex-col items-center justify-center">
+        <div class="relative w-full flex items-center justify-center overflow-hidden">
+            <img id="modal-img" src="" alt="" class="max-w-full max-h-[75vh] rounded-2xl shadow-2xl object-contain transform scale-95 transition-all duration-300">
+        </div>
+        <div id="modal-caption" class="mt-8 text-center text-white opacity-0 transition-opacity duration-300 px-4">
+            <h4 id="modal-title" class="text-2xl font-black mb-2"></h4>
+            <p id="modal-counter" class="text-sm font-bold text-[#14F195] uppercase tracking-[0.2em]"></p>
+        </div>
     </div>
-  </div> -->
   </div>
 </section>
+
+<script>
+  function setupGallery() {
+    const modal = document.getElementById('gallery-modal');
+    const modalImg = document.getElementById('modal-img') as HTMLImageElement;
+    const modalTitle = document.getElementById('modal-title');
+    const modalCounter = document.getElementById('modal-counter');
+    const modalCaption = document.getElementById('modal-caption');
+    const closeBtn = document.getElementById('modal-close');
+    const prevBtn = document.getElementById('modal-prev');
+    const nextBtn = document.getElementById('modal-next');
+    const galleryItems = document.querySelectorAll('.gallery-item') as NodeListOf<HTMLElement>;
+
+    if (!modal || !modalImg || !closeBtn || !prevBtn || !nextBtn) return;
+
+    let currentIndex = 0;
+    const total = galleryItems.length;
+
+    const updateModalContent = (index: number) => {
+      currentIndex = index;
+      const item = galleryItems[index];
+      const src = item.dataset.src || '';
+      const alt = item.dataset.alt || '';
+      const title = item.dataset.title || '';
+
+      // Subtle fade out for content switch
+      modalImg.style.opacity = '0';
+      if (modalCaption) modalCaption.style.opacity = '0';
+
+      setTimeout(() => {
+        modalImg.src = src;
+        modalImg.alt = alt;
+        if (modalTitle) modalTitle.textContent = title;
+        if (modalCounter) modalCounter.textContent = `${currentIndex + 1} / ${total}`;
+        
+        modalImg.style.opacity = '1';
+        if (modalCaption) modalCaption.style.opacity = '1';
+      }, 150);
+    };
+
+    const openModal = (index: number) => {
+      updateModalContent(index);
+      
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      
+      // Force repaint
+      modal.offsetHeight;
+      
+      modal.classList.add('opacity-100');
+      modalImg.classList.remove('scale-95');
+      modalImg.classList.add('scale-100');
+      if (modalCaption) modalCaption.classList.add('opacity-100');
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeModal = () => {
+      modal.classList.remove('opacity-100');
+      modalImg.classList.remove('scale-100');
+      modalImg.classList.add('scale-95');
+      if (modalCaption) modalCaption.classList.remove('opacity-100');
+      
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+      }, 300);
+    };
+
+    const nextImage = () => {
+      const nextIdx = (currentIndex + 1) % total;
+      updateModalContent(nextIdx);
+    };
+
+    const prevImage = () => {
+      const prevIdx = (currentIndex - 1 + total) % total;
+      updateModalContent(prevIdx);
+    };
+
+    galleryItems.forEach((item, index) => {
+      item.addEventListener('click', () => openModal(index));
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        nextImage();
+    });
+    prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        prevImage();
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal || (e.target as HTMLElement).closest('.max-w-5xl') === null ) {
+        if ((e.target as HTMLElement).closest('button') === null) {
+            closeModal();
+        }
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (modal.classList.contains('hidden')) return;
+
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'ArrowLeft') prevImage();
+    });
+  }
+
+  // Initial setup
+  setupGallery();
+
+  // Re-setup on view transitions (Astro specific)
+  document.addEventListener('astro:after-swap', setupGallery);
+</script>

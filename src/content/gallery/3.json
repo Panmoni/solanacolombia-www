@@ -1,0 +1,9 @@
+{
+    "title": "Workshop Técnico",
+    "description": "De nuevo en Noi Coworking, aprendiendo primeros pasos en dev de Solana.",
+    "image": {
+        "src": "/img/3.jpg",
+        "alt": "Workshop Técnico"
+    },
+    "order": 3
+}

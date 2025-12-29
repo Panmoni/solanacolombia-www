@@ -1,0 +1,9 @@
+{
+    "title": "Las Últimas Noticias",
+    "description": "Con el apoyo de Superteam, contando las últimas noticias de Solana en Medellín.",
+    "image": {
+        "src": "/img/4.jpg",
+        "alt": "Las Últimas Noticias"
+    },
+    "order": 4
+}

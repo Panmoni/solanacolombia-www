@@ -33,4 +33,17 @@ const team = defineCollection({
   }),
 });
 
-export const collections = { blog, team };
+const gallery = defineCollection({
+  loader: glob({ pattern: "**/*.json", base: "./src/content/gallery" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    image: z.object({
+      src: z.string(),
+      alt: z.string(),
+    }),
+    order: z.number().default(0),
+  }),
+});
+
+export const collections = { blog, team, gallery };

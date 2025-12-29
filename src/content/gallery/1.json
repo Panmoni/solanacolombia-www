@@ -1,0 +1,9 @@
+{
+    "title": "El Primer Meetup",
+    "description": "Nuestra primera reunión en el 2024 en Viva Envigado.",
+    "image": {
+        "src": "/img/1.jpg",
+        "alt": "El Primer Meetup"
+    },
+    "order": 1
+}
