@@ -3,7 +3,8 @@
   "type": "module",
   "version": "0.1.1",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "npm run db:pull && astro dev",
+    "db:pull": "wrangler d1 export solana_builders --remote --output ./prod_dump.sql && rm -rf .wrangler/state/v3/d1 && wrangler d1 execute solana_builders --local --file=./prod_dump.sql && rm ./prod_dump.sql",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
