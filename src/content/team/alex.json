@@ -1,0 +1,11 @@
+{
+    "name": "Alex Ramirez",
+    "title": "",
+    "xUrl": "https://x.com/RamirezAlex",
+    "xUsername": "RamirezAlex",
+    "image": {
+        "src": "/team/alex.jpg",
+        "alt": "Alex Ramirez"
+    },
+    "order": 3
+}
