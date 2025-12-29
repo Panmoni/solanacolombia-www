@@ -10,17 +10,17 @@ const session = await getSession(Astro.cookies);
 <Layout
   title={session
     ? "Dashboard | Solana Colombia"
-    : "Mundo Builders | Solana Colombia"}
+    : "Mundo Builder | Solana Colombia"}
 >
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <section
       class={`hero mb-12 text-center ${session ? "hidden" : ""}`}
       id="hero-section"
     >
-      <h1 class="text-4xl font-bold mb-4">Mundo Builders</h1>
+      <h1 class="text-4xl font-bold mb-4">Mundo Builder</h1>
       <p class="text-xl text-gray-600">
-        Únete a la comunidad de builders de Solana en Colombia. Acceso
-        prioritario a grants, eventos y Superteam.
+        Únete a la comunidad para acceso prioritario a educación, eventos,
+        grants y más.
       </p>
     </section>
 
