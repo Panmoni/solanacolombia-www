@@ -20,7 +20,10 @@ const XIcon =
             <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                 Nuestro Equipo
             </h2>
-            <div class="w-20 h-1.5 bg-blue-600 mx-auto rounded-full mb-6"></div>
+            <div
+                class="w-20 h-1.5 bg-gradient-to-r from-[#9945FF] to-[#14F195] mx-auto rounded-full mb-6"
+            >
+            </div>
             <p class="text-lg text-gray-600 max-w-3xl mx-auto">
                 El grupo de apasionados que impulsa el ecosistema de Solana en
                 Colombia.
@@ -45,10 +48,10 @@ const XIcon =
                         </div>
 
                         <div class="text-center w-full">
-                            <h3 class="text-xl font-extrabold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+                            <h3 class="text-xl font-extrabold text-gray-900 mb-1 group-hover:text-[#9945FF] transition-colors">
                                 {member.data.name}
                             </h3>
-                            <p class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4">
+                            <p class="text-xs font-bold text-[#9945FF] uppercase tracking-widest mb-4">
                                 {member.data.title}
                             </p>
 
@@ -57,7 +60,7 @@ const XIcon =
                                     href={member.data.xUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    class="flex items-center gap-2 text-gray-400 hover:text-black transition-all duration-300 px-4 py-2 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-200"
+                                    class="flex items-center gap-2 text-gray-400 hover:text-[#14F195] transition-all duration-300 px-4 py-2 rounded-xl hover:bg-[#9945FF]/5 border border-transparent hover:border-[#9945FF]/10"
                                     aria-label={`Perfil de X de ${member.data.name}`}
                                 >
                                     <svg

@@ -9,6 +9,10 @@
       <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
         Eventos Pasados
       </h2>
+      <div
+        class="w-20 h-1.5 bg-gradient-to-r from-[#9945FF] to-[#14F195] mx-auto rounded-full mb-6"
+      >
+      </div>
       <p class="text-lg text-gray-600 max-w-3xl mx-auto">
         Revive los momentos especiales de nuestra comunidad Solana en Colombia
       </p>
@@ -16,21 +20,23 @@
 
     <!-- Gallery Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      {[1, 2, 3, 4, 5, 6].map((num) => (
-        <div class="group relative overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-all duration-300">
-          <img
-            src={`/img/${num}.jpg`}
-            alt={`Evento ${num}`}
-            class="object-cover w-full h-[300px] transition-transform duration-300 group-hover:scale-110"
-          />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <div class="absolute bottom-4 left-4 text-white">
-              <h3 class="font-semibold text-lg">Evento {num}</h3>
-              <p class="text-sm text-gray-200">Comunidad Solana Colombia</p>
+      {
+        [1, 2, 3, 4, 5, 6].map((num) => (
+          <div class="group relative overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition-all duration-300">
+            <img
+              src={`/img/${num}.jpg`}
+              alt={`Evento ${num}`}
+              class="object-cover w-full h-[300px] transition-transform duration-300 group-hover:scale-110"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div class="absolute bottom-4 left-4 text-white">
+                <h3 class="font-semibold text-lg">Evento {num}</h3>
+                <p class="text-sm text-gray-200">Comunidad Solana Colombia</p>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))
+      }
     </div>
 
     <!-- View More Button -->
@@ -40,4 +46,5 @@
       </button>
     </div>
   </div> -->
+  </div>
 </section>

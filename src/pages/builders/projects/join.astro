@@ -12,7 +12,7 @@ if (!session?.wallet) {
 <Layout title="Unirse a Proyecto | Construyendo Juntos">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div class="mb-6">
-      <a href="/builders" class="text-purple-600 hover:text-purple-700"
+      <a href="/builders" class="text-[#9945FF] hover:text-[#8338EB]"
         >← Volver</a
       >
     </div>
@@ -118,7 +118,7 @@ if (!session?.wallet) {
           const hasPendingRequest = pendingProjects.has(project.id);
           const projectCard = document.createElement("div");
           projectCard.className =
-            "border border-gray-200 rounded-lg p-6 hover:border-purple-300 transition-colors";
+            "border border-gray-200 rounded-lg p-6 hover:border-[#9945FF]/40 transition-colors";
 
           // Title with user status badge
           const titleDiv = document.createElement("div");
@@ -133,7 +133,7 @@ if (!session?.wallet) {
           if (isOwner) {
             const ownerBadge = document.createElement("span");
             ownerBadge.className =
-              "px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-800";
+              "px-3 py-1 text-xs font-medium rounded-full bg-[#9945FF]/10 text-[#9945FF]";
             ownerBadge.textContent = "👑 Propietario";
             titleDiv.appendChild(ownerBadge);
           } else if (isMember) {
@@ -167,7 +167,7 @@ if (!session?.wallet) {
             const websiteLink = document.createElement("a");
             websiteLink.href = project.website;
             websiteLink.target = "_blank";
-            websiteLink.className = "text-purple-600 hover:underline";
+            websiteLink.className = "text-[#9945FF] hover:underline";
             websiteLink.textContent = "🌐 Sitio web";
             linksDiv.appendChild(websiteLink);
           }
@@ -176,7 +176,7 @@ if (!session?.wallet) {
             const twitterLink = document.createElement("a");
             twitterLink.href = `https://twitter.com/${project.twitter.replace("@", "")}`;
             twitterLink.target = "_blank";
-            twitterLink.className = "text-purple-600 hover:underline";
+            twitterLink.className = "text-[#9945FF] hover:underline";
             twitterLink.textContent = "🐦 Twitter";
             linksDiv.appendChild(twitterLink);
           }
@@ -185,7 +185,7 @@ if (!session?.wallet) {
             const discordLink = document.createElement("a");
             discordLink.href = project.discord;
             discordLink.target = "_blank";
-            discordLink.className = "text-purple-600 hover:underline";
+            discordLink.className = "text-[#9945FF] hover:underline";
             discordLink.textContent = "💬 Discord";
             linksDiv.appendChild(discordLink);
           }
@@ -225,7 +225,7 @@ if (!session?.wallet) {
               joinBtn.disabled = true;
             } else {
               joinBtn.className =
-                "px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm";
+                "px-4 py-2 bg-[#9945FF] text-white rounded-lg hover:bg-[#8338EB] transition-colors text-sm";
               joinBtn.textContent = "Solicitar Unirse";
               joinBtn.disabled = false;
 
@@ -283,7 +283,7 @@ if (!session?.wallet) {
           } else if (isOwner) {
             // Show owner message
             const ownerMsg = document.createElement("p");
-            ownerMsg.className = "text-sm text-purple-600 font-medium";
+            ownerMsg.className = "text-sm text-[#9945FF] font-medium";
             ownerMsg.textContent = "Eres el propietario de este proyecto";
             projectCard.appendChild(ownerMsg);
           } else if (isMember) {
