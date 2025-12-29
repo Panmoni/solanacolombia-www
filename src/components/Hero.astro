@@ -1,48 +1,89 @@
 ---
-// Hero component based on the screenshot design
+// Hero component with high-end premium design
 ---
 
-<section class="bg-gray-50 py-20">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid lg:grid-cols-3 gap-12 items-center">
-      <!-- Left Column - Hero Content -->
-      <div class="lg:col-span-2">
-        <h1
-          class="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight"
+<section class="relative pt-32 pb-24 bg-white overflow-hidden">
+  <!-- Branded background accents -->
+  <div
+    class="absolute top-0 left-0 w-[800px] h-[800px] bg-[#9945FF]/5 rounded-full blur-[140px] -translate-x-1/2 -translate-y-1/2"
+  >
+  </div>
+  <div
+    class="absolute top-1/4 right-0 w-[600px] h-[600px] bg-[#14F195]/5 rounded-full blur-[120px] translate-x-1/4"
+  >
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="grid lg:grid-cols-2 gap-20 items-center">
+      <!-- Left Column - Content -->
+      <div class="text-left">
+        <div
+          class="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-gray-50 border border-gray-100 mb-8 transform hover:scale-105 transition-transform duration-300"
         >
-          <span class="bg-purple-100 px-2 rounded">Construye</span>
-          el futuro.
+          <span class="relative flex h-3 w-3">
+            <span
+              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#14F195] opacity-75"
+            ></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-[#14F195]"
+            ></span>
+          </span>
+          <span
+            class="text-xs font-black tracking-widest text-gray-900 uppercase"
+            >Protocolo Origen 2026</span
+          >
+        </div>
+
+        <h1
+          class="text-6xl md:text-8xl font-black text-gray-900 mb-8 leading-[0.95] tracking-tighter"
+        >
+          <span
+            class="text-transparent bg-clip-text bg-gradient-to-br from-[#9945FF] via-[#8338EB] to-[#9945FF]"
+            >De Cero</span
+          ><br />
+          a Mainnet.
         </h1>
 
-        <p class="text-xl md:text-2xl text-gray-600 mb-8 max-w-2xl">
-          Tu comunidad Solana en Colombia. Únete, innova y lanza tu proyecto en
-          un ecosistema vibrante.
+        <p
+          class="text-xl md:text-2xl text-gray-600 mb-6 max-w-xl leading-relaxed font-medium"
+        >
+          Únete a la comunidad de devs y emprendedores más vibrante de Colombia. <span
+            class="text-gray-900 font-bold">Impulsamos tu proyecto</span
+          > en el ecosistema de mayor rendimiento.
         </p>
 
-        <div class="flex flex-col sm:flex-row gap-4">
-          <button
-            class="bg-gradient-to-r from-[#9945FF] to-[#14F195] text-white px-8 py-3 rounded-lg font-bold hover:opacity-90 transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg"
-          >
-            <a href="https://t.me/Solana_Colombia" target="_blank">
-              <svg
-                class="w-5 h-5 inline mr-1"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"
-                ></path>
-              </svg>
+        <div
+          class="flex items-center gap-4 mb-12 text-sm font-black tracking-[0.25em] uppercase"
+        >
+          <span class="text-gray-400">Inicia</span>
+          <span class="text-gray-900">8 Enero 2026</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-[#14F195] animate-pulse"
+          ></span>
+        </div>
 
-              Únete a Telegram</a
-            >
-          </button>
-          <button
-            class="border-2 border-[#9945FF] text-[#9945FF] px-8 py-3 rounded-lg font-bold hover:bg-[#9945FF]/5 transition-all duration-200 flex items-center gap-2 transform hover:scale-105"
+        <div class="flex flex-col sm:flex-row gap-5">
+          <a
+            href="https://t.me/Solana_Colombia"
+            target="_blank"
+            class="group inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#9945FF] to-[#14F195] text-white px-10 py-5 rounded-2xl font-black tracking-wide transition-all duration-300 transform hover:scale-105 shadow-2xl shadow-purple-200 uppercase text-sm"
           >
-            <a href="/builders">Regístrate como Builder</a>
             <svg
-              class="w-4 h-4"
+              class="w-5 h-5 transition-transform group-hover:rotate-12"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"
+              ></path>
+            </svg>
+            Únete a Telegram
+          </a>
+          <a
+            href="/builders"
+            class="inline-flex items-center justify-center gap-3 bg-white border-2 border-gray-100 text-[#9945FF] px-10 py-5 rounded-2xl font-black tracking-wide transition-all duration-300 transform hover:scale-105 hover:bg-gray-50 hover:border-[#9945FF]/20 shadow-lg shadow-gray-100 uppercase text-sm"
+          >
+            Mundo Builder
+            <svg
+              class="w-5 h-5 transition-transform group-hover:translate-x-1"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -51,35 +92,45 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                d="M9 5l7 7-7 7"></path>
+                d="M14 5l7 7-7 7"></path>
             </svg>
-          </button>
+          </a>
         </div>
       </div>
 
-      <!-- Right Column - Features -->
-      <div class="lg:col-span-1">
-        <div class="border-l-2 border-dashed border-gray-300 pl-8 space-y-6">
-          <!-- Feature 1 -->
-          <div class="flex items-start gap-3">
+      <!-- Right Column - Interactive Card Cluster -->
+      <div class="relative">
+        <!-- Floating decoration elements -->
+        <div
+          class="absolute -top-20 -right-20 w-80 h-80 bg-gradient-to-br from-[#9945FF] to-[#14F195] opacity-10 rounded-full blur-[100px] animate-pulse"
+        >
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 relative z-10">
+          <!-- Card 1 -->
+          <div
+            class="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-2xl border border-white hover:shadow-purple-200/50 transition-all duration-500 group"
+          >
             <div
-              class="w-6 h-6 bg-[#9945FF] rounded-full flex items-center justify-center flex-shrink-0 mt-1"
+              class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#9945FF] to-[#8338EB] flex items-center justify-center mb-6 shadow-lg shadow-purple-100 transition-transform group-hover:rotate-6"
             >
-              <div class="w-2.5 h-2.5 bg-white rounded-full"></div>
+              <div class="w-3.5 h-3.5 bg-white rounded-full"></div>
             </div>
-            <div>
-              <h3 class="font-semibold text-gray-900 mb-1">Comunidad</h3>
-              <p class="text-gray-600 text-sm">Conecta con una red global.</p>
-            </div>
+            <h3 class="font-black text-gray-900 text-lg mb-2">Comunidad</h3>
+            <p class="text-sm text-gray-500 leading-relaxed font-medium">
+              La red más activa de la industria.
+            </p>
           </div>
 
-          <!-- Feature 2 -->
-          <div class="flex items-start gap-3">
+          <!-- Card 2 (Offset) -->
+          <div
+            class="mt-12 bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-2xl border border-white hover:shadow-green-200/50 transition-all duration-500 group"
+          >
             <div
-              class="w-6 h-6 bg-[#14F195] rounded-full flex items-center justify-center flex-shrink-0 mt-1"
+              class="w-14 h-14 rounded-2xl bg-[#14F195] flex items-center justify-center mb-6 shadow-lg shadow-green-100 transition-transform group-hover:-rotate-6"
             >
               <svg
-                class="w-3.5 h-3.5 text-gray-900"
+                class="w-7 h-7 text-gray-900"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
@@ -88,21 +139,21 @@
                 ></path>
               </svg>
             </div>
-            <div>
-              <h3 class="font-semibold text-gray-900 mb-1">Eventos</h3>
-              <p class="text-gray-600 text-sm">
-                Crezca con meetups y hackathones.
-              </p>
-            </div>
+            <h3 class="font-black text-gray-900 text-lg mb-2">Eventos</h3>
+            <p class="text-sm text-gray-500 leading-relaxed font-medium">
+              Meetups y hackathons globales.
+            </p>
           </div>
 
-          <!-- Feature 3 -->
-          <div class="flex items-start gap-3">
+          <!-- Card 3 -->
+          <div
+            class="bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-2xl border border-white hover:shadow-purple-200/50 transition-all duration-500 group"
+          >
             <div
-              class="w-6 h-6 bg-[#9945FF] rounded-full flex items-center justify-center flex-shrink-0 mt-1"
+              class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#8338EB] to-[#9945FF] flex items-center justify-center mb-6 shadow-lg shadow-purple-100 transition-transform group-hover:rotate-6"
             >
               <svg
-                class="w-3.5 h-3.5 text-white"
+                class="w-7 h-7 text-white"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
@@ -111,19 +162,21 @@
                 ></path>
               </svg>
             </div>
-            <div>
-              <h3 class="font-semibold text-gray-900 mb-1">Mentoría</h3>
-              <p class="text-gray-600 text-sm">Acelera tu visión.</p>
-            </div>
+            <h3 class="font-black text-gray-900 text-lg mb-2">Mentoría</h3>
+            <p class="text-sm text-gray-500 leading-relaxed font-medium">
+              Soporte experto para tu MVP.
+            </p>
           </div>
 
-          <!-- Feature 4 -->
-          <div class="flex items-start gap-3">
+          <!-- Card 4 (Offset) -->
+          <div
+            class="mt-12 bg-white/80 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-2xl border border-white hover:shadow-green-200/50 transition-all duration-500 group"
+          >
             <div
-              class="w-6 h-6 bg-[#14F195] rounded-full flex items-center justify-center flex-shrink-0 mt-1"
+              class="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#14F195] to-[#10d481] flex items-center justify-center mb-6 shadow-lg shadow-green-100 transition-transform group-hover:-rotate-6"
             >
               <svg
-                class="w-3.5 h-3.5 text-gray-900"
+                class="w-7 h-7 text-gray-900"
                 fill="currentColor"
                 viewBox="0 0 24 24"
               >
@@ -132,12 +185,10 @@
                 ></path>
               </svg>
             </div>
-            <div>
-              <h3 class="font-semibold text-gray-900 mb-1">Oportunidad</h3>
-              <p class="text-gray-600 text-sm">
-                Educación, incubación, financiación.
-              </p>
-            </div>
+            <h3 class="font-black text-gray-900 text-lg mb-2">Impacto</h3>
+            <p class="text-sm text-gray-500 leading-relaxed font-medium">
+              Lanzamiento a escala mundial.
+            </p>
           </div>
         </div>
       </div>

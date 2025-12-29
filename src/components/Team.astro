@@ -11,14 +11,22 @@ const XIcon =
 ---
 
 <section
-    class="py-20 bg-gray-50 border-b-2 border-dashed border-gray-300"
+    class="py-24 bg-white relative overflow-hidden border-b-2 border-dashed border-gray-300"
     id="team"
 >
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Subtle background accent -->
+    <div
+        class="absolute top-1/2 right-0 w-[400px] h-[400px] bg-[#9945FF]/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"
+    >
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <!-- Section Header -->
-        <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                Nuestro Equipo
+        <div class="text-center mb-20">
+            <h2
+                class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight"
+            >
+                Nuestro <span class="text-[#9945FF]">Equipo</span>
             </h2>
             <div
                 class="w-20 h-1.5 bg-gradient-to-r from-[#9945FF] to-[#14F195] mx-auto rounded-full mb-6"
