@@ -1,5 +1,5 @@
 ---
-import { getCollection, getEntryBySlug } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 import { Picture } from "astro:assets";
@@ -8,7 +8,7 @@ import { Picture } from "astro:assets";
 export async function getStaticPaths() {
   const blogEntries = await getCollection("blog");
   return blogEntries.map((entry) => ({
-    params: { slug: entry.slug },
+    params: { slug: entry.id },
     props: { entry },
   }));
 }
@@ -19,18 +19,18 @@ if (Astro.props.entry) {
   // Prerendered mode - use prop
   entry = Astro.props.entry;
 } else {
-  // SSR mode - fetch by slug
+  // SSR mode - fetch by id
   const slug = Astro.params.slug;
   if (!slug) {
     return new Response(null, { status: 404 });
   }
-  entry = await getEntryBySlug("blog", slug);
+  entry = await getEntry("blog", slug);
   if (!entry) {
     return new Response(null, { status: 404 });
   }
 }
 
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 ---
 
 <style is:global>
@@ -202,7 +202,7 @@ const { Content } = await entry.render();
         width="1280"
         height="800"
         class="h-full w-full object-contain rounded-xl mt-6"
-        transition:name={`post-img-${entry.slug}`}
+        transition:name={`post-img-${entry.id}`}
       />
     </div>
 

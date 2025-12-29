@@ -2,7 +2,7 @@
 // Blog posts component with dynamic content from the blog collection
 import { getCollection } from "astro:content";
 import { Picture } from "astro:assets";
-import Newsletter from '../components/Newsletter.astro';
+import Newsletter from "../components/Newsletter.astro";
 
 // Get the latest blog posts
 const allPosts = await getCollection("blog", ({ data }) => {
@@ -14,13 +14,14 @@ const latestPosts = allPosts
   .slice(0, 4); // Show latest 4 posts
 ---
 
-<section class="pt-20 pb-12 bg-white border-t-2 border-dashed border-gray-300" id="blog">
+<section
+  class="pt-20 pb-12 bg-white border-t-2 border-dashed border-gray-300"
+  id="blog"
+>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Section Header -->
     <div class="text-center mb-16">
-      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-        Blog
-      </h2>
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Blog</h2>
       <p class="text-lg text-gray-600 max-w-3xl mx-auto">
         Mantente actualizado con Solana y nuestra comunidad.
       </p>
@@ -31,7 +32,7 @@ const latestPosts = allPosts
       {
         latestPosts.map((post) => (
           <article class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200">
-            <a href={`/blog/${post.slug}`}>
+            <a href={`/blog/${post.id}`}>
               <div class="aspect-video bg-gray-200 overflow-hidden">
                 <Picture
                   formats={["avif", "webp"]}
@@ -51,14 +52,15 @@ const latestPosts = allPosts
                   {post.data.title}
                 </h3>
                 <p class="text-sm text-gray-500 mb-3">
-                  {post.data.publishDate.toLocaleDateString('es-ES', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
+                  {post.data.publishDate.toLocaleDateString("es-ES", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
                   })}
                 </p>
                 <p class="text-gray-600 text-sm line-clamp-3">
-                  {post.data.snippet || "Lee más sobre este artículo en nuestro blog."}
+                  {post.data.snippet ||
+                    "Lee más sobre este artículo en nuestro blog."}
                 </p>
               </div>
             </a>
@@ -69,14 +71,14 @@ const latestPosts = allPosts
 
     <!-- View All Button -->
     <div class="text-center mt-12">
-      <a 
+      <a
         href="/blog"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-200 inline-block">
+        class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-200 inline-block"
+      >
         Ver todas las entradas
       </a>
     </div>
 
     <Newsletter />
-
   </div>
 </section>

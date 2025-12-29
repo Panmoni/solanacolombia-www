@@ -39,7 +39,7 @@ if (Astro.props.page) {
   // Handle route: /blog/ (page 1) or /blog/2 (page 2), etc.
   const pageParam = Astro.params.page;
   const currentPage = pageParam && pageParam !== "" ? parseInt(pageParam) : 1;
-  
+
   const allPosts = await getCollection("blog", ({ data }) => {
     return !data.draft && data.publishDate < new Date();
   });
@@ -57,7 +57,12 @@ if (Astro.props.page) {
     data: paginatedPosts,
     url: {
       current: currentPage,
-      prev: currentPage > 1 ? (currentPage === 2 ? `/blog/` : `/blog/${currentPage - 1}`) : undefined,
+      prev:
+        currentPage > 1
+          ? currentPage === 2
+            ? `/blog/`
+            : `/blog/${currentPage - 1}`
+          : undefined,
       next: currentPage < totalPages ? `/blog/${currentPage + 1}` : undefined,
     },
     start: startIndex,
@@ -84,7 +89,7 @@ if (Astro.props.page) {
         {
           page?.data?.map((post, index) => (
             <li>
-              <a href={`/blog/${post.slug}`}>
+              <a href={`/blog/${post.id}`}>
                 <div>
                   <Picture
                     formats={["avif", "webp"]}
@@ -96,7 +101,7 @@ if (Astro.props.page) {
                     loading={index <= 2 ? "eager" : "lazy"}
                     decoding={index <= 2 ? "sync" : "async"}
                     class="w-full rounded-md object-cover"
-                    transition:name={`post-img-${post.slug}`}
+                    transition:name={`post-img-${post.id}`}
                   />
                   <div class="mt-4">
                     <span class="text-blue-400 uppercase tracking-wider text-xs font-medium">
@@ -112,7 +117,8 @@ if (Astro.props.page) {
                       <span class="text-neutral-400">• </span>
                       <time
                         class="text-neutral-400"
-                        datetime={post.data.publishDate.toISOString()}>
+                        datetime={post.data.publishDate.toISOString()}
+                      >
                         {post.data.publishDate.toDateString()}
                       </time>
                     </div>
