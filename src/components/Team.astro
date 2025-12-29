@@ -1,0 +1,81 @@
+---
+import { getCollection } from "astro:content";
+import { Picture } from "astro:assets";
+
+const teamMembers = await getCollection("team");
+const sortedTeam = teamMembers.sort((a, b) => a.data.order - b.data.order);
+
+// X (Twitter) Icon SVG path
+const XIcon =
+    "M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z";
+---
+
+<section
+    class="py-20 bg-gray-50 border-b-2 border-dashed border-gray-300"
+    id="team"
+>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Nuestro Equipo
+            </h2>
+            <div class="w-20 h-1.5 bg-blue-600 mx-auto rounded-full mb-6"></div>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                El grupo de apasionados que impulsa el ecosistema de Solana en
+                Colombia, construyendo el futuro de Web3 día a día.
+            </p>
+        </div>
+
+        <!-- Team Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {
+                sortedTeam.map((member) => (
+                    <div class="group bg-white p-5 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col items-center">
+                        <div class="relative mb-6 w-full aspect-square overflow-hidden rounded-2xl bg-gray-100 shadow-inner">
+                            <Picture
+                                formats={["avif", "webp"]}
+                                src={member.data.image.src}
+                                alt={member.data.image.alt}
+                                width={400}
+                                height={400}
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        </div>
+
+                        <div class="text-center w-full">
+                            <h3 class="text-xl font-extrabold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+                                {member.data.name}
+                            </h3>
+                            <p class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-4">
+                                {member.data.title}
+                            </p>
+
+                            <div class="flex justify-center border-t border-gray-100 pt-5 mt-auto">
+                                <a
+                                    href={member.data.xUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="flex items-center gap-2 text-gray-400 hover:text-black transition-all duration-300 px-4 py-2 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-200"
+                                    aria-label={`Perfil de X de ${member.data.name}`}
+                                >
+                                    <svg
+                                        class="w-4 h-4"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path d={XIcon} />
+                                    </svg>
+                                    <span class="text-xs font-bold">
+                                        @{member.data.xUsername}
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>

@@ -1,0 +1,11 @@
+{
+    "name": "Lucas Martinez",
+    "title": "Ecosystem Lead",
+    "xUrl": "https://x.com/lucasmartinez",
+    "xUsername": "lucasmartinez",
+    "image": {
+        "src": "/team/lucas.png",
+        "alt": "Lucas Martinez"
+    },
+    "order": 3
+}

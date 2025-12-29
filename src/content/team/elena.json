@@ -1,0 +1,11 @@
+{
+    "name": "Elena Sanchez",
+    "title": "Marketing & Design",
+    "xUrl": "https://x.com/elenasanchez",
+    "xUsername": "elenasanchez",
+    "image": {
+        "src": "/team/elena.png",
+        "alt": "Elena Sanchez"
+    },
+    "order": 4
+}

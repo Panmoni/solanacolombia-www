@@ -1,0 +1,11 @@
+{
+    "name": "Carlos Gomez",
+    "title": "Lead Developer",
+    "xUrl": "https://x.com/carlosgomez",
+    "xUsername": "carlosgomez",
+    "image": {
+        "src": "/team/carlos.png",
+        "alt": "Carlos Gomez"
+    },
+    "order": 1
+}
