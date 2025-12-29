@@ -1,31 +1,99 @@
 ---
-// Events section matching the style of Hero and Features
+// Events section with enhanced branded design
 ---
 
 <section
-  class="py-20 bg-gray-50 border-b-2 border-dashed border-gray-300"
+  class="py-24 bg-white relative overflow-hidden border-b-2 border-dashed border-gray-300"
   id="eventos"
 >
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid lg:grid-cols-2 gap-12 items-start">
+  <!-- Subtle background glow -->
+  <div
+    class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-[#9945FF]/5 rounded-full blur-[100px]"
+  >
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
       <!-- Left Column - Content -->
       <div>
-        <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-          Próximos Eventos
+        <h2
+          class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 tracking-tight"
+        >
+          Próximos <span class="text-[#9945FF]">Eventos</span>
         </h2>
+        <div
+          class="w-20 h-1.5 bg-gradient-to-r from-[#9945FF] to-[#14F195] rounded-full mb-8"
+        >
+        </div>
 
-        <p class="text-lg text-gray-600 mb-8 leading-relaxed">
-          Mantente al día con los próximos eventos de Solana
+        <p class="text-xl text-gray-600 mb-10 leading-relaxed max-w-xl">
+          No te pierdas ninguna oportunidad de aprender y conectar. Nuestra
+          comunidad es el punto de encuentro para builders y entusiastas de
+          Solana en Colombia.
         </p>
 
-        <button
-          class="bg-[#9945FF] hover:bg-[#8338EB] text-white px-8 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2 transform hover:scale-105 shadow-md hover:shadow-lg"
+        <!-- Value list -->
+        <ul class="space-y-6 mb-10">
+          <li class="flex items-start gap-4">
+            <div
+              class="w-10 h-10 rounded-xl bg-[#9945FF]/10 flex items-center justify-center flex-shrink-0"
+            >
+              <svg
+                class="w-5 h-5 text-[#9945FF]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                ></path>
+              </svg>
+            </div>
+            <div>
+              <p class="font-bold text-gray-900">Networking Real</p>
+              <p class="text-sm text-gray-500">
+                Conoce a otros fundadores y desarrolladores tech.
+              </p>
+            </div>
+          </li>
+          <li class="flex items-start gap-4">
+            <div
+              class="w-10 h-10 rounded-xl bg-[#14F195]/20 flex items-center justify-center flex-shrink-0"
+            >
+              <svg
+                class="w-5 h-5 text-gray-800"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                ></path>
+              </svg>
+            </div>
+            <div>
+              <p class="font-bold text-gray-900">Aprende haciendo</p>
+              <p class="text-sm text-gray-500">
+                Workshops técnicos y charlas sobre el ecosistema.
+              </p>
+            </div>
+          </li>
+        </ul>
+
+        <a
+          href="https://lu.ma/solanacolombia"
+          target="_blank"
+          class="inline-flex items-center gap-3 bg-[#9945FF] hover:bg-[#8338EB] text-white px-8 py-4 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 shadow-lg shadow-purple-200 uppercase text-sm"
         >
-          <a href="https://lu.ma/solanacolombia" target="_blank"
-            >Ver todos los eventos</a
-          >
+          Ver todos los eventos
           <svg
-            class="w-4 h-4"
+            class="w-5 h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -34,23 +102,35 @@
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M9 5l7 7-7 7"></path>
+              d="M14 5l7 7-7 7"></path>
           </svg>
-        </button>
+        </a>
       </div>
 
       <!-- Right Column - Events List -->
-      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-        <iframe
-          src="https://lu.ma/embed/calendar/cal-9SneO28RSdV1ukl/events"
-          width="550"
-          height="450"
-          frameborder="0"
-          class="max-w-full max-h-full"
-          style="border: 1px solid #bfcbda88; border-radius: 4px;"
-          allowfullscreen=""
-          aria-hidden="false"
-          tabindex="0"></iframe>
+      <div class="relative group">
+        <!-- Decorative frame -->
+        <div
+          class="absolute -inset-4 bg-gradient-to-tr from-[#9945FF] to-[#14F195] opacity-10 rounded-[2.5rem] blur-xl group-hover:opacity-20 transition-opacity duration-500"
+        >
+        </div>
+
+        <div
+          class="relative bg-white p-2 rounded-[2rem] shadow-2xl border border-gray-100 overflow-hidden"
+        >
+          <div class="bg-gray-50 rounded-[1.5rem] overflow-hidden">
+            <iframe
+              src="https://lu.ma/embed/calendar/cal-9SneO28RSdV1ukl/events"
+              width="100%"
+              height="500"
+              frameborder="0"
+              class="w-full"
+              style="border-radius: 1.5rem;"
+              allowfullscreen=""
+              aria-hidden="false"
+              tabindex="0"></iframe>
+          </div>
+        </div>
       </div>
     </div>
   </div>
