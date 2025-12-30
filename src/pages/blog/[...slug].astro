@@ -19,7 +19,7 @@ const isPageNum = !slug || /^\d+$/.test(slug);
 let isList = false;
 let page = null;
 let postEntry = null;
-let Content = null;
+let Content: any = null;
 
 if (isPageNum) {
   isList = true;
@@ -302,7 +302,7 @@ if (isPageNum) {
     </div>
 
     <article class="mx-auto mt-6 max-w-3xl blog-content">
-      <Content />
+      {Content && <Content />}
     </article>
     <div class="text-center mt-12 mb-12">
       <a
