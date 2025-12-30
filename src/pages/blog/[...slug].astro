@@ -1,0 +1,317 @@
+---
+import { getCollection, getEntry, render } from "astro:content";
+import { Picture } from "astro:assets";
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import Sectionhead from "@components/SectionHead.astro";
+import Pagination from "@components/Pagination.astro";
+
+// Combine logic: This file handles both the blog index (paginated) and individual blog posts.
+// This prevents routing collisions between /blog/2 (page 2) and /blog/[slug] (post with slug "2").
+
+const { slug } = Astro.params;
+
+// Determine if this is a list page (undefined path, empty path, or a purely numeric path)
+// Note: If you have a blog post with a numeric slug like "2024", it will be treated as page 2024.
+// To avoid this, ensure blog post slugs are not purely numeric (which checks out for standard "kebab-case").
+const isPageNum = !slug || /^\d+$/.test(slug);
+
+let isList = false;
+let page = null;
+let postEntry = null;
+let Content = null;
+
+if (isPageNum) {
+  isList = true;
+  const currentPage = slug ? parseInt(slug) : 1;
+  const PAGE_SIZE = 12;
+
+  const allPosts = await getCollection("blog", ({ data }) => {
+    return !data.draft && data.publishDate < new Date();
+  });
+
+  const allSortedPosts = allPosts.sort(function (a, b) {
+    return b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
+  });
+
+  const totalPages = Math.ceil(allSortedPosts.length / PAGE_SIZE);
+
+  // If page requested is greater than total pages (and total pages > 0), return 404
+  if (currentPage > totalPages && totalPages > 0) {
+    return new Response(null, { status: 404 });
+  }
+
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const endIndex = startIndex + PAGE_SIZE;
+  const paginatedPosts = allSortedPosts.slice(startIndex, endIndex);
+
+  page = {
+    data: paginatedPosts,
+    url: {
+      current: currentPage,
+      prev: currentPage > 1 ? (currentPage === 2 ? `/blog` : `/blog/${currentPage - 1}`) : undefined,
+      next: currentPage < totalPages ? `/blog/${currentPage + 1}` : undefined,
+    },
+  };
+} else {
+  // It is a post slug
+  postEntry = await getEntry("blog", slug);
+  if (!postEntry) {
+    return new Response(null, { status: 404 });
+  }
+  const renderResult = await render(postEntry);
+  Content = renderResult.Content;
+}
+---
+
+{/* Render List View */}
+{isList && (
+<Layout title="Blog">
+  <Container>
+    <Sectionhead>
+      <Fragment slot="title">Solana Colombia Blog</Fragment>
+      <Fragment slot="desc">
+        Crónica del desarrollo de nuestra comunidad Solana en Colombia.
+      </Fragment>
+    </Sectionhead>
+    <main class="mt-16">
+      <ul class="grid sm:grid-cols-2 md:grid-cols-3 gap-10 lg:gap-16">
+        {
+          page?.data?.map((post, index) => (
+            <li>
+              <a href={`/blog/${post.id}`}>
+                <div>
+                  <Picture
+                    formats={["avif", "webp"]}
+                    src={post.data.image.src}
+                    alt={post.data.image.alt}
+                    sizes="(max-width: 800px) 100vw, 800px"
+                    width={800}
+                    height={600}
+                    loading={index <= 2 ? "eager" : "lazy"}
+                    decoding={index <= 2 ? "sync" : "async"}
+                    class="w-full rounded-md object-cover"
+                    transition:name={`post-img-${post.id}`}
+                  />
+                  <div class="mt-4">
+                    <span class="text-blue-400 uppercase tracking-wider text-xs font-medium">
+                      {post.data.category}
+                    </span>
+
+                    <h2 class="text-xl font-semibold leading-snug tracking-tight mt-1">
+                      {post.data.title}
+                    </h2>
+
+                    <div class="flex gap-2 mt-3 text-sm">
+                      <span class="text-neutral-400">{post.data.author}</span>
+                      <span class="text-neutral-400">• </span>
+                      <time
+                        class="text-neutral-400"
+                        datetime={post.data.publishDate.toISOString()}
+                      >
+                        {post.data.publishDate.toDateString()}
+                      </time>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </li>
+          )) || []
+        }
+      </ul>
+      {page?.url && <Pagination url={page.url} />}
+    </main>
+  </Container>
+</Layout>
+)}
+
+{/* Render Post View */}
+{!isList && postEntry && (
+<>
+<style is:global>
+  .blog-content {
+    color: #1f2937;
+    line-height: 1.75;
+  }
+
+  .blog-content > * + * {
+    margin-top: 1rem;
+  }
+
+  .blog-content h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #111827;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .blog-content h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .blog-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .blog-content p {
+    margin-bottom: 1rem;
+    line-height: 1.75;
+  }
+
+  .blog-content ul,
+  .blog-content ol {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .blog-content ul {
+    list-style-type: disc;
+  }
+
+  .blog-content ol {
+    list-style-type: decimal;
+  }
+
+  .blog-content li {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .blog-content a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  .blog-content a:hover {
+    text-decoration: underline;
+  }
+
+  .blog-content strong {
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .blog-content code {
+    background-color: #f3f4f6;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-family:
+      ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+      "Liberation Mono", monospace;
+  }
+
+  .blog-content pre {
+    background-color: #111827;
+    color: #f3f4f6;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .blog-content pre code {
+    background-color: transparent;
+    color: #f3f4f6;
+    padding: 0;
+  }
+
+  .blog-content blockquote {
+    border-left: 4px solid #d1d5db;
+    padding-left: 1rem;
+    font-style: italic;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .blog-content img {
+    border-radius: 0.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    max-width: 100%;
+  }
+
+  .blog-content hr {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    border-color: #d1d5db;
+  }
+</style>
+
+<Layout
+  title={postEntry.data.title}
+  description={postEntry.data.snippet}
+  image={postEntry.data.image.src}
+  ogType="article"
+>
+  <Container>
+    <div class="mx-auto max-w-3xl text-center mt-14">
+      <span class="text-blue-400 uppercase tracking-wider text-sm font-medium">
+        {postEntry.data.category}
+      </span>
+      <h1
+        class="text-3xl lg:text-4xl font-bold lg:tracking-tight mt-1 lg:leading-tight"
+      >
+        {postEntry.data.title}
+      </h1>
+      <div
+        class="flex gap-2 mt-3 items-center justify-center text-sm flex-wrap md:flex-nowrap"
+      >
+        <span class="text-neutral-400">
+          {postEntry.data.author}
+        </span>
+        <span class="text-neutral-400">•</span>
+        <time
+          class="text-neutral-400"
+          datetime={postEntry.data.publishDate.toISOString()}
+        >
+          {postEntry.data.publishDate.toDateString()}
+        </time>
+        <span class="text-neutral-400 hidden md:block">•</span>
+        <div class="w-full md:w-auto flex flex-wrap justify-center gap-3">
+          {
+            postEntry.data.tags.map((tag) => (
+              <span class="text-md text-neutral-500">#{tag}</span>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="mx-auto max-w-4xl">
+      <Picture
+        formats={["avif", "webp"]}
+        src={postEntry.data.image.src}
+        alt="Feature image"
+        width="1280"
+        height="800"
+        class="h-full w-full object-contain rounded-xl mt-6"
+        transition:name={`post-img-${postEntry.id}`}
+      />
+    </div>
+
+    <article class="mx-auto mt-6 max-w-3xl blog-content">
+      <Content />
+    </article>
+    <div class="text-center mt-12 mb-12">
+      <a
+        href="/blog"
+        class="bg-neutral-100 px-5 py-3 rounded-md hover:bg-neutral-200 transition"
+        >← Volver al Blog</a
+      >
+    </div>
+  </Container>
+</Layout>
+</>
+)}
