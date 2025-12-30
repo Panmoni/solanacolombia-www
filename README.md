@@ -164,7 +164,7 @@ We welcome contributions from the community!
 ## 🌐 Community
 
 - **Telegram:** [Join our community](https://t.me/solana_colombia)
-- **X (Twitter):** [@SolanaColombia](https://x.com/SolanaColombia)
+- **X (Twitter):** [@SolanaColombia](https://x.com/Solana_Colombia)
 - **Website:** [solanacolombia.com](https://solanacolombia.com)
 
 ---
