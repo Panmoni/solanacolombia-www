@@ -44,7 +44,7 @@ Nota: Necesitarás complementar con estudio autodidacta intenso. Te daremos el r
 ## El Calendario Completo
 
 ### 01.2026
-- **X Spaces**: los Miércoles a las 12 PM desde el 8 de Enero. Tratamos diferentes temas, incluyendo validación de ideas y problemas, introducción de miembros de la comunidad buscando equipos, pitch de nuevos proyectos, etc.
+- **X Spaces**: los Jueves a las 12 PM desde el 8 de Enero. Tratamos diferentes temas, incluyendo validación de ideas y problemas, introducción de miembros de la comunidad buscando equipos, pitch de nuevos proyectos, etc.
 - **Build Lab Livestreams**: los Viernes a las 4PM desde el 9 de Enero, donde construimos juntos a veces con invitados especiales.
 - **Formación de equipos**: en el [Mundo Builder](https://solanacolombia.com/builders/).
 ###  02.2026
