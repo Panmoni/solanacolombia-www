@@ -33,6 +33,79 @@ if (!session?.wallet) {
 </Layout>
 
 <script>
+  // Load and render team members for a given project into the provided container
+  const loadTeamMembers = async (
+    projectId: string,
+    container: HTMLElement,
+  ) => {
+    container.innerHTML =
+      '<p class="text-xs text-gray-500">Cargando equipo...</p>';
+
+    try {
+      const res = await fetch(
+        `/api/projects/team?id=${encodeURIComponent(projectId)}`,
+      );
+      const data = await res.json();
+
+      if (!res.ok) {
+        container.innerHTML = `<p class="text-xs text-red-600">Error al cargar el equipo: ${
+          data.error || "Unknown error"
+        }</p>`;
+        return;
+      }
+
+      const members = (data.members || []) as any[];
+
+      if (!members.length) {
+        container.innerHTML =
+          '<p class="text-xs text-gray-500">Aún no hay miembros aceptados en este proyecto.</p>';
+        return;
+      }
+
+      const list = document.createElement("ul");
+      list.className = "flex flex-wrap gap-2";
+
+      members.forEach((m: any) => {
+        const item = document.createElement("li");
+        item.className =
+          "inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-[11px] text-gray-800";
+
+        const name =
+          m.name ||
+          (m.wallet_address
+            ? `${m.wallet_address.slice(0, 4)}...${m.wallet_address.slice(-4)}`
+            : "Builder");
+
+        const roleLabel =
+          m.status === "owner"
+            ? "Propietario"
+            : m.project_role
+            ? m.project_role
+            : "Miembro";
+
+        const nameSpan = document.createElement("span");
+        nameSpan.className = "font-medium";
+        nameSpan.textContent = name;
+
+        const roleSpan = document.createElement("span");
+        roleSpan.className = "text-[10px] uppercase tracking-wide text-gray-500";
+        roleSpan.textContent = `• ${roleLabel}`;
+
+        item.appendChild(nameSpan);
+        item.appendChild(roleSpan);
+        list.appendChild(item);
+      });
+
+      container.innerHTML = "";
+      container.appendChild(list);
+    } catch (err: any) {
+      console.error("Error loading team members:", err);
+      container.innerHTML = `<p class="text-xs text-red-600">Error al cargar el equipo: ${
+        err?.message || "Unknown error"
+      }</p>`;
+    }
+  };
+
   // Function to load and display projects
   const loadProjects = async () => {
     const projectsList = document.getElementById("projects-list");
@@ -165,6 +238,24 @@ if (!session?.wallet) {
           if (linksDiv.children.length > 0) {
             projectCard.appendChild(linksDiv);
           }
+
+          // Team members preview
+          const teamContainer = document.createElement("div");
+          teamContainer.className =
+            "mt-5 border-t border-gray-100 pt-4 text-xs text-gray-700";
+          const teamTitle = document.createElement("p");
+          teamTitle.className =
+            "mb-2 font-semibold text-[11px] uppercase tracking-wide text-gray-500";
+          teamTitle.textContent = "Equipo del proyecto";
+          const teamBody = document.createElement("div");
+          teamBody.id = `team-${project.id}`;
+          teamBody.className = "mt-1";
+          teamContainer.appendChild(teamTitle);
+          teamContainer.appendChild(teamBody);
+          projectCard.appendChild(teamContainer);
+
+          // Load members asynchronously (no need to block card rendering)
+          loadTeamMembers(project.id, teamBody);
 
           // Status badge - only show for non-owners (project verification status)
           if (!isOwner) {

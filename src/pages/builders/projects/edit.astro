@@ -31,7 +31,7 @@ if (!projectId) {
       </p>
     </section>
 
-    <section class="signup p-8">
+    <section class="signup p-8 space-y-10">
       <form id="project-form" class="space-y-4" method="POST">
         <input type="hidden" name="project_id" value={projectId} />
         <input type="hidden" name="wallet" value={session.wallet} />
@@ -127,6 +127,57 @@ if (!projectId) {
       >
         ¡Proyecto actualizado exitosamente!
       </p>
+
+      <section
+        class="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-6"
+      >
+        <div class="flex items-center justify-between">
+          <h2 class="text-2xl font-semibold text-gray-900">
+            Equipo del Proyecto
+          </h2>
+          <span
+            id="members-count-badge"
+            class="hidden px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700"
+          ></span>
+        </div>
+        <p class="text-sm text-gray-600">
+          Gestiona a las personas que forman parte de tu equipo.
+        </p>
+
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-sm font-semibold text-gray-800 mb-2">
+              Miembros actuales
+            </h3>
+            <div id="project-members">
+              <p class="text-gray-600 text-sm">
+                Cargando equipo del proyecto...
+              </p>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-100 pt-4">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-semibold text-gray-800">
+                Solicitudes para unirse
+              </h3>
+              <span
+                id="pending-count-badge"
+                class="hidden px-2.5 py-1 text-[11px] font-medium rounded-full bg-yellow-50 text-yellow-800"
+              ></span>
+            </div>
+            <p class="text-xs text-gray-500 mb-3">
+              Revisa quién quiere unirse a tu proyecto y acepta o rechaza sus
+              solicitudes.
+            </p>
+            <div id="project-join-requests">
+              <p class="text-gray-600 text-sm">
+                Cargando solicitudes pendientes...
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
     </section>
   </div>
 </Layout>
@@ -171,6 +222,351 @@ if (!projectId) {
     }
   };
 
+  // Load accepted project members (including owner) for this project
+  const loadProjectMembers = async () => {
+    const container = document.getElementById("project-members");
+    const countBadge = document.getElementById(
+      "members-count-badge",
+    ) as HTMLSpanElement | null;
+
+    if (!container) return;
+
+    const url = new URL(window.location.href);
+    const projectId = url.searchParams.get("id");
+    if (!projectId) {
+      container.innerHTML =
+        '<p class="text-red-600 text-sm">Error: ID de proyecto no encontrado.</p>';
+      return;
+    }
+
+    container.innerHTML =
+      '<p class="text-gray-600 text-sm">Cargando equipo del proyecto...</p>';
+
+    try {
+      const res = await fetch(
+        `/api/projects/members?id=${encodeURIComponent(projectId)}`,
+      );
+      const data = await res.json();
+
+      if (!res.ok) {
+        container.innerHTML = `<p class="text-red-600 text-sm">Error al cargar el equipo: ${
+          data.error || "Unknown error"
+        }</p>`;
+        return;
+      }
+
+      const members = (data.members || []) as any[];
+
+      if (countBadge) {
+        if (members.length > 0) {
+          countBadge.textContent =
+            members.length === 1
+              ? "1 miembro"
+              : `${members.length} miembros`;
+          countBadge.classList.remove("hidden");
+        } else {
+          countBadge.classList.add("hidden");
+        }
+      }
+
+      if (!members.length) {
+        container.innerHTML =
+          '<p class="text-gray-600 text-sm">Aún no hay miembros aceptados para este proyecto. Invita a builders a unirse desde la página de “Unirse a un Proyecto”.</p>';
+        return;
+      }
+
+      const list = document.createElement("ul");
+      list.className =
+        "divide-y divide-gray-200 rounded-lg border border-gray-100 bg-white";
+
+      members.forEach((m: any) => {
+        const li = document.createElement("li");
+        li.className =
+          "px-4 py-3 flex items-start justify-between gap-3 hover:bg-gray-50 transition-colors";
+
+        const left = document.createElement("div");
+        left.className = "flex items-start gap-3";
+
+        const avatar = document.createElement("div");
+        avatar.className =
+          "flex h-9 w-9 items-center justify-center rounded-full bg-[#9945FF]/10 text-xs font-semibold text-[#9945FF]";
+        const displayName =
+          m.name ||
+          (m.wallet_address
+            ? `${m.wallet_address.slice(0, 4)}...${m.wallet_address.slice(-4)}`
+            : "Builder");
+        avatar.textContent = (displayName || "?").slice(0, 2).toUpperCase();
+
+        const main = document.createElement("div");
+        main.className = "space-y-0.5";
+
+        const nameEl = document.createElement("p");
+        nameEl.className = "text-sm font-medium text-gray-900";
+        nameEl.textContent = displayName;
+
+        const walletEl = document.createElement("p");
+        walletEl.className = "text-xs font-mono text-gray-500 break-all";
+        if (m.wallet_address) {
+          walletEl.textContent = m.wallet_address;
+        }
+
+        const metaEl = document.createElement("p");
+        metaEl.className = "text-xs text-gray-500";
+        const tags: string[] = [];
+        if (m.project_role) {
+          tags.push(
+            m.project_role === "owner"
+              ? "Propietario"
+              : `Rol en proyecto: ${m.project_role}`,
+          );
+        }
+        if (m.builder_role && m.builder_role !== m.project_role) {
+          tags.push(`Rol general: ${m.builder_role}`);
+        }
+        if (m.email) {
+          tags.push(m.email);
+        }
+        if (tags.length) {
+          metaEl.textContent = tags.join(" • ");
+        }
+
+        main.appendChild(nameEl);
+        if (m.wallet_address) main.appendChild(walletEl);
+        if (tags.length) main.appendChild(metaEl);
+
+        left.appendChild(avatar);
+        left.appendChild(main);
+
+        const right = document.createElement("div");
+        right.className = "flex flex-col items-end gap-1";
+
+        const statusBadge = document.createElement("span");
+        statusBadge.className =
+          "px-2 py-1 text-[11px] font-semibold rounded-full uppercase tracking-wide";
+        if (m.status === "owner") {
+          statusBadge.className += " bg-[#9945FF]/10 text-[#9945FF]";
+          statusBadge.textContent = "Propietario";
+        } else {
+          statusBadge.className += " bg-green-100 text-green-800";
+          statusBadge.textContent = "Miembro";
+        }
+
+        right.appendChild(statusBadge);
+
+        li.appendChild(left);
+        li.appendChild(right);
+        list.appendChild(li);
+      });
+
+      container.innerHTML = "";
+      container.appendChild(list);
+    } catch (err: any) {
+      console.error("Error loading project members:", err);
+      container.innerHTML = `<p class="text-red-600 text-sm">Error al cargar el equipo: ${
+        err?.message || "Unknown error"
+      }</p>`;
+    }
+  };
+
+  // Load pending join requests for this project (for owner)
+  const loadJoinRequests = async () => {
+    const container = document.getElementById("project-join-requests");
+    const countBadge = document.getElementById(
+      "pending-count-badge",
+    ) as HTMLSpanElement | null;
+
+    if (!container) return;
+
+    const url = new URL(window.location.href);
+    const projectId = url.searchParams.get("id");
+    if (!projectId) {
+      container.innerHTML =
+        '<p class="text-red-600 text-sm">Error: ID de proyecto no encontrado.</p>';
+      return;
+    }
+
+    container.innerHTML =
+      '<p class="text-gray-600 text-sm">Cargando solicitudes pendientes...</p>';
+
+    try {
+      const res = await fetch(
+        `/api/projects/join-requests?id=${encodeURIComponent(projectId)}`,
+      );
+      const data = await res.json();
+
+      if (!res.ok) {
+        container.innerHTML = `<p class="text-red-600 text-sm">Error al cargar las solicitudes: ${
+          data.error || "Unknown error"
+        }</p>`;
+        if (countBadge) countBadge.classList.add("hidden");
+        return;
+      }
+
+      const requests = (data.requests || []) as any[];
+
+      if (countBadge) {
+        if (requests.length > 0) {
+          countBadge.textContent =
+            requests.length === 1
+              ? "1 solicitud pendiente"
+              : `${requests.length} solicitudes pendientes`;
+          countBadge.classList.remove("hidden");
+        } else {
+          countBadge.classList.add("hidden");
+        }
+      }
+
+      if (!requests.length) {
+        container.innerHTML =
+          '<p class="text-gray-600 text-sm">No hay solicitudes pendientes en este momento.</p>';
+        return;
+      }
+
+      const list = document.createElement("ul");
+      list.className =
+        "divide-y divide-gray-200 rounded-lg border border-gray-100 bg-white";
+
+      requests.forEach((r: any) => {
+        const li = document.createElement("li");
+        li.className =
+          "px-4 py-3 flex items-start justify-between gap-3 hover:bg-gray-50 transition-colors";
+
+        const left = document.createElement("div");
+        left.className = "space-y-0.5";
+
+        const name = document.createElement("p");
+        name.className = "text-sm font-medium text-gray-900";
+        const displayName =
+          r.name ||
+          (r.builder_wallet
+            ? `${r.builder_wallet.slice(0, 4)}...${r.builder_wallet.slice(-4)}`
+            : "Builder");
+        name.textContent = displayName;
+
+        const wallet = document.createElement("p");
+        wallet.className = "text-xs font-mono text-gray-500 break-all";
+        if (r.builder_wallet) {
+          wallet.textContent = r.builder_wallet;
+        }
+
+        const meta = document.createElement("p");
+        meta.className = "text-xs text-gray-500";
+        const tags: string[] = [];
+        if (r.role) tags.push(`Rol propuesto: ${r.role}`);
+        if (r.email) tags.push(r.email);
+        if (r.twitter)
+          tags.push(`X: ${r.twitter.startsWith("@") ? r.twitter : "@" + r.twitter}`);
+        if (r.telegram)
+          tags.push(
+            `Telegram: ${
+              r.telegram.startsWith("@") ? r.telegram : "@" + r.telegram
+            }`,
+          );
+        if (tags.length) {
+          meta.textContent = tags.join(" • ");
+        }
+
+        left.appendChild(name);
+        if (r.builder_wallet) left.appendChild(wallet);
+        if (tags.length) left.appendChild(meta);
+
+        const right = document.createElement("div");
+        right.className = "flex flex-col items-end gap-2";
+
+        const requestedAt = document.createElement("p");
+        requestedAt.className = "text-[11px] text-gray-400";
+        if (r.requested_at) {
+          const d = new Date(r.requested_at);
+          requestedAt.textContent = d.toLocaleString();
+        }
+
+        const actions = document.createElement("div");
+        actions.className = "flex gap-2";
+
+        const makeActionButton = (
+          label: string,
+          colorClasses: string,
+          action: "accept" | "reject",
+        ) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className =
+            "px-3 py-1 rounded-md text-xs font-medium border " + colorClasses;
+          btn.textContent = label;
+
+          btn.addEventListener("click", async () => {
+            btn.disabled = true;
+            btn.textContent = action === "accept" ? "Aceptando..." : "Rechazando...";
+            try {
+              const res = await fetch("/api/projects/join-requests", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  link_id: r.id,
+                  action,
+                }),
+              });
+              const result = await res.json();
+              if (res.ok) {
+                // Reload both lists
+                await loadJoinRequests();
+                await loadProjectMembers();
+              } else {
+                alert(
+                  "Error: " +
+                    (result.error ||
+                      `No se pudo ${action === "accept" ? "aceptar" : "rechazar"} la solicitud`),
+                );
+                btn.disabled = false;
+                btn.textContent = label;
+              }
+            } catch (err) {
+              console.error("Error updating join request:", err);
+              alert(
+                `Error al ${
+                  action === "accept" ? "aceptar" : "rechazar"
+                } la solicitud. Intenta de nuevo.`,
+              );
+              btn.disabled = false;
+              btn.textContent = label;
+            }
+          });
+
+          return btn;
+        };
+
+        const acceptBtn = makeActionButton(
+          "Aceptar",
+          "border-green-200 bg-green-50 text-green-700 hover:bg-green-100",
+          "accept",
+        );
+        const rejectBtn = makeActionButton(
+          "Rechazar",
+          "border-red-200 bg-red-50 text-red-700 hover:bg-red-100",
+          "reject",
+        );
+        actions.appendChild(acceptBtn);
+        actions.appendChild(rejectBtn);
+
+        right.appendChild(actions);
+        if (r.requested_at) right.appendChild(requestedAt);
+
+        li.appendChild(left);
+        li.appendChild(right);
+        list.appendChild(li);
+      });
+
+      container.innerHTML = "";
+      container.appendChild(list);
+    } catch (err: any) {
+      console.error("Error loading join requests:", err);
+      container.innerHTML = `<p class="text-red-600 text-sm">Error al cargar las solicitudes: ${
+        err?.message || "Unknown error"
+      }</p>`;
+      if (countBadge) countBadge.classList.add("hidden");
+    }
+  };
+
   // Set up form
   const setupProjectForm = () => {
     const form = document.getElementById("project-form") as HTMLFormElement;
@@ -210,16 +606,22 @@ if (!projectId) {
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
       loadProject();
+      loadProjectMembers();
+      loadJoinRequests();
       setupProjectForm();
     });
   } else {
     loadProject();
+    loadProjectMembers();
+    loadJoinRequests();
     setupProjectForm();
   }
 
   // Also listen for Astro navigation events
   document.addEventListener("astro:page-load", () => {
     loadProject();
+    loadProjectMembers();
+    loadJoinRequests();
     setupProjectForm();
   });
 </script>
