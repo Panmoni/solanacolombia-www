@@ -1,0 +1,187 @@
+---
+import { env } from 'cloudflare:workers';
+
+interface Project {
+  id: string;
+  name: string;
+  description: string;
+  website: string | null;
+  twitter: string | null;
+  discord: string | null;
+  status: string;
+}
+
+interface TeamMember {
+  project_id: string;
+  builder_name: string | null;
+}
+
+let projects: Project[] = [];
+let teamByProject: Record<string, string[]> = {};
+
+const db = (env as Env).DB;
+if (db) {
+  try {
+    const result = await db
+      .prepare(
+        "SELECT id, name, description, website, twitter, discord, status FROM projects WHERE status IN ('active', 'verified') ORDER BY name ASC LIMIT 6"
+      )
+      .all();
+    projects = result.results as unknown as Project[];
+
+    if (projects.length > 0) {
+      const ids = projects.map((p) => p.id);
+      const placeholders = ids.map(() => '?').join(',');
+      const members = await db
+        .prepare(
+          `SELECT p.id AS project_id, b.name AS builder_name FROM projects p JOIN builders b ON p.owner_wallet = b.wallet_address WHERE p.id IN (${placeholders}) AND b.status IN ('verified', 'active')
+           UNION
+           SELECT bpl.project_id, b.name AS builder_name FROM builder_project_links bpl JOIN builders b ON bpl.builder_wallet = b.wallet_address WHERE bpl.project_id IN (${placeholders}) AND bpl.status IN ('accepted', 'owner') AND b.status IN ('verified', 'active')
+           LIMIT 50`
+        )
+        .bind(...ids, ...ids)
+        .all();
+
+      const seen: Record<string, Set<string>> = {};
+      for (const m of members.results as unknown as TeamMember[]) {
+        if (!m.builder_name) continue;
+        if (!seen[m.project_id]) seen[m.project_id] = new Set();
+        if (seen[m.project_id].has(m.builder_name)) continue;
+        seen[m.project_id].add(m.builder_name);
+        if (!teamByProject[m.project_id]) teamByProject[m.project_id] = [];
+        teamByProject[m.project_id].push(m.builder_name.split(' ')[0]);
+      }
+    }
+  } catch {
+    // D1 query failed — degrade gracefully by showing no projects section
+  }
+}
+
+// X (Twitter) Icon SVG path
+const XIcon =
+  "M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z";
+---
+
+{projects.length > 0 && (
+  <section
+    class="py-24 bg-white relative overflow-hidden border-b-2 border-dashed border-gray-300"
+    id="proyectos"
+  >
+    <!-- Background accent -->
+    <div
+      class="absolute top-1/2 left-0 w-[400px] h-[400px] bg-[#14F195]/5 rounded-full blur-[100px] -translate-y-1/2 -translate-x-1/2"
+    ></div>
+    <div
+      class="absolute bottom-0 right-0 w-[300px] h-[300px] bg-[#9945FF]/5 rounded-full blur-[100px] translate-x-1/4 translate-y-1/4"
+    ></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <!-- Section Header -->
+      <div class="text-center mb-20">
+        <h2
+          class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight"
+        >
+          Proyectos de la <span class="text-[#9945FF]">Comunidad</span>
+        </h2>
+        <div
+          class="w-20 h-1.5 bg-gradient-to-r from-[#9945FF] to-[#14F195] mx-auto rounded-full mb-6"
+        ></div>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+          Descubre los proyectos activos de nuestra comunidad y únete al que más te inspire.
+        </p>
+      </div>
+
+      <!-- Projects Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {projects.map((project) => (
+          <div class="group bg-white p-8 rounded-3xl border border-gray-200 shadow-sm hover:shadow-xl hover:border-[#9945FF]/20 transition-all duration-500 transform hover:-translate-y-2 flex flex-col">
+            <div class="flex items-start justify-between mb-4">
+              <h3 class="text-xl font-extrabold text-gray-900 group-hover:text-[#9945FF] transition-colors">
+                {project.name}
+              </h3>
+              <span
+                class:list={[
+                  "shrink-0 ml-3 px-3 py-1 text-xs font-bold uppercase tracking-widest rounded-full",
+                  project.status === "verified"
+                    ? "bg-[#14F195]/15 text-emerald-700"
+                    : "bg-[#9945FF]/10 text-[#9945FF]",
+                ]}
+              >
+                {project.status === "verified" ? "Verificado" : "Activo"}
+              </span>
+            </div>
+
+            {teamByProject[project.id]?.length > 0 && (
+              <p class="text-xs text-gray-400 font-medium">
+                {teamByProject[project.id].join(', ')}
+              </p>
+            )}
+
+            <p class="text-sm text-gray-500 leading-relaxed line-clamp-3 mb-6 flex-1 mt-3">
+              {project.description || "Sin descripción disponible."}
+            </p>
+
+            <!-- Links -->
+            <div class="flex items-center gap-3 border-t border-gray-100 pt-5">
+              {project.website?.startsWith('http') && (
+                <a
+                  href={project.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center gap-1.5 text-gray-400 hover:text-[#9945FF] transition-colors duration-300 px-3 py-1.5 rounded-lg hover:bg-[#9945FF]/5 text-xs font-bold"
+                  aria-label={`Sitio web de ${project.name}`}
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                  </svg>
+                  Web
+                </a>
+              )}
+              {project.twitter && (
+                <a
+                  href={`https://x.com/${project.twitter.replace('@', '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center gap-1.5 text-gray-400 hover:text-[#14F195] transition-colors duration-300 px-3 py-1.5 rounded-lg hover:bg-[#9945FF]/5 text-xs font-bold"
+                  aria-label={`Perfil de X de ${project.name}`}
+                >
+                  <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d={XIcon} />
+                  </svg>
+                  X
+                </a>
+              )}
+              {project.discord?.startsWith('http') && (
+                <a
+                  href={project.discord}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="flex items-center gap-1.5 text-gray-400 hover:text-indigo-500 transition-colors duration-300 px-3 py-1.5 rounded-lg hover:bg-[#9945FF]/5 text-xs font-bold"
+                  aria-label={`Discord de ${project.name}`}
+                >
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z" />
+                  </svg>
+                  Discord
+                </a>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- CTA Button -->
+      <div class="text-center mt-16">
+        <a
+          href="/builders/projects/join"
+          class="inline-flex items-center gap-3 bg-[#9945FF] hover:bg-[#8338EB] text-white px-8 py-4 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 shadow-lg shadow-purple-200 uppercase text-sm"
+        >
+          Ver todos los proyectos
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+)}
