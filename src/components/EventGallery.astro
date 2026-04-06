@@ -61,19 +61,19 @@ const sortedGallery = galleryItems.sort((a, b) => (a.data.order || 0) - (b.data.
   <!-- Fullscreen Modal Lightbox -->
   <div id="gallery-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/95 p-4 md:p-12 transition-all duration-300 backdrop-blur-sm opacity-0">
     <!-- Controls -->
-    <button id="modal-close" class="absolute top-6 right-6 text-white hover:text-[#14F195] transition-colors z-[110]" aria-label="Cerrar">
+    <button type="button" id="modal-close" class="absolute top-6 right-6 text-white hover:text-[#14F195] transition-colors z-[110]" aria-label="Cerrar">
       <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
       </svg>
     </button>
 
-    <button id="modal-prev" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] p-2" aria-label="Anterior">
+    <button type="button" id="modal-prev" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] p-2" aria-label="Anterior">
       <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
       </svg>
     </button>
 
-    <button id="modal-next" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] p-2" aria-label="Siguiente">
+    <button type="button" id="modal-next" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors z-[110] p-2" aria-label="Siguiente">
       <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
       </svg>

@@ -1,7 +1,7 @@
 ---
+import WalletConnect from "../../components/WalletConnect.astro";
 // src/pages/builders/index.astro
 import Layout from "../../layouts/Layout.astro";
-import WalletConnect from "../../components/WalletConnect.astro";
 import { getSession } from "../../lib/auth";
 
 const session = await getSession(Astro.cookies);
@@ -177,7 +177,7 @@ const session = await getSession(Astro.cookies);
             Bienvenido, {
               session?.name ||
                 (session?.wallet
-                  ? session.wallet.slice(0, 8) + "..."
+                  ? `${session.wallet.slice(0, 8)}...`
                   : "Builder")
             }
           </h1>
@@ -237,6 +237,7 @@ const session = await getSession(Astro.cookies);
                   <a
                     href={`https://t.me/${session.telegram.replace("@", "")}`}
                     target="_blank"
+                    rel="noopener"
                     class="flex items-center gap-2 text-[#9945FF] hover:underline font-medium text-sm"
                   >
                     <svg
@@ -255,6 +256,7 @@ const session = await getSession(Astro.cookies);
                   <a
                     href={`https://twitter.com/${session.twitter.replace("@", "")}`}
                     target="_blank"
+                    rel="noopener"
                     class="flex items-center gap-2 text-[#9945FF] hover:underline font-medium text-sm"
                   >
                     <svg
@@ -357,8 +359,8 @@ const session = await getSession(Astro.cookies);
     // IMPORTANT: This must work on both initial load AND client-side navigation
     // Wrap everything in IIFE to prevent initialization issues on client-side navigation
 
-    (function () {
-      "use strict";
+    (() => {
+      
 
       const loadProjects = async (wallet: string) => {
         const list = document.getElementById("projects-list");
@@ -427,7 +429,7 @@ const session = await getSession(Astro.cookies);
             // Update welcome message
             const welcomeMsg = document.getElementById("welcome-message");
             if (welcomeMsg)
-              welcomeMsg.textContent = `Bienvenido, ${b.name || b.wallet_address.slice(0, 8) + "..."}`;
+              welcomeMsg.textContent = `Bienvenido, ${b.name || `${b.wallet_address.slice(0, 8)}...`}`;
 
             // Update profile details container
             const container = document.getElementById(
@@ -656,7 +658,7 @@ const session = await getSession(Astro.cookies);
               });
               checkRegistrationStatus(wallet);
             } else if (!res.ok) {
-              alert("Error: " + (result.error || "Unknown error"));
+              alert(`Error: ${result.error || "Unknown error"}`);
             }
           });
         }

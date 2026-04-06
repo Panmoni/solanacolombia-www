@@ -1,14 +1,15 @@
 // src/pages/api/builders/get.ts
-import type { APIRoute } from 'astro';
+
 import { env } from 'cloudflare:workers';
+import type { APIRoute } from 'astro';
 import { getSession } from '../../../lib/auth';
 
-export const GET: APIRoute = async ({ request, cookies }) => {
+export const GET: APIRoute = async ({ cookies }) => {
   const db = (env as Env).DB;
   if (!db) {
     return new Response(JSON.stringify({ error: 'Database not available' }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
@@ -16,26 +17,28 @@ export const GET: APIRoute = async ({ request, cookies }) => {
   if (!session?.wallet) {
     return new Response(JSON.stringify({ error: 'Not authenticated' }), {
       status: 401,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
   // Get builder profile
-  const builder = await db.prepare(`
+  const builder = await db
+    .prepare(`
     SELECT wallet_address, name, email, telegram, twitter, university, role, status
     FROM builders 
     WHERE wallet_address = ?
-  `).bind(session.wallet).first();
+  `)
+    .bind(session.wallet)
+    .first();
 
   if (!builder) {
     return new Response(JSON.stringify({ error: 'Builder not found' }), {
       status: 404,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
   return new Response(JSON.stringify({ builder }), {
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json' },
   });
 };
-

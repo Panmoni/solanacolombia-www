@@ -3,7 +3,7 @@
 ---
 
 <div class="wallet-connect-container">
-  <button id="connect-wallet" class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+  <button type="button" id="connect-wallet" class="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
     Conectar Wallet Solana
   </button>
   <p class="text-sm text-gray-600 mt-2">Conecta tu wallet para continuar</p>
@@ -231,7 +231,7 @@
         }
         
         // For Phantom, use the explicit prompt option
-        let response;
+        let response: { publicKey: { toString(): string } } | undefined;
         if (providerName === 'phantom') {
           // Phantom supports onlyIfTrusted option - this should force a prompt
           response = await provider.connect({ onlyIfTrusted: false });
