@@ -6,14 +6,11 @@ import cloudflare from '@astrojs/cloudflare';
 // https://astro.build/config
 export default defineConfig({
   site: "https://solanacolombia.com",
-  output: 'server', // Enable SSR for API routes
-  adapter: cloudflare({
-    platformProxy: {
-      enabled: true
-    },
-    functionPerRoute: false,
-    wasmModuleImports: false,
-  }),
+  output: 'server',
+  adapter: cloudflare(),
+  image: {
+    service: { entrypoint: 'astro/assets/services/compile' },
+  },
   vite: {
     plugins: [tailwindcss()],
   },
