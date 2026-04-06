@@ -1,13 +1,14 @@
 // src/pages/api/builders/pending-requests.ts
-import type { APIRoute } from 'astro';
+
 import { env } from 'cloudflare:workers';
+import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async ({ request }) => {
   const db = (env as Env).DB;
   if (!db) {
     return new Response(JSON.stringify({ error: 'Database not available', project_ids: [] }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
@@ -17,21 +18,23 @@ export const GET: APIRoute = async ({ request }) => {
   if (!wallet) {
     return new Response(JSON.stringify({ error: 'Wallet parameter required', project_ids: [] }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
   // Get all pending join requests for this wallet
-  const pendingLinks = await db.prepare(`
+  const pendingLinks = await db
+    .prepare(`
     SELECT project_id 
     FROM builder_project_links 
     WHERE builder_wallet = ? AND status = 'pending'
-  `).bind(wallet).all();
+  `)
+    .bind(wallet)
+    .all();
 
   const projectIds = pendingLinks.results?.map((link: any) => link.project_id) || [];
 
   return new Response(JSON.stringify({ project_ids: projectIds }), {
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json' },
   });
 };
-

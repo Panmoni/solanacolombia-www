@@ -1,11 +1,12 @@
 ---
 export const prerender = false;
-import { getCollection, getEntry, render } from "astro:content";
+
 import { Picture } from "astro:assets";
-import Layout from "@layouts/Layout.astro";
+import { getCollection, getEntry, render } from "astro:content";
 import Container from "@components/Container.astro";
-import Sectionhead from "@components/SectionHead.astro";
 import Pagination from "@components/Pagination.astro";
+import Sectionhead from "@components/SectionHead.astro";
+import Layout from "@layouts/Layout.astro";
 
 // Combine logic: This file handles both the blog index (paginated) and individual blog posts.
 // This prevents routing collisions between /blog/2 (page 2) and /blog/[slug] (post with slug "2").
@@ -24,16 +25,14 @@ let Content: any = null;
 
 if (isPageNum) {
   isList = true;
-  const currentPage = slug ? parseInt(slug) : 1;
+  const currentPage = slug ? parseInt(slug, 10) : 1;
   const PAGE_SIZE = 12;
 
   const allPosts = await getCollection("blog", ({ data }) => {
     return !data.draft && data.publishDate < new Date();
   });
 
-  const allSortedPosts = allPosts.sort(function (a, b) {
-    return b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
-  });
+  const allSortedPosts = allPosts.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf());
 
   const totalPages = Math.ceil(allSortedPosts.length / PAGE_SIZE);
 

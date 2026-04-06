@@ -1,6 +1,7 @@
 // src/pages/api/builders/update.ts
-import type { APIRoute } from 'astro';
+
 import { env } from 'cloudflare:workers';
+import type { APIRoute } from 'astro';
 import { getSession, setSession } from '../../../lib/auth';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
@@ -9,7 +10,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     if (!session?.wallet) {
       return new Response(JSON.stringify({ error: 'Not authenticated' }), {
         status: 401,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -24,30 +25,34 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     if (!db) {
       return new Response(JSON.stringify({ error: 'Database not available' }), {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
     // Verify builder exists
-    const builder = await db.prepare('SELECT id FROM builders WHERE wallet_address = ?')
-      .bind(session.wallet).first();
+    const builder = await db
+      .prepare('SELECT id FROM builders WHERE wallet_address = ?')
+      .bind(session.wallet)
+      .first();
 
     if (!builder) {
       return new Response(JSON.stringify({ error: 'Builder not found' }), {
         status: 404,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
     // Check if email is being changed and if it's already taken
     if (email) {
-      const existingEmail = await db.prepare('SELECT id FROM builders WHERE email = ? AND wallet_address != ?')
-        .bind(email, session.wallet).first();
+      const existingEmail = await db
+        .prepare('SELECT id FROM builders WHERE email = ? AND wallet_address != ?')
+        .bind(email, session.wallet)
+        .first();
 
       if (existingEmail) {
         return new Response(JSON.stringify({ error: 'Este email ya está en uso' }), {
           status: 409,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         });
       }
     }
@@ -55,11 +60,14 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     const now = new Date().toISOString();
 
     // Update builder profile
-    await db.prepare(`
+    await db
+      .prepare(`
       UPDATE builders 
       SET name = ?, email = ?, telegram = ?, twitter = ?, university = ?, updated_at = ?
       WHERE wallet_address = ?
-    `).bind(name, email, telegram, twitter, university, now, session.wallet).run();
+    `)
+      .bind(name, email, telegram, twitter, university, now, session.wallet)
+      .run();
 
     // Update session
     setSession(cookies, {
@@ -68,19 +76,18 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       role: session.role,
       university: university || undefined,
       telegram: telegram || undefined,
-      twitter: twitter || undefined
+      twitter: twitter || undefined,
     });
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error('Update builder error:', error);
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 };
-

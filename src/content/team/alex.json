@@ -1,11 +1,11 @@
 {
-    "name": "Alex Ramirez",
-    "title": "Jefe de Mentoría",
-    "xUrl": "https://x.com/RamirezAlex",
-    "xUsername": "RamirezAlex",
-    "image": {
-        "src": "/team/alex.jpg",
-        "alt": "Alex Ramirez"
-    },
-    "order": 3
+  "name": "Alex Ramirez",
+  "title": "Jefe de Mentoría",
+  "xUrl": "https://x.com/RamirezAlex",
+  "xUsername": "RamirezAlex",
+  "image": {
+    "src": "/team/alex.jpg",
+    "alt": "Alex Ramirez"
+  },
+  "order": 3
 }

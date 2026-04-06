@@ -1,11 +1,11 @@
 {
-    "name": "George Donnelly",
-    "title": "Capitán",
-    "xUrl": "https://x.com/georgedonnelly",
-    "xUsername": "georgedonnelly",
-    "image": {
-        "src": "/team/georgedonnelly.png",
-        "alt": "George Donnelly"
-    },
-    "order": 1
+  "name": "George Donnelly",
+  "title": "Capitán",
+  "xUrl": "https://x.com/georgedonnelly",
+  "xUsername": "georgedonnelly",
+  "image": {
+    "src": "/team/georgedonnelly.png",
+    "alt": "George Donnelly"
+  },
+  "order": 1
 }

@@ -1,13 +1,14 @@
 // src/pages/api/builders/projects.ts
-import type { APIRoute } from 'astro';
+
 import { env } from 'cloudflare:workers';
+import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async ({ request }) => {
   const db = (env as Env).DB;
   if (!db) {
     return new Response(JSON.stringify({ error: 'Database not available' }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
@@ -17,12 +18,13 @@ export const GET: APIRoute = async ({ request }) => {
   if (!wallet) {
     return new Response(JSON.stringify({ error: 'Wallet parameter required' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
   // Get projects where user is the owner or is linked via builder_project_links (with accepted/owner status)
-  const projects = await db.prepare(`
+  const projects = await db
+    .prepare(`
     SELECT DISTINCT 
       p.id,
       p.name,
@@ -38,10 +40,11 @@ export const GET: APIRoute = async ({ request }) => {
     LEFT JOIN builder_project_links bpl ON p.id = bpl.project_id
     WHERE (p.owner_wallet = ? OR (bpl.builder_wallet = ? AND bpl.status IN ('accepted', 'owner')))
     ORDER BY p.created_at DESC
-  `).bind(wallet, wallet).all();
+  `)
+    .bind(wallet, wallet)
+    .all();
 
   return new Response(JSON.stringify({ projects: projects.results }), {
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json' },
   });
 };
-

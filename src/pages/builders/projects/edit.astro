@@ -212,7 +212,7 @@ if (!projectId) {
             data.project.discord || "";
         }
       } else {
-        alert("Error: " + (data.error || "No se pudo cargar el proyecto"));
+        alert(`Error: ${data.error || "No se pudo cargar el proyecto"}`);
         window.location.href = "/builders";
       }
     } catch (err) {
@@ -455,11 +455,11 @@ if (!projectId) {
         if (r.role) tags.push(`Rol propuesto: ${r.role}`);
         if (r.email) tags.push(r.email);
         if (r.twitter)
-          tags.push(`X: ${r.twitter.startsWith("@") ? r.twitter : "@" + r.twitter}`);
+          tags.push(`X: ${r.twitter.startsWith("@") ? r.twitter : `@${r.twitter}`}`);
         if (r.telegram)
           tags.push(
             `Telegram: ${
-              r.telegram.startsWith("@") ? r.telegram : "@" + r.telegram
+              r.telegram.startsWith("@") ? r.telegram : `@${r.telegram}`
             }`,
           );
         if (tags.length) {
@@ -491,7 +491,7 @@ if (!projectId) {
           const btn = document.createElement("button");
           btn.type = "button";
           btn.className =
-            "px-3 py-1 rounded-md text-xs font-medium border " + colorClasses;
+            `px-3 py-1 rounded-md text-xs font-medium border ${colorClasses}`;
           btn.textContent = label;
 
           btn.addEventListener("click", async () => {
@@ -596,7 +596,7 @@ if (!projectId) {
             }, 2000);
           }
         } else {
-          alert("Error: " + (result.error || "Unknown error"));
+          alert(`Error: ${result.error || "Unknown error"}`);
         }
       });
     }

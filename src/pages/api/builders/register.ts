@@ -1,8 +1,9 @@
 // src/pages/api/builders/register.ts
-import type { APIRoute } from 'astro';
+
 import { env } from 'cloudflare:workers';
-import { v4 as uuidv4 } from 'uuid';
+import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
+import { v4 as uuidv4 } from 'uuid';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -13,7 +14,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (!wallet || !type) {
       return new Response(JSON.stringify({ error: 'Missing wallet or type' }), {
         status: 400,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -22,7 +23,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (!db) {
       return new Response(JSON.stringify({ error: 'Database not available' }), {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
@@ -31,13 +32,15 @@ export const POST: APIRoute = async ({ request }) => {
     if (type === 'individual') {
       // INDIVIDUAL REGISTRATION (only type allowed)
       // Check if individual already exists
-      const existing = await db.prepare('SELECT id FROM builders WHERE wallet_address = ?')
-        .bind(wallet).first();
+      const existing = await db
+        .prepare('SELECT id FROM builders WHERE wallet_address = ?')
+        .bind(wallet)
+        .first();
 
       if (existing) {
         return new Response(JSON.stringify({ error: 'Ya estás registrado como builder' }), {
           status: 409,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 'Content-Type': 'application/json' },
         });
       }
 
@@ -49,10 +52,13 @@ export const POST: APIRoute = async ({ request }) => {
       const university = form.get('university')?.toString() || null;
 
       // Register the individual
-      await db.prepare(`
+      await db
+        .prepare(`
         INSERT INTO builders (id, wallet_address, name, email, telegram, twitter, university, status, created_at, updated_at)
         VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)
-      `).bind(id, wallet, name, email, telegram, twitter, university, now, now).run();
+      `)
+        .bind(id, wallet, name, email, telegram, twitter, university, now, now)
+        .run();
 
       // Send welcome email
       if (email && (env as Env).RESEND_API_KEY) {
@@ -62,7 +68,7 @@ export const POST: APIRoute = async ({ request }) => {
             from: 'Solana Colombia <hola@solanacolombia.com>',
             to: email,
             subject: '¡Bienvenido a Construyendo Juntos!',
-            html: `<p>Hola ${name},</p><p>Tu wallet <strong>${wallet.slice(0,8)}...</strong> ha sido registrado como builder individual.</p><p>Pronto activaremos tu acceso al dashboard.</p>`,
+            html: `<p>Hola ${name},</p><p>Tu wallet <strong>${wallet.slice(0, 8)}...</strong> ha sido registrado como builder individual.</p><p>Pronto activaremos tu acceso al dashboard.</p>`,
           });
         } catch (emailError) {
           console.error('Email send error:', emailError);
@@ -70,16 +76,15 @@ export const POST: APIRoute = async ({ request }) => {
       }
     }
 
-
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error('Registration error:', error);
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 };

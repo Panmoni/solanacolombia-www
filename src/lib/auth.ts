@@ -29,7 +29,7 @@ export function setSession(cookies: AstroCookies, session: Session) {
     maxAge: 60 * 60 * 24 * 30, // 30 days
     httpOnly: true,
     secure: true,
-    sameSite: 'lax'
+    sameSite: 'lax',
   });
   if (session.name) {
     cookies.set('name', session.name, {
@@ -37,7 +37,7 @@ export function setSession(cookies: AstroCookies, session: Session) {
       maxAge: 60 * 60 * 24 * 30,
       httpOnly: true,
       secure: true,
-      sameSite: 'lax'
+      sameSite: 'lax',
     });
   }
   if (session.role) {
@@ -46,7 +46,7 @@ export function setSession(cookies: AstroCookies, session: Session) {
       maxAge: 60 * 60 * 24 * 30,
       httpOnly: true,
       secure: true,
-      sameSite: 'lax'
+      sameSite: 'lax',
     });
   }
   if (session.university) {
@@ -55,7 +55,7 @@ export function setSession(cookies: AstroCookies, session: Session) {
       maxAge: 60 * 60 * 24 * 30,
       httpOnly: true,
       secure: true,
-      sameSite: 'lax'
+      sameSite: 'lax',
     });
   }
   if (session.telegram) {
@@ -64,7 +64,7 @@ export function setSession(cookies: AstroCookies, session: Session) {
       maxAge: 60 * 60 * 24 * 30,
       httpOnly: true,
       secure: true,
-      sameSite: 'lax'
+      sameSite: 'lax',
     });
   }
   if (session.twitter) {
@@ -73,7 +73,7 @@ export function setSession(cookies: AstroCookies, session: Session) {
       maxAge: 60 * 60 * 24 * 30,
       httpOnly: true,
       secure: true,
-      sameSite: 'lax'
+      sameSite: 'lax',
     });
   }
 }
@@ -86,4 +86,3 @@ export function clearSession(cookies: AstroCookies) {
   cookies.delete('telegram', { path: '/' });
   cookies.delete('twitter', { path: '/' });
 }
-

@@ -327,7 +327,7 @@ if (!session?.wallet) {
                       "Solicitud enviada. El propietario del proyecto revisará tu solicitud.";
                     projectCard.appendChild(successMsg);
                   } else {
-                    alert("Error: " + (result.error || "Unknown error"));
+                    alert(`Error: ${result.error || "Unknown error"}`);
                     joinBtn.disabled = false;
                     joinBtn.textContent = "Solicitar Unirse";
                   }

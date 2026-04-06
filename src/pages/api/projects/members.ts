@@ -1,6 +1,7 @@
 // src/pages/api/projects/members.ts
-import type { APIRoute } from 'astro';
+
 import { env } from 'cloudflare:workers';
+import type { APIRoute } from 'astro';
 import { getSession } from '../../../lib/auth';
 
 export const GET: APIRoute = async ({ request, cookies }) => {
@@ -8,7 +9,7 @@ export const GET: APIRoute = async ({ request, cookies }) => {
   if (!db) {
     return new Response(JSON.stringify({ error: 'Database not available' }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
@@ -18,7 +19,7 @@ export const GET: APIRoute = async ({ request, cookies }) => {
   if (!projectId) {
     return new Response(JSON.stringify({ error: 'Project ID required' }), {
       status: 400,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
@@ -26,7 +27,7 @@ export const GET: APIRoute = async ({ request, cookies }) => {
   if (!session?.wallet) {
     return new Response(JSON.stringify({ error: 'Not authenticated' }), {
       status: 401,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
@@ -37,7 +38,7 @@ export const GET: APIRoute = async ({ request, cookies }) => {
     SELECT id, owner_wallet
     FROM projects
     WHERE id = ?
-  `
+  `,
     )
     .bind(projectId)
     .first();
@@ -45,14 +46,14 @@ export const GET: APIRoute = async ({ request, cookies }) => {
   if (!project) {
     return new Response(JSON.stringify({ error: 'Project not found' }), {
       status: 404,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
   if (project.owner_wallet !== session.wallet) {
     return new Response(JSON.stringify({ error: 'You are not the owner of this project' }), {
       status: 403,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 
@@ -82,19 +83,18 @@ export const GET: APIRoute = async ({ request, cookies }) => {
     ORDER BY
       CASE WHEN l.status = 'owner' THEN 0 ELSE 1 END,
       l.created_at ASC
-  `
+  `,
     )
     .bind(projectId)
     .all();
 
   return new Response(
     JSON.stringify({
-      members: members.results || []
+      members: members.results || [],
     }),
     {
       status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    }
+      headers: { 'Content-Type': 'application/json' },
+    },
   );
 };
-

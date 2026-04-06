@@ -1,6 +1,6 @@
 ---
-import { getCollection } from "astro:content";
 import { Picture } from "astro:assets";
+import { getCollection } from "astro:content";
 
 const teamMembers = await getCollection("team");
 const sortedTeam = teamMembers.sort((a, b) => a.data.order - b.data.order);

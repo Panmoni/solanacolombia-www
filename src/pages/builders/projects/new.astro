@@ -154,7 +154,7 @@ if (!session?.wallet) {
             }, 2000);
           }
         } else {
-          alert("Error: " + (result.error || "Unknown error"));
+          alert(`Error: ${result.error || "Unknown error"}`);
         }
       });
     }
