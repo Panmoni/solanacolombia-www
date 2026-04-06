@@ -1,8 +1,8 @@
 ---
-draft: true
+draft: false
 title: "Challenge #3: Token Time"
 snippet: "Crea tu primer token SPL en Solana. No un meme coin. Un token que represente algo real para tu proyecto de hackathon."
-publishDate: "2026-02-18 10:00"
+publishDate: "2026-04-20 10:00"
 image:
   {
     src: "/blog/13/13.png",
@@ -13,109 +13,162 @@ author: "George Donnelly"
 tags: ["bootcamp", "challenge", "solana", "spl-token", "metaplex"]
 ---
 
+En los primeros dos challenges usaste Anchor para deployar programas y guardar estado. Ahora vas a crear algo que se siente más real: tu propio token.
+
 ## El Challenge
 
 Crear un token SPL en Solana Devnet que represente algo real. No un token genérico. No un meme coin. Un token que tenga sentido para el proyecto que estás pensando construir en el hackathon.
 
 Puede ser un token de membresía, puntos de fidelidad, representación de un asset físico, acceso a un servicio, lo que sea. Pero tiene que tener un propósito.
 
-**Fecha:** Viernes 20 de Febrero, 4:00 PM  
-**Duración:** 90 minutos  
-**Dificultad:** 🟠 Guía mínima
+## Primero: ¿Qué Es un Token SPL?
 
----
+SPL Token es el estándar de tokens en Solana. Es el equivalente a ERC-20 en Ethereum, pero con diferencias importantes.
 
-## Antes de Llegar
+En Ethereum, un token es un smart contract que mantiene un mapping de balances internamente. En Solana, el token está separado en múltiples cuentas:
 
-### Obligatorio:
-- Haber completado los Challenges [#1](/blog/challenge-hello-solana) y [#2](/blog/challenge-build-a-counter)
-- Tener SOL en Devnet (`solana airdrop 2`)
-- Tener `@solana/kit` instalado:
+- **Mint Account** → Define el token: cuántos decimales tiene, cuántos existen (supply), y quién puede crear más (mint authority).
+- **Token Account** → Guarda el balance de un usuario específico para un token específico. Cada combinación de wallet + token necesita su propia Token Account.
+- **Metadata Account** → Guarda el nombre, símbolo e imagen del token (a través de Metaplex).
+
+Cuando "creas un token," en realidad estás creando un Mint Account. Cuando "le das tokens a alguien," estás creando una Token Account para esa persona y minteando tokens ahí.
+
+## Antes de Iniciar
+
+Si completaste los Challenges [#1](/blog/2026-challenge-01) y [#2](/blog/2026-challenge-02), ya tienes todo instalado.
+
+```bash
+solana airdrop 2
+```
+
+**Lectura recomendada:**
+- [SPL Token Docs](https://spl.solana.com/token)
+- [Metaplex Token Metadata](https://developers.metaplex.com/token-metadata)
+
+## Esta Vez No Hay Proyecto de Anchor
+
+Los dos primeros challenges usaron `anchor init` para generar un proyecto. Esta vez no. Vas a trabajar directamente con el CLI de SPL Token y opcionalmente con scripts en TypeScript.
+
+La razón: no todos los tokens necesitan un programa custom. El programa SPL Token ya existe en Solana y tú solo lo usas. No necesitas deployar nada propio para crear un token.
+
+## Pistas
+
+### Pista 1: Crear el token por CLI
+
+El camino más rápido para tener un token funcionando:
+
+```bash
+spl-token create-token
+```
+
+Esto crea un nuevo Mint Account y te devuelve la dirección. Tú eres automáticamente el mint authority.
+
+Ahora crea una Token Account para tu wallet:
+
+```bash
+spl-token create-account <TOKEN_ADDRESS>
+```
+
+Y mintea tokens:
+
+```bash
+spl-token mint <TOKEN_ADDRESS> 1000
+```
+
+Verifica tu balance:
+
+```bash
+spl-token balance <TOKEN_ADDRESS>
+```
+
+Línea por línea:
+- `create-token` → Crea el Mint Account en la blockchain. Define un token nuevo con 9 decimales por default.
+- `create-account` → Crea una Token Account asociada a tu wallet para ese token específico. Sin esta cuenta, tu wallet no puede "tener" ese token.
+- `mint` → Crea 1000 tokens nuevos y los deposita en tu Token Account. Solo funciona si eres el mint authority.
+- `balance` → Lee tu Token Account y muestra cuántos tokens tienes.
+
+### Pista 2: Hacer lo mismo programáticamente con @solana/kit
+
+El CLI es conveniente para probar, pero para un proyecto real necesitas hacerlo desde código. Instala el SDK:
 
 ```bash
 npm install @solana/kit
 ```
 
-### Recomendado:
-- Leer la documentación de [SPL Token](https://spl.solana.com/token)
-- Revisar la documentación de [Metaplex Token Metadata](https://developers.metaplex.com/token-metadata)
+Documentación: [solanakit.com/docs](https://www.solanakit.com/docs)
 
----
+Investiga cómo crear un mint, crear token accounts y mintear tokens usando el SDK. Es más trabajo que el CLI, pero es lo que necesitarás para tu proyecto de hackathon.
 
-## Esta Vez No Hay Template
+### Pista 3: Metadatos
 
-En serio. No hay repo para clonar.
+Un token sin nombre ni imagen es solo una dirección hexadecimal. Para que tenga identidad necesitas metadatos a través de Metaplex Token Metadata.
 
-Las primeras dos semanas tuviste templates con TODOs. Esta semana empiezas desde cero.
+Necesitas agregar:
+- **Nombre** (ej: "Puntos Café Colombia")
+- **Símbolo** (ej: "PCC")
+- **URI** (link a un JSON con la imagen y descripción completa)
 
-Tienes la documentación. Tienes los mentores. Tienes 90 minutos.
+### Pista 4: El JSON de metadatos
 
----
-
-## Pistas
-
-### Pista 1: Dos caminos
-
-Hay dos formas de crear un token SPL:
-
-**Camino A: CLI (más rápido para empezar)**
-
-```bash
-spl-token create-token
-spl-token create-account <TOKEN_ADDRESS>
-spl-token mint <TOKEN_ADDRESS> 1000
-```
-
-**Camino B: Programático con @solana/kit (más útil para tu proyecto)**
-
-Usa `@solana/kit` para crear el token desde un script TypeScript. Esto es lo que necesitarás para tu proyecto real.
-
-### Pista 2: Metadatos
-
-Un token sin nombre ni imagen es solo un address. Para que tenga identidad necesitas metadatos.
-
-Investiga cómo usar Metaplex Token Metadata para agregar:
-- Nombre
-- Símbolo
-- URI (link a un JSON con la imagen y descripción)
-
-### Pista 3: El JSON de metadatos
-
-Los metadatos de un token apuntan a un archivo JSON. Puedes hostear ese JSON en cualquier lugar público. Para Devnet, puedes usar un Gist de GitHub:
+Los metadatos de un token apuntan a un archivo JSON que hosteas en cualquier lugar público. Para Devnet, un Gist de GitHub funciona:
 
 ```json
 {
-  "name": "Mi Token",
-  "symbol": "MTK",
-  "description": "Token de membresía para mi proyecto",
+  "name": "Puntos Café Colombia",
+  "symbol": "PCC",
+  "description": "Token de fidelidad para cafeterías colombianas",
   "image": "https://url-de-tu-imagen.png"
 }
 ```
 
-### Pista 4: Mint Authority
+Crea el Gist, copia la URL del archivo raw, y úsala como URI cuando agregues los metadatos con Metaplex.
 
-Cuando creas un token, tú eres el `mint authority`. Eso significa que puedes crear más tokens cuando quieras. Piensa si eso tiene sentido para tu caso de uso o si deberías renunciar a esa autoridad.
+### Pista 5: Mint Authority
 
-### Pista 5: Verificar
+Cuando creas un token, tú eres el `mint authority`. Eso significa que puedes crear más tokens cuando quieras. Piensa si eso tiene sentido para tu caso de uso.
+
+Ejemplos:
+- **Token de fidelidad:** Sí necesitas mint authority para dar puntos nuevos
+- **Token de membresía limitada:** Podrías renunciar al mint authority después de crear los tokens iniciales
+- **Representación de un asset fijo:** Probablemente quieras un supply fijo
+
+Para renunciar al mint authority:
+
+```bash
+spl-token authorize <TOKEN_ADDRESS> mint --disable
+```
+
+Esto es irreversible. Nadie podrá crear más tokens.
+
+### Pista 6: Verificar
 
 Busca tu token en [Solscan Devnet](https://solscan.io/?cluster=devnet). Deberías ver el nombre, símbolo, supply y los holders.
 
----
+## Tu Objetivo
+
+1. Crea un token SPL en Devnet (por CLI o programáticamente)
+2. Agrégale metadatos (nombre, símbolo, imagen)
+3. Mintea tokens a tu wallet
+4. Verifica en Solscan que el token existe con sus metadatos
 
 ## Stretch Goals
 
 ### Nivel 2: Mint a múltiples wallets
-Crea un script que mintee tokens a 3 wallets diferentes. Simula una distribución inicial.
+Crea un script que mintee tokens a 3 wallets diferentes. Simula una distribución inicial. Puedes generar wallets de prueba con `solana-keygen new --outfile wallet2.json`.
 
 ### Nivel 3: Transfer con @solana/kit
-Escribe un script usando `@solana/kit` que transfiera tokens de una wallet a otra. Sin usar el CLI.
-
-Documentación: [solanakit.com/docs](https://www.solanakit.com/docs)
+Escribe un script usando `@solana/kit` que transfiera tokens de una wallet a otra. Sin usar el CLI. Esto implica:
+- Crear una Token Account para la wallet destino (si no existe)
+- Construir y firmar la transacción de transferencia
+- Enviarla a la red
 
 ### Nivel 4: Token Extensions
-Investiga [Token Extensions](https://solana.com/developers/guides/token-extensions/getting-started) (Token-2022). Intenta crear un token con una extensión como `transfer fee` o `non-transferable`. Esto es lo que usan los proyectos más avanzados.
+Investiga [Token Extensions](https://solana.com/developers/guides/token-extensions/getting-started) (Token-2022). Intenta crear un token con una extensión como:
+- `transfer fee` → Cobra una comisión en cada transferencia
+- `non-transferable` → Los tokens no se pueden enviar (útil para badges o certificados)
+- `confidential transfers` → El monto de la transferencia es privado
 
----
+Esto es lo que usan los proyectos más avanzados en producción.
 
 ## Recursos
 
@@ -126,9 +179,7 @@ Investiga [Token Extensions](https://solana.com/developers/guides/token-extensio
 | Token Extensions Guide | [solana.com/developers/guides/token-extensions/getting-started](https://solana.com/developers/guides/token-extensions/getting-started) |
 | @solana/kit Docs | [solanakit.com/docs](https://www.solanakit.com/docs) |
 | Solscan (Devnet) | [solscan.io/?cluster=devnet](https://solscan.io/?cluster=devnet) |
-| Telegram Solana Colombia | [t.me/solana_colombia](https://t.me/solana_colombia) |
-
----
+| Telegram | [t.me/solana_colombia](https://t.me/solana_colombia) |
 
 ## Cómo Entregar
 
@@ -145,15 +196,10 @@ Propósito: [una frase explicando qué representa]
 Solscan: [link]
 ```
 
----
-
 ## Recuerda
 
-- Esta semana no hay template. Eso es intencional. En el hackathon nadie te va a dar un repo con TODOs.
 - Si no sabes por dónde empezar, empieza por el CLI. Crea el token primero. Después intenta hacerlo programáticamente.
-- La documentación es tu mejor amiga. Aprende a leerla ahora porque en marzo la vas a necesitar todos los días.
+- La documentación es tu mejor amiga. Aprende a leerla ahora porque la vas a necesitar todos los días.
 - Si ya terminaste, ayuda a alguien. Explicar cómo funciona un token SPL a otra persona es la mejor forma de consolidar lo que aprendiste.
-
-Nos vemos el viernes 20 de febrero a las 4 PM.
 
 → [Únete al Telegram](https://t.me/solana_colombia)
