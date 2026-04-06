@@ -1,0 +1,51 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["ultracite/biome/astro"],
+  "files": {
+    "includes": [
+      "**",
+      // Biome's Astro parser chokes on HTML comments in JSX and fragment syntax
+      "!src/components/Projects.astro",
+      "!src/components/EventGallery.astro",
+      "!src/pages/blog/\\[...slug\\].astro"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "linter": {
+    "rules": {
+      "a11y": {
+        // Decorative SVG icons inside labeled buttons/links don't need titles
+        "noSvgWithoutTitle": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "off"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "trailingCommas": "all",
+      "semicolons": "always",
+      "arrowParentheses": "always"
+    }
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true,
+    "defaultBranch": "main"
+  },
+  "overrides": [
+    {
+      "includes": [".wrangler/**", "dist/**", ".astro/**"],
+      "formatter": { "enabled": false },
+      "linter": { "enabled": false }
+    }
+  ]
+}

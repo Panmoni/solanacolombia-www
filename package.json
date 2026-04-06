@@ -8,7 +8,23 @@
     "build": "astro build",
     "preview": "astro build && wrangler dev",
     "deploy": "astro build && wrangler deploy",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format .",
+    "format:write": "biome format --write .",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{js,ts,astro}": [
+      "biome format --write",
+      "biome check --write"
+    ],
+    "*.{json,jsonc,md,css}": [
+      "biome format --write"
+    ]
   },
   "engines": {
     "node": ">=22.12.0"
@@ -27,6 +43,10 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.4.10",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "ultracite": "^7.4.3",
     "wrangler": "^4.54.0"
   },
   "overrides": {
