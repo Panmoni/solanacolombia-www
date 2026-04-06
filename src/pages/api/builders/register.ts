@@ -1,9 +1,10 @@
 // src/pages/api/builders/register.ts
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { v4 as uuidv4 } from 'uuid';
 import { Resend } from 'resend';
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request }) => {
   try {
     const form = await request.formData();
     const wallet = form.get('wallet')?.toString()?.trim();
@@ -17,7 +18,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Get D1 database from runtime
-    const db = locals.runtime?.env?.DB;
+    const db = (env as Env).DB;
     if (!db) {
       return new Response(JSON.stringify({ error: 'Database not available' }), {
         status: 500,
@@ -54,9 +55,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
       `).bind(id, wallet, name, email, telegram, twitter, university, now, now).run();
 
       // Send welcome email
-      if (email && locals.runtime?.env?.RESEND_API_KEY) {
+      if (email && (env as Env).RESEND_API_KEY) {
         try {
-          const resend = new Resend(locals.runtime.env.RESEND_API_KEY);
+          const resend = new Resend((env as Env).RESEND_API_KEY);
           await resend.emails.send({
             from: 'Solana Colombia <hola@solanacolombia.com>',
             to: email,

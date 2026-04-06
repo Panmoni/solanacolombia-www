@@ -1,9 +1,10 @@
 // src/pages/api/projects/create.ts
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { v4 as uuidv4 } from 'uuid';
 import { getSession } from '../../../lib/auth';
 
-export const POST: APIRoute = async ({ request, locals, cookies }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     const session = await getSession(cookies);
     if (!session?.wallet) {
@@ -27,7 +28,7 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
       });
     }
 
-    const db = locals.runtime?.env?.DB;
+    const db = (env as Env).DB;
     if (!db) {
       return new Response(JSON.stringify({ error: 'Database not available' }), {
         status: 500,
@@ -85,8 +86,6 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
       console.error('Failed to create owner link:', linkResult);
       // Project was created but link failed - this is bad but we'll continue
     }
-
-    console.log('Project created successfully:', { projectId, projectName, owner: session.wallet });
 
     return new Response(JSON.stringify({ success: true, project_id: projectId }), {
       status: 200,

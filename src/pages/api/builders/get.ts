@@ -1,9 +1,10 @@
 // src/pages/api/builders/get.ts
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { getSession } from '../../../lib/auth';
 
-export const GET: APIRoute = async ({ request, locals, cookies }) => {
-  const db = locals.runtime?.env?.DB;
+export const GET: APIRoute = async ({ request, cookies }) => {
+  const db = (env as Env).DB;
   if (!db) {
     return new Response(JSON.stringify({ error: 'Database not available' }), {
       status: 500,

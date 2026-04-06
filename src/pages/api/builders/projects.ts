@@ -1,8 +1,9 @@
 // src/pages/api/builders/projects.ts
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 
-export const GET: APIRoute = async ({ request, locals }) => {
-  const db = locals.runtime?.env?.DB;
+export const GET: APIRoute = async ({ request }) => {
+  const db = (env as Env).DB;
   if (!db) {
     return new Response(JSON.stringify({ error: 'Database not available' }), {
       status: 500,
@@ -38,9 +39,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
     WHERE (p.owner_wallet = ? OR (bpl.builder_wallet = ? AND bpl.status IN ('accepted', 'owner')))
     ORDER BY p.created_at DESC
   `).bind(wallet, wallet).all();
-  
-  console.log('Projects query result:', { wallet, count: projects.results?.length, projects: projects.results });
-  
+
   return new Response(JSON.stringify({ projects: projects.results }), {
     headers: { 'Content-Type': 'application/json' }
   });

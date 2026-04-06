@@ -1,8 +1,9 @@
 // src/pages/api/builders/update.ts
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { getSession, setSession } from '../../../lib/auth';
 
-export const POST: APIRoute = async ({ request, locals, cookies }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     const session = await getSession(cookies);
     if (!session?.wallet) {
@@ -19,7 +20,7 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
     const twitter = form.get('twitter')?.toString() || null;
     const university = form.get('university')?.toString() || null;
 
-    const db = locals.runtime?.env?.DB;
+    const db = (env as Env).DB;
     if (!db) {
       return new Response(JSON.stringify({ error: 'Database not available' }), {
         status: 500,

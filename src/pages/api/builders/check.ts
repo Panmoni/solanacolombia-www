@@ -1,9 +1,10 @@
 // src/pages/api/builders/check.ts
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 
-export const GET: APIRoute = async ({ request, locals }) => {
+export const GET: APIRoute = async ({ request }) => {
   try {
-    const db = locals.runtime?.env?.DB;
+    const db = (env as Env).DB;
     if (!db) {
       return new Response(JSON.stringify({ error: 'Database not available', registered: false }), {
         status: 500,

@@ -1,10 +1,11 @@
 // src/pages/api/projects/team.ts
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 
 // Public endpoint to list accepted members of a project team.
 // Exposes only non-sensitive fields suitable for display on the join page.
-export const GET: APIRoute = async ({ request, locals }) => {
-  const db = locals.runtime?.env?.DB;
+export const GET: APIRoute = async ({ request }) => {
+  const db = (env as Env).DB;
   if (!db) {
     return new Response(JSON.stringify({ error: 'Database not available' }), {
       status: 500,
