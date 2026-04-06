@@ -29,13 +29,8 @@ npx wrangler d1 execute solana_builders --local --file=./schema.sql > /dev/null 
 echo "✅ Database initialized!"
 echo ""
 
-echo "🔨 Step 3/4: Building project..."
-npm run build
-echo "✅ Build complete!"
+echo "🚀 Step 3/3: Starting dev server (workerd runtime)..."
+echo "   Server will be available at http://localhost:4321"
 echo ""
-
-echo "🚀 Step 4/4: Starting dev server..."
-echo "   Server will be available at http://localhost:8788"
-echo ""
-npx wrangler pages dev dist --local
+npx astro dev
 
