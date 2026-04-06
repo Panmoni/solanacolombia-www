@@ -1,8 +1,8 @@
 ---
-draft: true
+draft: false
 title: "Challenge #4: Frankenstein Build"
 snippet: "Sin template. Sin guía. Combina todo lo que aprendiste en un solo programa. Esto es lo más parecido al hackathon que vas a experimentar antes del hackathon."
-publishDate: "2026-02-25 10:00"
+publishDate: "2026-04-27 10:00"
 image:
   {
     src: "/blog/14/14.png",
@@ -13,55 +13,60 @@ author: "George Donnelly"
 tags: ["bootcamp", "challenge", "solana", "anchor", "pinocchio"]
 ---
 
-## El Challenge
-
 Sin template. Sin pistas detalladas. Sin que nadie te diga qué hacer.
 
-Combina todo lo que aprendiste en las últimas 3 semanas en un solo programa:
+## El Challenge
+
+Combina todo lo que aprendiste en los últimos 3 challenges en un solo programa:
 
 1. Un programa que guarda estado (como el counter)
-2. Un token SPL (como la semana pasada)
+2. Un token SPL (como el challenge anterior)
 3. Lógica que conecte ambos: "Cuando pasa X, se emiten Y tokens"
 
-Eso es todo. El diseño es tuyo. La arquitectura es tuya. Los errores son tuyos. Y el deploy también.
+El diseño es tuyo. La arquitectura es tuya. Los errores son tuyos. Y el deploy también.
 
-**Fecha:** Viernes 27 de Febrero, 4:00 PM  
-**Duración:** 90 minutos  
-**Dificultad:** 🔴 Sin guía
+## Primero: ¿Qué Es un CPI y Por Qué Lo Necesitas?
 
----
+En los challenges anteriores, tu programa hacía todo internamente. Guardaba datos, los modificaba, listo. Pero ahora quieres que tu programa mintee tokens. El problema: tu programa no sabe mintear tokens. El que sabe es el **SPL Token Program**, un programa que ya existe en Solana.
 
-## Antes de Llegar
+Un CPI (Cross-Program Invocation) es cuando tu programa llama a otro programa. Es como hacer un API call, pero on-chain. Tu programa le dice al SPL Token Program: "oye, mintea 10 tokens a esta wallet" y el SPL Token Program lo ejecuta.
 
-### Obligatorio:
-- Haber completado los Challenges [#1](/blog/challenge-hello-solana), [#2](/blog/challenge-build-a-counter) y [#3](/blog/challenge-token-time)
-- Tener SOL en Devnet
-- Tener una idea de qué quieres construir
+¿Por qué no puedes mintear tokens directamente? Porque en Solana, **solo el programa dueño de una cuenta puede modificarla**. Las Token Accounts son propiedad del SPL Token Program. Tu programa no puede tocarlas directamente. Tiene que pedirle al SPL Token Program que lo haga.
 
-### Recomendado:
-- Pensar en tu proyecto de hackathon. Este challenge es tu oportunidad de prototipar la feature principal.
-- Dibujar la arquitectura antes de escribir código. Qué cuentas necesitas. Qué instrucciones. Qué datos guardas.
+Esto es lo que hace un CPI especial: tu programa firma la llamada con su propia autoridad (un PDA), y el SPL Token Program confía en esa firma para ejecutar la operación.
 
----
+## Antes de Iniciar
 
-## No Hay Template
+Si completaste los Challenges [#1](/blog/2026-challenge-01), [#2](/blog/2026-challenge-02) y [#3](/blog/2026-challenge-03), ya tienes todo lo que necesitas.
 
-No hay repo. No hay skeleton. No hay TODOs.
+```bash
+solana airdrop 2
+```
 
-Inicializa tu propio proyecto:
+**Recomendado antes de empezar:**
+- Piensa en tu proyecto de hackathon. Este challenge es tu oportunidad de prototipar la feature principal.
+- Dibuja la arquitectura antes de escribir código. Qué cuentas necesitas. Qué instrucciones. Qué datos guardas.
+
+## Crea Tu Proyecto
 
 ```bash
 anchor init mi-proyecto
 cd mi-proyecto
 ```
 
-Y empieza a construir.
+Necesitas agregar la dependencia de `anchor-spl` para trabajar con tokens. En tu `programs/mi-proyecto/Cargo.toml`:
 
----
+```toml
+[dependencies]
+anchor-lang = "0.30.1"
+anchor-spl = "0.30.1"
+```
+
+Las versiones deben coincidir con tu versión de Anchor. Verifica con `anchor --version`.
 
 ## Ideas (Si No Tienes Una)
 
-Estos son ejemplos. No tienes que hacer ninguno de estos. Pero si estás en blanco, elige uno y adáptalo:
+No tienes que hacer ninguno de estos. Pero si estás en blanco, elige uno y adáptalo:
 
 **Check-in con recompensa**
 - Un programa donde los usuarios hacen "check-in" (llaman una instrucción)
@@ -82,46 +87,113 @@ Estos son ejemplos. No tienes que hacer ninguno de estos. Pero si estás en blan
 - Un programa de votación donde el peso del voto depende de cuántos tokens tienes
 - Crear una propuesta, votar, cerrar votación
 
----
+## Pistas
 
-## Pistas (Pocas)
+### Pista 1: CPI con Anchor
 
-### Pista 1: CPI (Cross-Program Invocation)
-
-Para que tu programa interactúe con el programa de SPL Token (mintear, transferir), necesitas hacer un CPI. Anchor facilita esto:
+Primero, importa lo que necesitas:
 
 ```rust
-use anchor_spl::token::{self, MintTo, Transfer};
+use anchor_spl::token::{self, Mint, Token, TokenAccount, MintTo, Transfer};
 ```
 
-Busca "CPI" en el [Anchor Book](https://www.anchor-lang.com/docs/cross-program-invocations).
+Línea por línea:
+- `token` → El módulo que contiene las funciones para interactuar con el SPL Token Program
+- `Mint` → El tipo para la cuenta del mint (la definición del token)
+- `Token` → El tipo para referenciar al SPL Token Program
+- `TokenAccount` → El tipo para las cuentas que guardan balances de tokens
+- `MintTo` → La estructura que define las cuentas necesarias para mintear tokens
+- `Transfer` → La estructura que define las cuentas necesarias para transferir tokens
 
-### Pista 2: PDA como autoridad
+Para mintear tokens desde tu programa, necesitas estas cuentas en tu instrucción:
 
-Si tu programa necesita mintear tokens, el programa mismo necesita ser el `mint authority`. Para esto usas un PDA (Program Derived Address) como autoridad del mint.
+```rust
+#[derive(Accounts)]
+pub struct RewardUser<'info> {
+    #[account(mut)]
+    pub mint: Account<'info, Mint>,
+    #[account(mut)]
+    pub user_token_account: Account<'info, TokenAccount>,
+    /// CHECK: PDA used as mint authority
+    #[account(
+        seeds = [b"authority"],
+        bump,
+    )]
+    pub mint_authority: UncheckedAccount<'info>,
+    pub token_program: Program<'info, Token>,
+}
+```
+
+Línea por línea:
+- `pub mint: Account<'info, Mint>` → La cuenta del mint de tu token. Marcada como `mut` porque mintear cambia el supply total.
+- `pub user_token_account: Account<'info, TokenAccount>` → La Token Account del usuario que va a recibir los tokens. Marcada como `mut` porque su balance va a cambiar.
+- `pub mint_authority: UncheckedAccount<'info>` → Un PDA (Program Derived Address) que actúa como la autoridad del mint. Tu programa "controla" esta dirección porque solo tu programa puede generar firmas válidas para ella. El `/// CHECK` es un comentario obligatorio de Anchor cuando usas `UncheckedAccount` explicando por qué es seguro.
+- `seeds = [b"authority"]` → Los seeds que se usan para derivar el PDA. Pueden ser cualquier combinación de bytes. `b"authority"` es un string convertido a bytes.
+- `bump` → Un byte extra que Anchor calcula automáticamente para hacer la dirección válida.
+- `pub token_program: Program<'info, Token>` → Referencia al SPL Token Program. Necesario porque tu programa va a hacer un CPI hacia él.
+
+Y la llamada CPI en sí:
+
+```rust
+pub fn reward_user(ctx: Context<RewardUser>, amount: u64) -> Result<()> {
+    let seeds = &[b"authority".as_ref(), &[ctx.bumps.mint_authority]];
+    let signer_seeds = &[&seeds[..]];
+
+    let cpi_ctx = CpiContext::new_with_signer(
+        ctx.accounts.token_program.to_account_info(),
+        MintTo {
+            mint: ctx.accounts.mint.to_account_info(),
+            to: ctx.accounts.user_token_account.to_account_info(),
+            authority: ctx.accounts.mint_authority.to_account_info(),
+        },
+        signer_seeds,
+    );
+
+    token::mint_to(cpi_ctx, amount)?;
+    Ok(())
+}
+```
+
+Línea por línea:
+- `let seeds = &[b"authority".as_ref(), &[ctx.bumps.mint_authority]]` → Construye los seeds completos del PDA: el string "authority" + el bump byte. Estos seeds son la "llave privada" del PDA. Solo tu programa los conoce.
+- `let signer_seeds = &[&seeds[..]]` → Wrappea los seeds en el formato que Solana espera. Puede parecer redundante, pero es necesario por cómo la runtime de Solana verifica las firmas de PDAs.
+- `CpiContext::new_with_signer(...)` → Crea el contexto del CPI. `new_with_signer` (en vez de `new`) indica que el PDA va a "firmar" la transacción. Le pasas:
+  - El programa que quieres llamar (`token_program`)
+  - Las cuentas que necesita la instrucción (`MintTo` con mint, destino y autoridad)
+  - Los seeds del PDA para la firma
+- `token::mint_to(cpi_ctx, amount)?` → Ejecuta el CPI. Le dice al SPL Token Program: "mintea `amount` tokens del mint al destino, firmado por esta autoridad." El `?` propaga errores (si falla, tu instrucción también falla).
+
+### Pista 2: PDA como autoridad (más detalle)
+
+Un PDA es una dirección que no tiene llave privada. Nadie puede firmar con ella directamente. Pero tu programa puede "simular" una firma porque conoce los seeds que la generan.
+
+Para que funcione:
+1. Genera el PDA con seeds fijos (ej: `[b"authority"]`)
+2. Al crear el token (en Challenge #3 o en un `initialize`), usa este PDA como mint authority
+3. Cuando tu programa necesite mintear, usa `CpiContext::new_with_signer` con los seeds
+
+Para encontrar la dirección del PDA (útil cuando creas el mint):
+
+```rust
+let (pda, bump) = Pubkey::find_program_address(&[b"authority"], program_id);
+```
+
+O desde el lado del cliente en TypeScript, usa `PublicKey.findProgramAddressSync()`.
 
 ### Pista 3: Planifica antes de codear
 
 Antes de escribir una línea de código, responde:
-- ¿Cuántas instrucciones necesito?
-- ¿Qué datos guardo en cada cuenta?
-- ¿Quién paga por el almacenamiento?
-- ¿Qué puede salir mal?
+- ¿Cuántas instrucciones necesito? (mínimo: initialize + la acción principal)
+- ¿Qué datos guardo en cada cuenta? (dibuja las structs)
+- ¿Quién paga por el almacenamiento? (el usuario o un admin)
+- ¿Qué puede salir mal? (¿qué pasa si alguien llama las instrucciones en mal orden? ¿qué pasa si alguien intenta hacer trampa?)
 
----
+## Tu Objetivo
 
-## Formato: Show & Tell Extendido
-
-Esta semana el Show & Tell dura 30 minutos en vez de 20.
-
-- **Todos** muestran lo que hicieron, funcione o no
-- Celebramos cada deploy
-- El grupo da feedback
-- Votamos: "¿Cuál proyecto tiene más potencial para el hackathon?"
-
-Si tu código no compila, muestra lo que tienes y explica dónde te atascaste. Eso también cuenta.
-
----
+1. Diseña un programa que combine estado + tokens + lógica propia
+2. Implementa al menos 2 instrucciones
+3. Deploy a Devnet
+4. Graba un video de 1 minuto mostrando cómo funciona
 
 ## Stretch Goals
 
@@ -152,8 +224,6 @@ Recursos para Pinocchio:
 
 No es para principiantes. Pero si llegas hasta aquí, ya no eres principiante.
 
----
-
 ## Recursos
 
 | Recurso | Link |
@@ -164,9 +234,7 @@ No es para principiantes. Pero si llegas hasta aquí, ya no eres principiante.
 | @solana/kit Docs | [solanakit.com/docs](https://www.solanakit.com/docs) |
 | Pinocchio | [github.com/anza-xyz/pinocchio](https://github.com/anza-xyz/pinocchio) |
 | Solscan (Devnet) | [solscan.io/?cluster=devnet](https://solscan.io/?cluster=devnet) |
-| Telegram Solana Colombia | [t.me/solana_colombia](https://t.me/solana_colombia) |
-
----
+| Telegram | [t.me/solana_colombia](https://t.me/solana_colombia) |
 
 ## Cómo Entregar
 
@@ -184,32 +252,19 @@ Video: [link]
 Repo: [link a tu código]
 ```
 
----
-
 ## Qué Sigue
 
 Si llegaste hasta aquí, completaste el bootcamp.
 
-Ahora empieza lo real:
+Ahora empieza lo real. Toma lo que construiste en este challenge y conviértelo en tu proyecto de hackathon. Forma equipo si no lo has hecho. Define tu MVP. Empieza a construir.
 
-- **Marzo:** Build Phase. 8 semanas de construcción con standups semanales y milestones.
-- **Abril:** Mentoría intensiva. Office hours técnicos y de pitch.
-- **Mayo:** Colosseum Hackathon. Submissions y Demo Day.
-- **Junio:** Post-hackathon. Conexión con VCs y aceleradores.
-
-El bootcamp fue el calentamiento. Marzo es donde se construye el producto.
-
-El jueves 26 de febrero en el X Space formamos equipos oficialmente. Si todavía no tienes equipo, ese es el momento.
-
----
+El bootcamp fue el calentamiento. Ahora se construye el producto.
 
 ## Recuerda
 
 - No hay respuesta correcta. Hay código que compila y código que no. Ambos te enseñan algo.
-- 90 minutos no es mucho tiempo. No intentes construir todo. Construye la feature más importante y deployala.
-- Si tu código no compila al final de la sesión, muestra lo que tienes. El esfuerzo cuenta.
+- No intentes construir todo. Construye la feature más importante y deployala.
+- Si tu código no compila, muestra lo que tienes. El esfuerzo cuenta.
 - Esto es lo más parecido al hackathon que vas a experimentar antes del hackathon. Acostúmbrate a la presión.
-
-Nos vemos el viernes 27 de febrero a las 4 PM.
 
 → [Únete al Telegram](https://t.me/solana_colombia)
