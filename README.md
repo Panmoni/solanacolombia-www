@@ -46,6 +46,17 @@ npm run dev
 
 > **Note:** The `dev` script automatically runs `npm run db:pull` to sync your local D1 database with the production data before starting the Astro server.
 
+### AI-assisted development (Claude Code)
+
+This repo ships a set of [Claude Code hooks](docs/CLAUDE_HOOKS.md) that guard against common footguns when Claude Code is editing files or running commands:
+
+- **Protected files:** `.env`, `wrangler.toml`, `schema.sql`, and already-applied `migrations/*.sql` cannot be edited by the AI.
+- **Blocked commands:** `wrangler pages deploy`, `wrangler d1 execute --remote`, `wrangler secret put/delete`, `DROP TABLE`, and other irreversible prod operations are refused before execution.
+- **Auto-format + typecheck:** every `.astro`/`.ts` edit is run through `prettier` and `astro check`.
+- **Pre-PR gate:** `gh pr create` is blocked unless `astro check` and `astro build` both pass.
+
+See [docs/CLAUDE_HOOKS.md](docs/CLAUDE_HOOKS.md) for the full list, the rationale, and how to bypass a hook when legitimately needed.
+
 ---
 
 ## 📝 Managing Content
