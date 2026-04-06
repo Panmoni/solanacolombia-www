@@ -22,7 +22,7 @@
       "biome format --write",
       "biome check --write"
     ],
-    "*.{json,jsonc,md,css}": [
+    "*.{json,jsonc,css}": [
       "biome format --write"
     ]
   },

@@ -9,6 +9,7 @@ Welcome to the official repository for the **Solana Colombia** website. This pla
 - **Database:** [Cloudflare D1](https://developers.cloudflare.com/d1/) (SQL database for builders/profiles)
 - **Deployment:** [Cloudflare Workers](https://workers.cloudflare.com/) via GitHub Actions
 - **Email:** [Resend](https://resend.com/)
+- **Linting/Formatting:** [Biome](https://biomejs.dev/) via [Ultracite](https://github.com/haydenbleasel/ultracite) preset
 - **Blockchain:** [Solana Web3.js](https://solana-labs.github.io/solana-web3.js/) & Wallet Adapter
 
 ---
@@ -46,6 +47,17 @@ npm run dev
 
 > **Note:** The `dev` script automatically runs `npm run db:pull` to sync your local D1 database with the production data before starting the Astro dev server (runs on the real Cloudflare workerd runtime).
 
+### Linting & Formatting
+
+The project uses [Biome](https://biomejs.dev/) with the [Ultracite](https://github.com/haydenbleasel/ultracite) Astro preset. A pre-commit hook (husky + lint-staged) auto-formats staged files on every commit.
+
+```sh
+npm run lint          # Check for lint errors
+npm run lint:fix      # Fix lint errors
+npm run format        # Check formatting
+npm run format:write  # Fix formatting
+```
+
 ### Deployment
 
 Pushing to `main` triggers automatic deployment to Cloudflare Workers via GitHub Actions. The workflow requires two repository secrets:
@@ -65,7 +77,7 @@ This repo ships a set of [Claude Code hooks](docs/CLAUDE_HOOKS.md) that guard ag
 
 - **Protected files:** `.env`, `wrangler.toml`, `schema.sql`, and already-applied `migrations/*.sql` cannot be edited by the AI.
 - **Blocked commands:** `wrangler deploy`, `wrangler d1 execute --remote`, `wrangler secret put/delete`, `DROP TABLE`, and other irreversible prod operations are refused before execution.
-- **Auto-format + typecheck:** every `.astro`/`.ts` edit is run through `prettier` and `astro check`.
+- **Auto-format + typecheck:** every `.astro`/`.ts` edit is run through `biome` and `astro check`.
 - **Pre-PR gate:** `gh pr create` is blocked unless `astro check` and `astro build` both pass.
 
 See [docs/CLAUDE_HOOKS.md](docs/CLAUDE_HOOKS.md) for the full list, the rationale, and how to bypass a hook when legitimately needed.
