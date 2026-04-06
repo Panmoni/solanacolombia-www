@@ -4,10 +4,10 @@ Welcome to the official repository for the **Solana Colombia** website. This pla
 
 ## 🚀 Tech Stack
 
-- **Framework:** [Astro 5](https://astro.build/) (Static Site Generation & Server-side Rendering)
+- **Framework:** [Astro 6](https://astro.build/) (Server-side Rendering)
 - **Styling:** [Tailwind CSS 4](https://tailwindcss.com/)
 - **Database:** [Cloudflare D1](https://developers.cloudflare.com/d1/) (SQL database for builders/profiles)
-- **Deployment:** [Cloudflare Pages](https://pages.cloudflare.com/)
+- **Deployment:** [Cloudflare Workers](https://workers.cloudflare.com/) via GitHub Actions
 - **Email:** [Resend](https://resend.com/)
 - **Blockchain:** [Solana Web3.js](https://solana-labs.github.io/solana-web3.js/) & Wallet Adapter
 
@@ -17,7 +17,7 @@ Welcome to the official repository for the **Solana Colombia** website. This pla
 
 ### Prerequisites
 
-- **Node.js:** `v18.20.8` or higher (Check `.nvmrc`)
+- **Node.js:** `v22.12.0` or higher
 - **npm:** Package manager included with Node.js
 
 ### Installation
@@ -44,14 +44,27 @@ To start the local development server:
 npm run dev
 ```
 
-> **Note:** The `dev` script automatically runs `npm run db:pull` to sync your local D1 database with the production data before starting the Astro server.
+> **Note:** The `dev` script automatically runs `npm run db:pull` to sync your local D1 database with the production data before starting the Astro dev server (runs on the real Cloudflare workerd runtime).
+
+### Deployment
+
+Pushing to `main` triggers automatic deployment to Cloudflare Workers via GitHub Actions. The workflow requires two repository secrets:
+
+- `CLOUDFLARE_API_TOKEN`
+- `CLOUDFLARE_ACCOUNT_ID`
+
+You can also deploy manually:
+
+```sh
+npm run deploy
+```
 
 ### AI-assisted development (Claude Code)
 
 This repo ships a set of [Claude Code hooks](docs/CLAUDE_HOOKS.md) that guard against common footguns when Claude Code is editing files or running commands:
 
 - **Protected files:** `.env`, `wrangler.toml`, `schema.sql`, and already-applied `migrations/*.sql` cannot be edited by the AI.
-- **Blocked commands:** `wrangler pages deploy`, `wrangler d1 execute --remote`, `wrangler secret put/delete`, `DROP TABLE`, and other irreversible prod operations are refused before execution.
+- **Blocked commands:** `wrangler deploy`, `wrangler d1 execute --remote`, `wrangler secret put/delete`, `DROP TABLE`, and other irreversible prod operations are refused before execution.
 - **Auto-format + typecheck:** every `.astro`/`.ts` edit is run through `prettier` and `astro check`.
 - **Pre-PR gate:** `gh pr create` is blocked unless `astro check` and `astro build` both pass.
 
@@ -146,15 +159,19 @@ The site uses Cloudflare D1 for dynamic data like the Builders directory.
 
 ```text
 /
+├── .github/workflows/   # GitHub Actions (auto-deploy to Workers)
 ├── public/              # Static assets (images, icons, etc.)
+├── scripts/security/    # Dependency audit tooling
 ├── src/
 │   ├── components/      # Reusable UI components
 │   ├── content/         # Content Collections (Blog, Team, Gallery)
 │   ├── layouts/         # Page layouts
+│   ├── lib/             # Auth, utilities
 │   ├── pages/           # File-based routing
+│   │   └── api/         # Server-side API endpoints (D1)
 │   ├── styles/          # Global styles (Tailwind CSS)
 │   └── content.config.ts # Content schema definitions
-├── wrangler.toml        # Cloudflare configuration
+├── wrangler.toml        # Cloudflare Workers configuration
 └── astro.config.mjs     # Astro configuration
 ```
 
