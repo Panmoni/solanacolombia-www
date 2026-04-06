@@ -1,9 +1,10 @@
 // src/pages/api/projects/join.ts
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { v4 as uuidv4 } from 'uuid';
 import { getSession } from '../../../lib/auth';
 
-export const POST: APIRoute = async ({ request, locals, cookies }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     const session = await getSession(cookies);
     if (!session?.wallet) {
@@ -15,7 +16,7 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
 
     const body = await request.json();
     const projectId = body.project_id;
-    const wallet = body.wallet || session.wallet;
+    const wallet = session.wallet;
 
     if (!projectId) {
       return new Response(JSON.stringify({ error: 'Project ID is required' }), {
@@ -24,7 +25,7 @@ export const POST: APIRoute = async ({ request, locals, cookies }) => {
       });
     }
 
-    const db = locals.runtime?.env?.DB;
+    const db = (env as Env).DB;
     if (!db) {
       return new Response(JSON.stringify({ error: 'Database not available' }), {
         status: 500,

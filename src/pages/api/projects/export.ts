@@ -1,10 +1,24 @@
 // src/pages/api/projects/export.ts
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
+import { getSession } from '../../../lib/auth';
 
-export const GET: APIRoute = async ({ locals }) => {
-  const db = locals.runtime?.env?.DB;
+export const GET: APIRoute = async ({ cookies }) => {
+  const session = await getSession(cookies);
+  if (!session?.wallet) {
+    return new Response('Not authenticated', { status: 401 });
+  }
+
+  const db = (env as Env).DB;
   if (!db) {
     return new Response('Database not available', { status: 500 });
+  }
+
+  // Verify user is admin
+  const builder = await db.prepare('SELECT role FROM builders WHERE wallet_address = ?')
+    .bind(session.wallet).first();
+  if (!builder || builder.role !== 'admin') {
+    return new Response('Forbidden', { status: 403 });
   }
 
   const projects = await db.prepare('SELECT * FROM projects ORDER BY created_at DESC').all();
@@ -14,7 +28,7 @@ export const GET: APIRoute = async ({ locals }) => {
   const rows = projects.results.map((p: any) => [
     p.id,
     p.name || '',
-    (p.description || '').replace(/"/g, '""'),
+    p.description || '',
     p.website || '',
     p.twitter || '',
     p.discord || '',
