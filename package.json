@@ -27,29 +27,22 @@
     ]
   },
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=24.0.0"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.0.0",
-    "@cloudflare/workers-types": "^4.20251229.0",
-    "@solana/wallet-adapter-base": "^0.9.27",
-    "@solana/wallet-adapter-phantom": "^0.9.28",
-    "@solana/wallet-adapter-solflare": "^0.6.32",
-    "@solana/web3.js": "^1.98.4",
+    "@astrojs/cloudflare": "^13.1.8",
+    "@cloudflare/workers-types": "^4.20260409.1",
     "@tailwindcss/vite": "^4.1.18",
-    "astro": "^6.0.0",
-    "resend": "^6.6.0",
+    "astro": "^6.1.5",
+    "resend": "^6.10.0",
     "tailwindcss": "^4.1.18",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.10",
+    "@biomejs/biome": "^2.4.11",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
-    "ultracite": "^7.4.3",
-    "wrangler": "^4.54.0"
-  },
-  "overrides": {
-    "vite": "^7.3.1"
+    "ultracite": "^7.4.4",
+    "wrangler": "^4.81.1"
   }
 }

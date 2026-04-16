@@ -10,7 +10,7 @@ Welcome to the official repository for the **Solana Colombia** website. This pla
 - **Deployment:** [Cloudflare Workers](https://workers.cloudflare.com/) via GitHub Actions
 - **Email:** [Resend](https://resend.com/)
 - **Linting/Formatting:** [Biome](https://biomejs.dev/) via [Ultracite](https://github.com/haydenbleasel/ultracite) preset
-- **Blockchain:** [Solana Web3.js](https://solana-labs.github.io/solana-web3.js/) & Wallet Adapter
+- **Wallet integration:** Direct injected-provider API (`window.phantom`, `window.solflare`)
 
 ---
 
@@ -18,7 +18,7 @@ Welcome to the official repository for the **Solana Colombia** website. This pla
 
 ### Prerequisites
 
-- **Node.js:** `v22.12.0` or higher
+- **Node.js:** `v24.0.0` or higher
 - **npm:** Package manager included with Node.js
 
 ### Installation
