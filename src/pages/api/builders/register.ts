@@ -5,6 +5,14 @@ import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
 import { v4 as uuidv4 } from 'uuid';
 
+const escapeHtml = (s: string): string =>
+  s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
 export const POST: APIRoute = async ({ request }) => {
   try {
     const form = await request.formData();
@@ -45,7 +53,7 @@ export const POST: APIRoute = async ({ request }) => {
       }
 
       const id = uuidv4();
-      const name = form.get('name')?.toString();
+      const name = form.get('name')?.toString()?.slice(0, 200);
       const email = form.get('email')?.toString();
       const telegram = form.get('telegram')?.toString() || null;
       const twitter = form.get('twitter')?.toString() || null;
@@ -68,7 +76,7 @@ export const POST: APIRoute = async ({ request }) => {
             from: 'Solana Colombia <hola@solanacolombia.com>',
             to: email,
             subject: '¡Bienvenido a Construyendo Juntos!',
-            html: `<p>Hola ${name},</p><p>Tu wallet <strong>${wallet.slice(0, 8)}...</strong> ha sido registrado como builder individual.</p><p>Pronto activaremos tu acceso al dashboard.</p>`,
+            html: `<p>Hola ${escapeHtml(name ?? '')},</p><p>Tu wallet <strong>${escapeHtml(wallet.slice(0, 8))}...</strong> ha sido registrado como builder individual.</p><p>Pronto activaremos tu acceso al dashboard.</p>`,
           });
         } catch (emailError) {
           console.error('Email send error:', emailError);

@@ -3,6 +3,7 @@
 import { env } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { getSession } from '../../../lib/auth';
+import { CSV_ROW_SEPARATOR, csvCell } from '../../../lib/csv';
 
 export const GET: APIRoute = async ({ cookies }) => {
   const session = await getSession(cookies);
@@ -50,12 +51,9 @@ export const GET: APIRoute = async ({ cookies }) => {
     p.created_at || '',
   ]);
 
-  const csv = [
-    headers.join(','),
-    ...rows.map((row: any[]) =>
-      row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','),
-    ),
-  ].join('\n');
+  const csv = [headers.join(','), ...rows.map((row: any[]) => row.map(csvCell).join(','))].join(
+    CSV_ROW_SEPARATOR,
+  );
 
   return new Response(csv, {
     headers: {
