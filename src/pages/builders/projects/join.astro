@@ -34,353 +34,353 @@ if (!session?.wallet) {
 
 <script>
   // Load and render team members for a given project into the provided container
-  const loadTeamMembers = async (
-    projectId: string,
-    container: HTMLElement,
-  ) => {
-    container.innerHTML =
-      '<p class="text-xs text-gray-500">Cargando equipo...</p>';
-
-    try {
-      const res = await fetch(
-        `/api/projects/team?id=${encodeURIComponent(projectId)}`,
-      );
-      const data = await res.json();
-
-      if (!res.ok) {
-        container.innerHTML = `<p class="text-xs text-red-600">Error al cargar el equipo: ${
-          data.error || "Unknown error"
-        }</p>`;
-        return;
-      }
-
-      const members = (data.members || []) as any[];
-
-      if (!members.length) {
+      const loadTeamMembers = async (
+        projectId: string,
+        container: HTMLElement,
+      ) => {
         container.innerHTML =
-          '<p class="text-xs text-gray-500">Aún no hay miembros aceptados en este proyecto.</p>';
-        return;
-      }
+          '<p class="text-xs text-gray-500">Cargando equipo...</p>';
 
-      const list = document.createElement("ul");
-      list.className = "flex flex-wrap gap-2";
+        try {
+          const res = await fetch(
+            `/api/projects/team?id=${encodeURIComponent(projectId)}`,
+          );
+          const data = await res.json();
 
-      members.forEach((m: any) => {
-        const item = document.createElement("li");
-        item.className =
-          "inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-[11px] text-gray-800";
+          if (!res.ok) {
+            container.innerHTML = `<p class="text-xs text-red-600">Error al cargar el equipo: ${
+              data.error || "Unknown error"
+            }</p>`;
+            return;
+          }
 
-        const name =
-          m.name ||
-          (m.wallet_address
-            ? `${m.wallet_address.slice(0, 4)}...${m.wallet_address.slice(-4)}`
-            : "Builder");
+          const members = (data.members || []) as any[];
 
-        const roleLabel =
-          m.status === "owner"
-            ? "Propietario"
-            : m.project_role
-            ? m.project_role
-            : "Miembro";
+          if (!members.length) {
+            container.innerHTML =
+              '<p class="text-xs text-gray-500">Aún no hay miembros aceptados en este proyecto.</p>';
+            return;
+          }
 
-        const nameSpan = document.createElement("span");
-        nameSpan.className = "font-medium";
-        nameSpan.textContent = name;
+          const list = document.createElement("ul");
+          list.className = "flex flex-wrap gap-2";
 
-        const roleSpan = document.createElement("span");
-        roleSpan.className = "text-[10px] uppercase tracking-wide text-gray-500";
-        roleSpan.textContent = `• ${roleLabel}`;
+          members.forEach((m: any) => {
+            const item = document.createElement("li");
+            item.className =
+              "inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-[11px] text-gray-800";
 
-        item.appendChild(nameSpan);
-        item.appendChild(roleSpan);
-        list.appendChild(item);
-      });
+            const name =
+              m.name ||
+              (m.wallet_address
+                ? `${m.wallet_address.slice(0, 4)}...${m.wallet_address.slice(-4)}`
+                : "Builder");
 
-      container.innerHTML = "";
-      container.appendChild(list);
-    } catch (err: any) {
-      console.error("Error loading team members:", err);
-      container.innerHTML = `<p class="text-xs text-red-600">Error al cargar el equipo: ${
-        err?.message || "Unknown error"
-      }</p>`;
-    }
-  };
+            const roleLabel =
+              m.status === "owner"
+                ? "Propietario"
+                : m.project_role
+                ? m.project_role
+                : "Miembro";
 
-  // Function to load and display projects
-  const loadProjects = async () => {
-    const projectsList = document.getElementById("projects-list");
-    if (!projectsList) return;
+            const nameSpan = document.createElement("span");
+            nameSpan.className = "font-medium";
+            nameSpan.textContent = name;
 
-    const wallet = projectsList.getAttribute("data-wallet");
-    if (!wallet) {
-      projectsList.innerHTML =
-        '<p class="text-red-600">Error: No se encontró la dirección del wallet.</p>';
-      return;
-    }
+            const roleSpan = document.createElement("span");
+            roleSpan.className = "text-[10px] uppercase tracking-wide text-gray-500";
+            roleSpan.textContent = `• ${roleLabel}`;
 
-    try {
-      // Load all projects
-      const projectsRes = await fetch("/api/projects/list");
-      const projectsData = await projectsRes.json();
+            item.appendChild(nameSpan);
+            item.appendChild(roleSpan);
+            list.appendChild(item);
+          });
 
-      // Load user's existing project links to check status
-      const linksRes = await fetch(
-        `/api/builders/projects?wallet=${encodeURIComponent(wallet)}`,
-      );
-      const linksData = await linksRes.json();
-
-      // Create a map of project IDs to link status (joined/accepted/owner)
-      const userProjects = new Map();
-      if (linksData.projects) {
-        linksData.projects.forEach((p: any) => {
-          userProjects.set(p.id, "member");
-        });
-      }
-
-      // Also check for pending requests by fetching all links for this wallet
-      const pendingRes = await fetch(
-        `/api/builders/pending-requests?wallet=${encodeURIComponent(wallet)}`,
-      );
-      let pendingProjects = new Set();
-      try {
-        const pendingData = await pendingRes.json();
-        if (pendingData.project_ids) {
-          pendingProjects = new Set(pendingData.project_ids);
+          container.innerHTML = "";
+          container.appendChild(list);
+        } catch (err: any) {
+          console.error("Error loading team members:", err);
+          container.innerHTML = `<p class="text-xs text-red-600">Error al cargar el equipo: ${
+            err?.message || "Unknown error"
+          }</p>`;
         }
-      } catch (e) {
-        // API might not exist yet, that's okay
-        console.log("Could not fetch pending requests:", e);
-      }
+      };
 
-      if (projectsData.projects && projectsData.projects.length > 0) {
-        // Show ALL projects, but with status tags
-        projectsList.innerHTML = "";
+      // Function to load and display projects
+      const loadProjects = async () => {
+        const projectsList = document.getElementById("projects-list");
+        if (!projectsList) return;
 
-        projectsData.projects.forEach((project: any) => {
-          // Determine user's relationship to this project
-          const isOwner = project.owner_wallet === wallet;
-          const isMember = userProjects.has(project.id);
-          const hasPendingRequest = pendingProjects.has(project.id);
-          const projectCard = document.createElement("div");
-          projectCard.className =
-            "border border-gray-200 rounded-lg p-6 hover:border-[#9945FF]/40 transition-colors";
+        const wallet = projectsList.getAttribute("data-wallet");
+        if (!wallet) {
+          projectsList.innerHTML =
+            '<p class="text-red-600">Error: No se encontró la dirección del wallet.</p>';
+          return;
+        }
 
-          // Title with user status badge
-          const titleDiv = document.createElement("div");
-          titleDiv.className = "flex items-center justify-between mb-2";
+        try {
+          // Load all projects
+          const projectsRes = await fetch("/api/projects/list");
+          const projectsData = await projectsRes.json();
 
-          const h3 = document.createElement("h3");
-          h3.className = "text-lg font-semibold";
-          h3.textContent = project.name;
-          titleDiv.appendChild(h3);
+          // Load user's existing project links to check status
+          const linksRes = await fetch(
+            `/api/builders/projects?wallet=${encodeURIComponent(wallet)}`,
+          );
+          const linksData = await linksRes.json();
 
-          // User relationship badge
-          if (isOwner) {
-            const ownerBadge = document.createElement("span");
-            ownerBadge.className =
-              "px-3 py-1 text-xs font-medium rounded-full bg-[#9945FF]/10 text-[#9945FF]";
-            ownerBadge.textContent = "👑 Propietario";
-            titleDiv.appendChild(ownerBadge);
-          } else if (isMember) {
-            const memberBadge = document.createElement("span");
-            memberBadge.className =
-              "px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800";
-            memberBadge.textContent = "✓ Miembro";
-            titleDiv.appendChild(memberBadge);
-          } else if (hasPendingRequest) {
-            const pendingBadge = document.createElement("span");
-            pendingBadge.className =
-              "px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800";
-            pendingBadge.textContent = "⏳ Solicitud Pendiente";
-            titleDiv.appendChild(pendingBadge);
+          // Create a map of project IDs to link status (joined/accepted/owner)
+          const userProjects = new Map();
+          if (linksData.projects) {
+            linksData.projects.forEach((p: any) => {
+              userProjects.set(p.id, "member");
+            });
           }
 
-          projectCard.appendChild(titleDiv);
-
-          if (project.description) {
-            const desc = document.createElement("p");
-            desc.className = "text-sm text-gray-600 mb-4";
-            desc.textContent = project.description;
-            projectCard.appendChild(desc);
-          }
-
-          // Project links
-          const linksDiv = document.createElement("div");
-          linksDiv.className = "flex gap-4 mb-4 text-sm";
-
-          if (project.website) {
-            const websiteLink = document.createElement("a");
-            websiteLink.href = project.website;
-            websiteLink.target = "_blank";
-            websiteLink.className = "text-[#9945FF] hover:underline";
-            websiteLink.textContent = "🌐 Sitio web";
-            linksDiv.appendChild(websiteLink);
-          }
-
-          if (project.twitter) {
-            const twitterLink = document.createElement("a");
-            twitterLink.href = `https://twitter.com/${project.twitter.replace("@", "")}`;
-            twitterLink.target = "_blank";
-            twitterLink.className = "text-[#9945FF] hover:underline";
-            twitterLink.textContent = "🐦 Twitter";
-            linksDiv.appendChild(twitterLink);
-          }
-
-          if (project.discord) {
-            const discordLink = document.createElement("a");
-            discordLink.href = project.discord;
-            discordLink.target = "_blank";
-            discordLink.className = "text-[#9945FF] hover:underline";
-            discordLink.textContent = "💬 Discord";
-            linksDiv.appendChild(discordLink);
-          }
-
-          if (linksDiv.children.length > 0) {
-            projectCard.appendChild(linksDiv);
-          }
-
-          // Team members preview
-          const teamContainer = document.createElement("div");
-          teamContainer.className =
-            "mt-5 border-t border-gray-100 pt-4 text-xs text-gray-700";
-          const teamTitle = document.createElement("p");
-          teamTitle.className =
-            "mb-2 font-semibold text-[11px] uppercase tracking-wide text-gray-500";
-          teamTitle.textContent = "Equipo del proyecto";
-          const teamBody = document.createElement("div");
-          teamBody.id = `team-${project.id}`;
-          teamBody.className = "mt-1";
-          teamContainer.appendChild(teamTitle);
-          teamContainer.appendChild(teamBody);
-          projectCard.appendChild(teamContainer);
-
-          // Load members asynchronously (no need to block card rendering)
-          loadTeamMembers(project.id, teamBody);
-
-          // Status badge - only show for non-owners (project verification status)
-          if (!isOwner) {
-            const statusDiv = document.createElement("div");
-            statusDiv.className = "mb-4";
-            const statusBadge = document.createElement("span");
-            statusBadge.className = "px-2 py-1 text-xs rounded-full";
-            if (project.status === "verified") {
-              statusBadge.className += " bg-green-100 text-green-800";
-              statusBadge.textContent = "✓ Verificado";
-            } else if (project.status === "active") {
-              statusBadge.className += " bg-blue-100 text-blue-800";
-              statusBadge.textContent = "Activo";
-            } else {
-              statusBadge.className += " bg-yellow-100 text-yellow-800";
-              statusBadge.textContent = "Pendiente";
+          // Also check for pending requests by fetching all links for this wallet
+          const pendingRes = await fetch(
+            `/api/builders/pending-requests?wallet=${encodeURIComponent(wallet)}`,
+          );
+          let pendingProjects = new Set();
+          try {
+            const pendingData = await pendingRes.json();
+            if (pendingData.project_ids) {
+              pendingProjects = new Set(pendingData.project_ids);
             }
-            statusDiv.appendChild(statusBadge);
-            projectCard.appendChild(statusDiv);
+          } catch (e) {
+            // API might not exist yet, that's okay
+            console.log("Could not fetch pending requests:", e);
           }
 
-          // Join button - only show if user can join
-          if (!isOwner && !isMember) {
-            const joinBtn = document.createElement("button");
+          if (projectsData.projects && projectsData.projects.length > 0) {
+            // Show ALL projects, but with status tags
+            projectsList.innerHTML = "";
 
-            if (hasPendingRequest) {
-              joinBtn.className =
-                "px-4 py-2 bg-gray-400 text-white rounded-lg text-sm cursor-not-allowed";
-              joinBtn.textContent = "Solicitud Enviada ✓";
-              joinBtn.disabled = true;
-            } else {
-              joinBtn.className =
-                "px-4 py-2 bg-[#9945FF] text-white rounded-lg hover:bg-[#8338EB] transition-colors text-sm";
-              joinBtn.textContent = "Solicitar Unirse";
-              joinBtn.disabled = false;
+            projectsData.projects.forEach((project: any) => {
+              // Determine user's relationship to this project
+              const isOwner = project.owner_wallet === wallet;
+              const isMember = userProjects.has(project.id);
+              const hasPendingRequest = pendingProjects.has(project.id);
+              const projectCard = document.createElement("div");
+              projectCard.className =
+                "border border-gray-200 rounded-lg p-6 hover:border-[#9945FF]/40 transition-colors";
 
-              joinBtn.addEventListener("click", async () => {
-                joinBtn.disabled = true;
-                joinBtn.textContent = "Enviando...";
+              // Title with user status badge
+              const titleDiv = document.createElement("div");
+              titleDiv.className = "flex items-center justify-between mb-2";
 
-                try {
-                  const res = await fetch("/api/projects/join", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      project_id: project.id,
-                      wallet: wallet,
-                    }),
-                  });
+              const h3 = document.createElement("h3");
+              h3.className = "text-lg font-semibold";
+              h3.textContent = project.name;
+              titleDiv.appendChild(h3);
 
-                  const result = await res.json();
-                  if (res.ok) {
-                    joinBtn.textContent = "Solicitud Enviada ✓";
-                    joinBtn.disabled = true;
-                    joinBtn.className =
-                      "px-4 py-2 bg-gray-400 text-white rounded-lg text-sm cursor-not-allowed";
+              // User relationship badge
+              if (isOwner) {
+                const ownerBadge = document.createElement("span");
+                ownerBadge.className =
+                  "px-3 py-1 text-xs font-medium rounded-full bg-[#9945FF]/10 text-[#9945FF]";
+                ownerBadge.textContent = "👑 Propietario";
+                titleDiv.appendChild(ownerBadge);
+              } else if (isMember) {
+                const memberBadge = document.createElement("span");
+                memberBadge.className =
+                  "px-3 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800";
+                memberBadge.textContent = "✓ Miembro";
+                titleDiv.appendChild(memberBadge);
+              } else if (hasPendingRequest) {
+                const pendingBadge = document.createElement("span");
+                pendingBadge.className =
+                  "px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800";
+                pendingBadge.textContent = "⏳ Solicitud Pendiente";
+                titleDiv.appendChild(pendingBadge);
+              }
 
-                    // Update the badge
-                    const pendingBadge = document.createElement("span");
-                    pendingBadge.className =
-                      "px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800";
-                    pendingBadge.textContent = "⏳ Solicitud Pendiente";
-                    titleDiv.appendChild(pendingBadge);
+              projectCard.appendChild(titleDiv);
 
-                    // Show success message
-                    const successMsg = document.createElement("p");
-                    successMsg.className = "mt-2 text-sm text-green-600";
-                    successMsg.textContent =
-                      "Solicitud enviada. El propietario del proyecto revisará tu solicitud.";
-                    projectCard.appendChild(successMsg);
-                  } else {
-                    alert(`Error: ${result.error || "Unknown error"}`);
-                    joinBtn.disabled = false;
-                    joinBtn.textContent = "Solicitar Unirse";
-                  }
-                } catch (err) {
-                  console.error("Error joining project:", err);
-                  alert(
-                    "Error al enviar la solicitud. Por favor intenta de nuevo.",
-                  );
-                  joinBtn.disabled = false;
-                  joinBtn.textContent = "Solicitar Unirse";
+              if (project.description) {
+                const desc = document.createElement("p");
+                desc.className = "text-sm text-gray-600 mb-4";
+                desc.textContent = project.description;
+                projectCard.appendChild(desc);
+              }
+
+              // Project links
+              const linksDiv = document.createElement("div");
+              linksDiv.className = "flex gap-4 mb-4 text-sm";
+
+              if (project.website) {
+                const websiteLink = document.createElement("a");
+                websiteLink.href = project.website;
+                websiteLink.target = "_blank";
+                websiteLink.className = "text-[#9945FF] hover:underline";
+                websiteLink.textContent = "🌐 Sitio web";
+                linksDiv.appendChild(websiteLink);
+              }
+
+              if (project.twitter) {
+                const twitterLink = document.createElement("a");
+                twitterLink.href = `https://twitter.com/${project.twitter.replace("@", "")}`;
+                twitterLink.target = "_blank";
+                twitterLink.className = "text-[#9945FF] hover:underline";
+                twitterLink.textContent = "🐦 Twitter";
+                linksDiv.appendChild(twitterLink);
+              }
+
+              if (project.discord) {
+                const discordLink = document.createElement("a");
+                discordLink.href = project.discord;
+                discordLink.target = "_blank";
+                discordLink.className = "text-[#9945FF] hover:underline";
+                discordLink.textContent = "💬 Discord";
+                linksDiv.appendChild(discordLink);
+              }
+
+              if (linksDiv.children.length > 0) {
+                projectCard.appendChild(linksDiv);
+              }
+
+              // Team members preview
+              const teamContainer = document.createElement("div");
+              teamContainer.className =
+                "mt-5 border-t border-gray-100 pt-4 text-xs text-gray-700";
+              const teamTitle = document.createElement("p");
+              teamTitle.className =
+                "mb-2 font-semibold text-[11px] uppercase tracking-wide text-gray-500";
+              teamTitle.textContent = "Equipo del proyecto";
+              const teamBody = document.createElement("div");
+              teamBody.id = `team-${project.id}`;
+              teamBody.className = "mt-1";
+              teamContainer.appendChild(teamTitle);
+              teamContainer.appendChild(teamBody);
+              projectCard.appendChild(teamContainer);
+
+              // Load members asynchronously (no need to block card rendering)
+              loadTeamMembers(project.id, teamBody);
+
+              // Status badge - only show for non-owners (project verification status)
+              if (!isOwner) {
+                const statusDiv = document.createElement("div");
+                statusDiv.className = "mb-4";
+                const statusBadge = document.createElement("span");
+                statusBadge.className = "px-2 py-1 text-xs rounded-full";
+                if (project.status === "verified") {
+                  statusBadge.className += " bg-green-100 text-green-800";
+                  statusBadge.textContent = "✓ Verificado";
+                } else if (project.status === "active") {
+                  statusBadge.className += " bg-blue-100 text-blue-800";
+                  statusBadge.textContent = "Activo";
+                } else {
+                  statusBadge.className += " bg-yellow-100 text-yellow-800";
+                  statusBadge.textContent = "Pendiente";
                 }
-              });
-            }
+                statusDiv.appendChild(statusBadge);
+                projectCard.appendChild(statusDiv);
+              }
 
-            projectCard.appendChild(joinBtn);
-          } else if (isOwner) {
-            // Show owner message
-            const ownerMsg = document.createElement("p");
-            ownerMsg.className = "text-sm text-[#9945FF] font-medium";
-            ownerMsg.textContent = "Eres el propietario de este proyecto";
-            projectCard.appendChild(ownerMsg);
-          } else if (isMember) {
-            // Show member message
-            const memberMsg = document.createElement("p");
-            memberMsg.className = "text-sm text-green-600 font-medium";
-            memberMsg.textContent = "Ya eres miembro de este proyecto";
-            projectCard.appendChild(memberMsg);
+              // Join button - only show if user can join
+              if (!isOwner && !isMember) {
+                const joinBtn = document.createElement("button");
+
+                if (hasPendingRequest) {
+                  joinBtn.className =
+                    "px-4 py-2 bg-gray-400 text-white rounded-lg text-sm cursor-not-allowed";
+                  joinBtn.textContent = "Solicitud Enviada ✓";
+                  joinBtn.disabled = true;
+                } else {
+                  joinBtn.className =
+                    "px-4 py-2 bg-[#9945FF] text-white rounded-lg hover:bg-[#8338EB] transition-colors text-sm";
+                  joinBtn.textContent = "Solicitar Unirse";
+                  joinBtn.disabled = false;
+
+                  joinBtn.addEventListener("click", async () => {
+                    joinBtn.disabled = true;
+                    joinBtn.textContent = "Enviando...";
+
+                    try {
+                      const res = await fetch("/api/projects/join", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          project_id: project.id,
+                          wallet: wallet,
+                        }),
+                      });
+
+                      const result = await res.json();
+                      if (res.ok) {
+                        joinBtn.textContent = "Solicitud Enviada ✓";
+                        joinBtn.disabled = true;
+                        joinBtn.className =
+                          "px-4 py-2 bg-gray-400 text-white rounded-lg text-sm cursor-not-allowed";
+
+                        // Update the badge
+                        const pendingBadge = document.createElement("span");
+                        pendingBadge.className =
+                          "px-3 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800";
+                        pendingBadge.textContent = "⏳ Solicitud Pendiente";
+                        titleDiv.appendChild(pendingBadge);
+
+                        // Show success message
+                        const successMsg = document.createElement("p");
+                        successMsg.className = "mt-2 text-sm text-green-600";
+                        successMsg.textContent =
+                          "Solicitud enviada. El propietario del proyecto revisará tu solicitud.";
+                        projectCard.appendChild(successMsg);
+                      } else {
+                        alert(`Error: ${result.error || "Unknown error"}`);
+                        joinBtn.disabled = false;
+                        joinBtn.textContent = "Solicitar Unirse";
+                      }
+                    } catch (err) {
+                      console.error("Error joining project:", err);
+                      alert(
+                        "Error al enviar la solicitud. Por favor intenta de nuevo.",
+                      );
+                      joinBtn.disabled = false;
+                      joinBtn.textContent = "Solicitar Unirse";
+                    }
+                  });
+                }
+
+                projectCard.appendChild(joinBtn);
+              } else if (isOwner) {
+                // Show owner message
+                const ownerMsg = document.createElement("p");
+                ownerMsg.className = "text-sm text-[#9945FF] font-medium";
+                ownerMsg.textContent = "Eres el propietario de este proyecto";
+                projectCard.appendChild(ownerMsg);
+              } else if (isMember) {
+                // Show member message
+                const memberMsg = document.createElement("p");
+                memberMsg.className = "text-sm text-green-600 font-medium";
+                memberMsg.textContent = "Ya eres miembro de este proyecto";
+                projectCard.appendChild(memberMsg);
+              }
+
+              projectsList.appendChild(projectCard);
+            });
+          } else {
+            projectsList.innerHTML =
+              '<p class="text-gray-600">No hay proyectos disponibles para unirse.</p>';
           }
+        } catch (err) {
+          console.error("Error loading projects:", err);
+          const projectsList = document.getElementById("projects-list");
+          if (projectsList) {
+            projectsList.innerHTML =
+              '<p class="text-red-600">Error al cargar proyectos. Por favor recarga la página.</p>';
+          }
+        }
+      };
 
-          projectsList.appendChild(projectCard);
-        });
+      // Run on initial load
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", loadProjects);
       } else {
-        projectsList.innerHTML =
-          '<p class="text-gray-600">No hay proyectos disponibles para unirse.</p>';
+        // DOM already loaded (client-side navigation)
+        loadProjects();
       }
-    } catch (err) {
-      console.error("Error loading projects:", err);
-      const projectsList = document.getElementById("projects-list");
-      if (projectsList) {
-        projectsList.innerHTML =
-          '<p class="text-red-600">Error al cargar proyectos. Por favor recarga la página.</p>';
-      }
-    }
-  };
 
-  // Run on initial load
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", loadProjects);
-  } else {
-    // DOM already loaded (client-side navigation)
-    loadProjects();
-  }
-
-  // Also listen for Astro navigation events
-  document.addEventListener("astro:page-load", loadProjects);
+      // Also listen for Astro navigation events
+      document.addEventListener("astro:page-load", loadProjects);
 </script>

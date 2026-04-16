@@ -355,336 +355,336 @@ const session = await getSession(Astro.cookies);
 
   <script>
     // Wallet connection will be handled by WalletConnect component
-    // This script handles form interactions
-    // IMPORTANT: This must work on both initial load AND client-side navigation
-    // Wrap everything in IIFE to prevent initialization issues on client-side navigation
+            // This script handles form interactions
+            // IMPORTANT: This must work on both initial load AND client-side navigation
+            // Wrap everything in IIFE to prevent initialization issues on client-side navigation
 
-    (() => {
-      
+            (() => {
+              
 
-      const loadProjects = async (wallet: string) => {
-        const list = document.getElementById("projects-list");
-        if (!list) return;
+              const loadProjects = async (wallet: string) => {
+                const list = document.getElementById("projects-list");
+                if (!list) return;
 
-        list.innerHTML = '<p class="text-gray-600">Cargando proyectos...</p>';
+                list.innerHTML = '<p class="text-gray-600">Cargando proyectos...</p>';
 
-        try {
-          const res = await fetch(
-            `/api/builders/projects?wallet=${encodeURIComponent(wallet)}`,
-          );
-          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-          const data = await res.json();
+                try {
+                  const res = await fetch(
+                    `/api/builders/projects?wallet=${encodeURIComponent(wallet)}`,
+                  );
+                  if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                  const data = await res.json();
 
-          if (data.projects && data.projects.length > 0) {
-            const ul = document.createElement("ul");
-            ul.className = "space-y-4";
+                  if (data.projects && data.projects.length > 0) {
+                    const ul = document.createElement("ul");
+                    ul.className = "space-y-4";
 
-            data.projects.forEach((p: any) => {
-              const li = document.createElement("li");
-              li.className =
-                "border border-gray-100 rounded-xl p-5 hover:bg-gray-50 transition-colors";
+                    data.projects.forEach((p: any) => {
+                      const li = document.createElement("li");
+                      li.className =
+                        "border border-gray-100 rounded-xl p-5 hover:bg-gray-50 transition-colors";
 
-              const isOwner = p.owner_wallet === wallet;
+                      const isOwner = p.owner_wallet === wallet;
 
-              li.innerHTML = `
-              <div class="flex items-center justify-between mb-2">
-                <h3 class="font-bold text-lg text-gray-900">${p.name}</h3>
-                <div class="flex gap-2 items-center">
-                  ${isOwner ? '<span class="px-2 py-1 text-xs font-bold rounded-full bg-[#9945FF]/10 text-[#9945FF]">👑 Propietario</span>' : '<span class="px-2 py-1 text-xs font-bold rounded-full bg-green-100 text-green-800">✓ Miembro</span>'}
-                  <span class="px-2 py-1 text-xs font-bold rounded-full ${p.status === "verified" || p.status === "active" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}">
-                    ${p.status === "verified" ? "✓ Verificado" : p.status === "active" ? "Activo" : "Pendiente"}
-                  </span>
-                </div>
-              </div>
-              ${p.description ? `<p class="text-gray-600 text-sm mb-4 line-clamp-2">${p.description}</p>` : ""}
-              <div class="flex items-center gap-4 text-sm mt-3">
-                ${p.website ? `<a href="${p.website}" target="_blank" class="text-[#9945FF] hover:underline font-medium">🌐 Web</a>` : ""}
-                ${p.twitter ? `<a href="https://twitter.com/${p.twitter.replace("@", "")}" target="_blank" class="text-[#9945FF] hover:underline font-medium">🐦 Twitter</a>` : ""}
-                ${isOwner ? `<a href="/builders/projects/edit?id=${p.id}" class="ml-auto px-4 py-1.5 bg-gray-900 text-white rounded-lg hover:bg-black transition-colors text-xs font-bold">Editar</a>` : ""}
-              </div>
-            `;
-              ul.appendChild(li);
-            });
+                      li.innerHTML = `
+                      <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-bold text-lg text-gray-900">${p.name}</h3>
+                        <div class="flex gap-2 items-center">
+                          ${isOwner ? '<span class="px-2 py-1 text-xs font-bold rounded-full bg-[#9945FF]/10 text-[#9945FF]">👑 Propietario</span>' : '<span class="px-2 py-1 text-xs font-bold rounded-full bg-green-100 text-green-800">✓ Miembro</span>'}
+                          <span class="px-2 py-1 text-xs font-bold rounded-full ${p.status === "verified" || p.status === "active" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}">
+                            ${p.status === "verified" ? "✓ Verificado" : p.status === "active" ? "Activo" : "Pendiente"}
+                          </span>
+                        </div>
+                      </div>
+                      ${p.description ? `<p class="text-gray-600 text-sm mb-4 line-clamp-2">${p.description}</p>` : ""}
+                      <div class="flex items-center gap-4 text-sm mt-3">
+                        ${p.website ? `<a href="${p.website}" target="_blank" class="text-[#9945FF] hover:underline font-medium">🌐 Web</a>` : ""}
+                        ${p.twitter ? `<a href="https://twitter.com/${p.twitter.replace("@", "")}" target="_blank" class="text-[#9945FF] hover:underline font-medium">🐦 Twitter</a>` : ""}
+                        ${isOwner ? `<a href="/builders/projects/edit?id=${p.id}" class="ml-auto px-4 py-1.5 bg-gray-900 text-white rounded-lg hover:bg-black transition-colors text-xs font-bold">Editar</a>` : ""}
+                      </div>
+                    `;
+                      ul.appendChild(li);
+                    });
 
-            list.innerHTML = "";
-            list.appendChild(ul);
-          } else {
-            list.innerHTML =
-              '<p class="text-gray-600 text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">No tienes proyectos asociados aún. ¡Crea uno para empezar!</p>';
-          }
-        } catch (err: any) {
-          console.error("Error loading projects:", err);
-          list.innerHTML = `<p class="text-red-600">Error al cargar proyectos: ${err.message}</p>`;
-        }
-      };
-
-      const loadProfile = async () => {
-        try {
-          const res = await fetch("/api/builders/get");
-          const data = await res.json();
-
-          if (res.ok && data.builder) {
-            const b = data.builder;
-
-            // Update welcome message
-            const welcomeMsg = document.getElementById("welcome-message");
-            if (welcomeMsg)
-              welcomeMsg.textContent = `Bienvenido, ${b.name || `${b.wallet_address.slice(0, 8)}...`}`;
-
-            // Update profile details container
-            const container = document.getElementById(
-              "profile-details-container",
-            );
-            if (container) {
-              let html = "";
-              if (b.name)
-                html += `<p><strong class="text-gray-700">Nombre:</strong> ${b.name}</p>`;
-              if (b.role)
-                html += `<p><strong class="text-gray-700">Rol:</strong> <span class="px-2 py-1 bg-[#9945FF]/10 text-[#9945FF] rounded text-sm font-medium">${b.role}</span></p>`;
-              if (b.university)
-                html += `<p><strong class="text-gray-700">Universidad:</strong> ${b.university}</p>`;
-              container.innerHTML = html;
-
-              // Update socials
-              const socialsContainer =
-                document.getElementById("profile-socials");
-              if (socialsContainer) {
-                let socialsHtml = "";
-                if (b.telegram) {
-                  socialsHtml += `
-                  <a href="https://t.me/${b.telegram.replace("@", "")}" target="_blank" class="flex items-center gap-2 text-[#9945FF] hover:underline font-medium text-sm">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.665 3.717l-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42 10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701-.332 4.965c.488 0 .702-.223.974-.488l2.338-2.27 4.861 3.59c.896.494 1.54.239 1.764-.829l3.19-15.035c.326-1.303-.495-1.892-1.352-1.503z"/></svg>
-                    Telegram
-                  </a>`;
+                    list.innerHTML = "";
+                    list.appendChild(ul);
+                  } else {
+                    list.innerHTML =
+                      '<p class="text-gray-600 text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">No tienes proyectos asociados aún. ¡Crea uno para empezar!</p>';
+                  }
+                } catch (err: any) {
+                  console.error("Error loading projects:", err);
+                  list.innerHTML = `<p class="text-red-600">Error al cargar proyectos: ${err.message}</p>`;
                 }
-                if (b.twitter) {
-                  socialsHtml += `
-                  <a href="https://twitter.com/${b.twitter.replace("@", "")}" target="_blank" class="flex items-center gap-2 text-[#9945FF] hover:underline font-medium text-sm">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                    Twitter
-                  </a>`;
+              };
+
+              const loadProfile = async () => {
+                try {
+                  const res = await fetch("/api/builders/get");
+                  const data = await res.json();
+
+                  if (res.ok && data.builder) {
+                    const b = data.builder;
+
+                    // Update welcome message
+                    const welcomeMsg = document.getElementById("welcome-message");
+                    if (welcomeMsg)
+                      welcomeMsg.textContent = `Bienvenido, ${b.name || `${b.wallet_address.slice(0, 8)}...`}`;
+
+                    // Update profile details container
+                    const container = document.getElementById(
+                      "profile-details-container",
+                    );
+                    if (container) {
+                      let html = "";
+                      if (b.name)
+                        html += `<p><strong class="text-gray-700">Nombre:</strong> ${b.name}</p>`;
+                      if (b.role)
+                        html += `<p><strong class="text-gray-700">Rol:</strong> <span class="px-2 py-1 bg-[#9945FF]/10 text-[#9945FF] rounded text-sm font-medium">${b.role}</span></p>`;
+                      if (b.university)
+                        html += `<p><strong class="text-gray-700">Universidad:</strong> ${b.university}</p>`;
+                      container.innerHTML = html;
+
+                      // Update socials
+                      const socialsContainer =
+                        document.getElementById("profile-socials");
+                      if (socialsContainer) {
+                        let socialsHtml = "";
+                        if (b.telegram) {
+                          socialsHtml += `
+                          <a href="https://t.me/${b.telegram.replace("@", "")}" target="_blank" class="flex items-center gap-2 text-[#9945FF] hover:underline font-medium text-sm">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.665 3.717l-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42 10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701-.332 4.965c.488 0 .702-.223.974-.488l2.338-2.27 4.861 3.59c.896.494 1.54.239 1.764-.829l3.19-15.035c.326-1.303-.495-1.892-1.352-1.503z"/></svg>
+                            Telegram
+                          </a>`;
+                        }
+                        if (b.twitter) {
+                          socialsHtml += `
+                          <a href="https://twitter.com/${b.twitter.replace("@", "")}" target="_blank" class="flex items-center gap-2 text-[#9945FF] hover:underline font-medium text-sm">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                            Twitter
+                          </a>`;
+                        }
+                        socialsContainer.innerHTML = socialsHtml;
+                      }
+                    }
+                  }
+                } catch (err) {
+                  console.error("Error loading profile:", err);
                 }
-                socialsContainer.innerHTML = socialsHtml;
+              };
+
+              // Check if user is already registered
+              const checkRegistrationStatus = async (wallet: string) => {
+                try {
+                  const res = await fetch(
+                    `/api/builders/check?wallet=${encodeURIComponent(wallet)}`,
+                  );
+                  const data = await res.json();
+
+                  if (data.registered) {
+                    // User is already registered, show dashboard section
+                    const registrationSection = document.getElementById(
+                      "registration-section",
+                    );
+                    const dashboardSection =
+                      document.getElementById("dashboard-section");
+                    const heroSection = document.getElementById("hero-section");
+
+                    if (registrationSection)
+                      registrationSection.classList.add("hidden");
+                    if (dashboardSection) dashboardSection.classList.remove("hidden");
+                    if (heroSection) heroSection.classList.add("hidden");
+
+                    // Update dashboard wallet display
+                    const walletDisplay = document.getElementById(
+                      "dashboard-wallet-display",
+                    );
+                    if (walletDisplay) walletDisplay.textContent = wallet;
+
+                    // Update welcome message if we don't have a name yet
+                    const welcomeMsg = document.getElementById("welcome-message");
+                    if (welcomeMsg && !welcomeMsg.textContent?.includes(",")) {
+                      welcomeMsg.textContent = `Bienvenido, ${wallet.slice(0, 8)}...`;
+                    }
+
+                    // Trigger projects and profile load
+                    loadProjects(wallet);
+                    loadProfile();
+
+                    // Update page title
+                    document.title = "Dashboard | Solana Colombia";
+                  } else {
+                    // User not registered, show registration section and form
+                    const registrationSection = document.getElementById(
+                      "registration-section",
+                    );
+                    const currentForm = document.getElementById(
+                      "builder-form",
+                    ) as HTMLFormElement;
+                    const heroSection = document.getElementById("hero-section");
+
+                    if (registrationSection)
+                      registrationSection.classList.remove("hidden");
+                    if (heroSection) heroSection.classList.remove("hidden");
+                    if (currentForm) {
+                      currentForm.classList.remove("hidden");
+                      const walletStatus = document.getElementById("wallet-status");
+                      if (walletStatus) walletStatus.classList.remove("hidden");
+                    }
+                  }
+                } catch (err) {
+                  console.error("Error checking registration status:", err);
+                }
+              };
+
+              // Handle wallet connection
+              const handleWalletConnected = async (address: string) => {
+                if (!address) return;
+
+                console.log("handleWalletConnected called with:", address);
+
+                // Set server-side session
+                try {
+                  await fetch("/api/builders/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ wallet: address }),
+                  });
+                } catch (err) {
+                  console.error("Error setting session cookie:", err);
+                }
+
+                const walletInput = document.getElementById(
+                  "wallet-address",
+                ) as HTMLInputElement;
+                if (walletInput) {
+                  walletInput.value = address;
+                }
+
+                const formattedAddress =
+                  address.length > 8
+                    ? `${address.slice(0, 4)}...${address.slice(-4)}`
+                    : address;
+
+                // Hide wallet connect button
+                const walletConnectDiv = document.getElementById("wallet-connect");
+                if (walletConnectDiv) {
+                  walletConnectDiv.classList.add("hidden");
+                }
+
+                // Show wallet status in registration section
+                const walletStatus = document.getElementById("wallet-status");
+                const walletStatusAddress = document.getElementById(
+                  "wallet-status-address",
+                );
+                if (walletStatus && walletStatusAddress) {
+                  walletStatusAddress.textContent = formattedAddress;
+                  walletStatusAddress.title = address;
+                  walletStatus.classList.remove("hidden");
+                }
+
+                // Check registration
+                checkRegistrationStatus(address);
+              };
+
+              // Handle wallet disconnect
+              const handleDisconnect = async () => {
+                console.log("Disconnecting wallet and clearing session...");
+
+                // Trigger wallet provider disconnect if possible
+                window.dispatchEvent(new CustomEvent("wallet-disconnect"));
+
+                // Wait a moment for wallet disconnect to process
+                await new Promise((resolve) => setTimeout(resolve, 500));
+
+                // Clear session on server
+                try {
+                  await fetch("/api/builders/logout", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                  });
+                } catch (err) {
+                  console.error("Error logging out from server:", err);
+                }
+
+                // Clear local storage explicitly
+                localStorage.removeItem("solana_wallet_connected");
+                localStorage.removeItem("solana_wallet_provider");
+
+                // Force a full page reload to clear all states and trigger server-side auth check
+                window.location.href = "/builders";
+              };
+
+              // Initialize page
+              const initPage = () => {
+                // Check if already logged in via session (server-side set)
+                const projectsList = document.getElementById("projects-list");
+                const wallet = projectsList?.getAttribute("data-wallet");
+                if (wallet) {
+                  loadProjects(wallet);
+                  loadProfile();
+                }
+
+                // Check stored wallet connection for auto-login
+                const storedAddress = localStorage.getItem("solana_wallet_connected");
+                if (storedAddress && !wallet) {
+                  handleWalletConnected(storedAddress);
+                }
+
+                // Form submission
+                const currentForm = document.getElementById(
+                  "builder-form",
+                ) as HTMLFormElement;
+                if (currentForm) {
+                  currentForm.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    const data = new FormData(currentForm);
+                    const walletInput = document.getElementById(
+                      "wallet-address",
+                    ) as HTMLInputElement;
+                    const wallet = walletInput?.value;
+
+                    const res = await fetch("/api/builders/register", {
+                      method: "POST",
+                      body: data,
+                    });
+                    const result = await res.json();
+
+                    if (res.ok && wallet) {
+                      await fetch("/api/builders/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ wallet }),
+                      });
+                      checkRegistrationStatus(wallet);
+                    } else if (!res.ok) {
+                      alert(`Error: ${result.error || "Unknown error"}`);
+                    }
+                  });
+                }
+
+                // Disconnect buttons
+                document
+                  .getElementById("disconnect-wallet")
+                  ?.addEventListener("click", handleDisconnect);
+                document
+                  .getElementById("dashboard-disconnect-wallet")
+                  ?.addEventListener("click", handleDisconnect);
+              };
+
+              // Run on load and navigation
+              if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", initPage);
+              } else {
+                initPage();
               }
-            }
-          }
-        } catch (err) {
-          console.error("Error loading profile:", err);
-        }
-      };
+              document.addEventListener("astro:page-load", initPage);
 
-      // Check if user is already registered
-      const checkRegistrationStatus = async (wallet: string) => {
-        try {
-          const res = await fetch(
-            `/api/builders/check?wallet=${encodeURIComponent(wallet)}`,
-          );
-          const data = await res.json();
-
-          if (data.registered) {
-            // User is already registered, show dashboard section
-            const registrationSection = document.getElementById(
-              "registration-section",
-            );
-            const dashboardSection =
-              document.getElementById("dashboard-section");
-            const heroSection = document.getElementById("hero-section");
-
-            if (registrationSection)
-              registrationSection.classList.add("hidden");
-            if (dashboardSection) dashboardSection.classList.remove("hidden");
-            if (heroSection) heroSection.classList.add("hidden");
-
-            // Update dashboard wallet display
-            const walletDisplay = document.getElementById(
-              "dashboard-wallet-display",
-            );
-            if (walletDisplay) walletDisplay.textContent = wallet;
-
-            // Update welcome message if we don't have a name yet
-            const welcomeMsg = document.getElementById("welcome-message");
-            if (welcomeMsg && !welcomeMsg.textContent?.includes(",")) {
-              welcomeMsg.textContent = `Bienvenido, ${wallet.slice(0, 8)}...`;
-            }
-
-            // Trigger projects and profile load
-            loadProjects(wallet);
-            loadProfile();
-
-            // Update page title
-            document.title = "Dashboard | Solana Colombia";
-          } else {
-            // User not registered, show registration section and form
-            const registrationSection = document.getElementById(
-              "registration-section",
-            );
-            const currentForm = document.getElementById(
-              "builder-form",
-            ) as HTMLFormElement;
-            const heroSection = document.getElementById("hero-section");
-
-            if (registrationSection)
-              registrationSection.classList.remove("hidden");
-            if (heroSection) heroSection.classList.remove("hidden");
-            if (currentForm) {
-              currentForm.classList.remove("hidden");
-              const walletStatus = document.getElementById("wallet-status");
-              if (walletStatus) walletStatus.classList.remove("hidden");
-            }
-          }
-        } catch (err) {
-          console.error("Error checking registration status:", err);
-        }
-      };
-
-      // Handle wallet connection
-      const handleWalletConnected = async (address: string) => {
-        if (!address) return;
-
-        console.log("handleWalletConnected called with:", address);
-
-        // Set server-side session
-        try {
-          await fetch("/api/builders/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ wallet: address }),
-          });
-        } catch (err) {
-          console.error("Error setting session cookie:", err);
-        }
-
-        const walletInput = document.getElementById(
-          "wallet-address",
-        ) as HTMLInputElement;
-        if (walletInput) {
-          walletInput.value = address;
-        }
-
-        const formattedAddress =
-          address.length > 8
-            ? `${address.slice(0, 4)}...${address.slice(-4)}`
-            : address;
-
-        // Hide wallet connect button
-        const walletConnectDiv = document.getElementById("wallet-connect");
-        if (walletConnectDiv) {
-          walletConnectDiv.classList.add("hidden");
-        }
-
-        // Show wallet status in registration section
-        const walletStatus = document.getElementById("wallet-status");
-        const walletStatusAddress = document.getElementById(
-          "wallet-status-address",
-        );
-        if (walletStatus && walletStatusAddress) {
-          walletStatusAddress.textContent = formattedAddress;
-          walletStatusAddress.title = address;
-          walletStatus.classList.remove("hidden");
-        }
-
-        // Check registration
-        checkRegistrationStatus(address);
-      };
-
-      // Handle wallet disconnect
-      const handleDisconnect = async () => {
-        console.log("Disconnecting wallet and clearing session...");
-
-        // Trigger wallet provider disconnect if possible
-        window.dispatchEvent(new CustomEvent("wallet-disconnect"));
-
-        // Wait a moment for wallet disconnect to process
-        await new Promise((resolve) => setTimeout(resolve, 500));
-
-        // Clear session on server
-        try {
-          await fetch("/api/builders/logout", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-          });
-        } catch (err) {
-          console.error("Error logging out from server:", err);
-        }
-
-        // Clear local storage explicitly
-        localStorage.removeItem("solana_wallet_connected");
-        localStorage.removeItem("solana_wallet_provider");
-
-        // Force a full page reload to clear all states and trigger server-side auth check
-        window.location.href = "/builders";
-      };
-
-      // Initialize page
-      const initPage = () => {
-        // Check if already logged in via session (server-side set)
-        const projectsList = document.getElementById("projects-list");
-        const wallet = projectsList?.getAttribute("data-wallet");
-        if (wallet) {
-          loadProjects(wallet);
-          loadProfile();
-        }
-
-        // Check stored wallet connection for auto-login
-        const storedAddress = localStorage.getItem("solana_wallet_connected");
-        if (storedAddress && !wallet) {
-          handleWalletConnected(storedAddress);
-        }
-
-        // Form submission
-        const currentForm = document.getElementById(
-          "builder-form",
-        ) as HTMLFormElement;
-        if (currentForm) {
-          currentForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const data = new FormData(currentForm);
-            const walletInput = document.getElementById(
-              "wallet-address",
-            ) as HTMLInputElement;
-            const wallet = walletInput?.value;
-
-            const res = await fetch("/api/builders/register", {
-              method: "POST",
-              body: data,
-            });
-            const result = await res.json();
-
-            if (res.ok && wallet) {
-              await fetch("/api/builders/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ wallet }),
-              });
-              checkRegistrationStatus(wallet);
-            } else if (!res.ok) {
-              alert(`Error: ${result.error || "Unknown error"}`);
-            }
-          });
-        }
-
-        // Disconnect buttons
-        document
-          .getElementById("disconnect-wallet")
-          ?.addEventListener("click", handleDisconnect);
-        document
-          .getElementById("dashboard-disconnect-wallet")
-          ?.addEventListener("click", handleDisconnect);
-      };
-
-      // Run on load and navigation
-      if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initPage);
-      } else {
-        initPage();
-      }
-      document.addEventListener("astro:page-load", initPage);
-
-      // Listen for wallet connection
-      window.addEventListener("wallet-connected", ((e: CustomEvent) => {
-        handleWalletConnected(e.detail.address);
-      }) as EventListener);
-    })();
-    // End IIFE
+              // Listen for wallet connection
+              window.addEventListener("wallet-connected", ((e: CustomEvent) => {
+                handleWalletConnected(e.detail.address);
+              }) as EventListener);
+            })();
+            // End IIFE
   </script>
 </Layout>

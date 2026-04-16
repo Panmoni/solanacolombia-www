@@ -18,8 +18,11 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{js,ts,astro}": [
+    "*.{js,ts}": [
       "biome format --write",
+      "biome check --write"
+    ],
+    "*.astro": [
       "biome check --write"
     ],
     "*.{json,jsonc,css}": [

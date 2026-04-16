@@ -119,80 +119,80 @@ if (!session?.wallet) {
 
 <script>
   // Load current profile data
-  const loadProfile = async () => {
-    try {
-      const res = await fetch("/api/builders/get");
-      const data = await res.json();
+      const loadProfile = async () => {
+        try {
+          const res = await fetch("/api/builders/get");
+          const data = await res.json();
 
-      if (res.ok && data.builder) {
-        const form = document.getElementById("profile-form") as HTMLFormElement;
-        if (form) {
-          (form.querySelector("#name") as HTMLInputElement).value =
-            data.builder.name || "";
-          (form.querySelector("#email") as HTMLInputElement).value =
-            data.builder.email || "";
-          (form.querySelector("#telegram") as HTMLInputElement).value =
-            data.builder.telegram || "";
-          (form.querySelector("#twitter") as HTMLInputElement).value =
-            data.builder.twitter || "";
-          (form.querySelector("#university") as HTMLInputElement).value =
-            data.builder.university || "";
-        }
-      }
-    } catch (err) {
-      console.error("Error loading profile:", err);
-    }
-  };
-
-  // Set up form
-  const setupProfileForm = () => {
-    const form = document.getElementById("profile-form") as HTMLFormElement;
-
-    if (form) {
-      // Remove existing listener to avoid duplicates
-      const newForm = form.cloneNode(true) as HTMLFormElement;
-      form.parentNode?.replaceChild(newForm, form);
-
-      newForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const data = new FormData(newForm);
-
-        const res = await fetch("/api/builders/update", {
-          method: "POST",
-          body: data,
-        });
-        const result = await res.json();
-
-        if (res.ok) {
-          newForm.classList.add("hidden");
-          const successMsg = document.getElementById("success-msg");
-          if (successMsg) {
-            successMsg.classList.remove("hidden");
-            setTimeout(() => {
-              window.location.href = "/builders";
-            }, 2000);
+          if (res.ok && data.builder) {
+            const form = document.getElementById("profile-form") as HTMLFormElement;
+            if (form) {
+              (form.querySelector("#name") as HTMLInputElement).value =
+                data.builder.name || "";
+              (form.querySelector("#email") as HTMLInputElement).value =
+                data.builder.email || "";
+              (form.querySelector("#telegram") as HTMLInputElement).value =
+                data.builder.telegram || "";
+              (form.querySelector("#twitter") as HTMLInputElement).value =
+                data.builder.twitter || "";
+              (form.querySelector("#university") as HTMLInputElement).value =
+                data.builder.university || "";
+            }
           }
-        } else {
-          alert(`Error: ${result.error || "Unknown error"}`);
+        } catch (err) {
+          console.error("Error loading profile:", err);
         }
+      };
+
+      // Set up form
+      const setupProfileForm = () => {
+        const form = document.getElementById("profile-form") as HTMLFormElement;
+
+        if (form) {
+          // Remove existing listener to avoid duplicates
+          const newForm = form.cloneNode(true) as HTMLFormElement;
+          form.parentNode?.replaceChild(newForm, form);
+
+          newForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const data = new FormData(newForm);
+
+            const res = await fetch("/api/builders/update", {
+              method: "POST",
+              body: data,
+            });
+            const result = await res.json();
+
+            if (res.ok) {
+              newForm.classList.add("hidden");
+              const successMsg = document.getElementById("success-msg");
+              if (successMsg) {
+                successMsg.classList.remove("hidden");
+                setTimeout(() => {
+                  window.location.href = "/builders";
+                }, 2000);
+              }
+            } else {
+              alert(`Error: ${result.error || "Unknown error"}`);
+            }
+          });
+        }
+      };
+
+      // Run on initial load
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => {
+          loadProfile();
+          setupProfileForm();
+        });
+      } else {
+        loadProfile();
+        setupProfileForm();
+      }
+
+      // Also listen for Astro navigation events
+      document.addEventListener("astro:page-load", () => {
+        loadProfile();
+        setupProfileForm();
       });
-    }
-  };
-
-  // Run on initial load
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => {
-      loadProfile();
-      setupProfileForm();
-    });
-  } else {
-    loadProfile();
-    setupProfileForm();
-  }
-
-  // Also listen for Astro navigation events
-  document.addEventListener("astro:page-load", () => {
-    loadProfile();
-    setupProfileForm();
-  });
 </script>

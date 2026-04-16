@@ -126,48 +126,48 @@ if (!session?.wallet) {
 
 <script>
   // Function to set up form - works on both initial load and navigation
-  const setupProjectForm = () => {
-    const form = document.getElementById("project-form") as HTMLFormElement;
+      const setupProjectForm = () => {
+        const form = document.getElementById("project-form") as HTMLFormElement;
 
-    if (form) {
-      // Remove existing listener to avoid duplicates
-      const newForm = form.cloneNode(true) as HTMLFormElement;
-      form.parentNode?.replaceChild(newForm, form);
+        if (form) {
+          // Remove existing listener to avoid duplicates
+          const newForm = form.cloneNode(true) as HTMLFormElement;
+          form.parentNode?.replaceChild(newForm, form);
 
-      newForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const data = new FormData(newForm);
+          newForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const data = new FormData(newForm);
 
-        const res = await fetch("/api/projects/create", {
-          method: "POST",
-          body: data,
-        });
-        const result = await res.json();
+            const res = await fetch("/api/projects/create", {
+              method: "POST",
+              body: data,
+            });
+            const result = await res.json();
 
-        if (res.ok) {
-          newForm.classList.add("hidden");
-          const successMsg = document.getElementById("success-msg");
-          if (successMsg) {
-            successMsg.classList.remove("hidden");
-            setTimeout(() => {
-              window.location.href = "/builders";
-            }, 2000);
-          }
-        } else {
-          alert(`Error: ${result.error || "Unknown error"}`);
+            if (res.ok) {
+              newForm.classList.add("hidden");
+              const successMsg = document.getElementById("success-msg");
+              if (successMsg) {
+                successMsg.classList.remove("hidden");
+                setTimeout(() => {
+                  window.location.href = "/builders";
+                }, 2000);
+              }
+            } else {
+              alert(`Error: ${result.error || "Unknown error"}`);
+            }
+          });
         }
-      });
-    }
-  };
+      };
 
-  // Run on initial load
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", setupProjectForm);
-  } else {
-    // DOM already loaded (client-side navigation)
-    setupProjectForm();
-  }
+      // Run on initial load
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", setupProjectForm);
+      } else {
+        // DOM already loaded (client-side navigation)
+        setupProjectForm();
+      }
 
-  // Also listen for Astro navigation events
-  document.addEventListener("astro:page-load", setupProjectForm);
+      // Also listen for Astro navigation events
+      document.addEventListener("astro:page-load", setupProjectForm);
 </script>
