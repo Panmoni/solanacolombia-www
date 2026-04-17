@@ -19,7 +19,7 @@ Welcome to the official repository for the **Solana Colombia** website. This pla
 ### Prerequisites
 
 - **Node.js:** `v24.0.0` or higher
-- **npm:** Package manager included with Node.js
+- **Package Manager:** `pnpm` (recommended) or `npm`
 
 ### Installation
 
@@ -31,6 +31,10 @@ Welcome to the official repository for the **Solana Colombia** website. This pla
 
 2. Install dependencies:
    ```sh
+   # Using pnpm (recommended)
+   pnpm install
+   
+   # Or using npm
    npm install
    ```
 
@@ -42,32 +46,38 @@ Welcome to the official repository for the **Solana Colombia** website. This pla
 To start the local development server:
 
 ```sh
+# Using pnpm
+pnpm dev
+
+# Or using npm
 npm run dev
 ```
 
-> **Note:** The `dev` script automatically runs `npm run db:pull` to sync your local D1 database with the production data before starting the Astro dev server (runs on the real Cloudflare workerd runtime).
+> **Note:** The `dev` script automatically runs `db:pull` to sync your local D1 database with the production data before starting the Astro dev server (runs on the real Cloudflare workerd runtime).
 
 ### Linting & Formatting
 
-The project uses [Biome](https://biomejs.dev/) with the [Ultracite](https://github.com/haydenbleasel/ultracite) Astro preset. A pre-commit hook (husky + lint-staged) auto-formats staged files on every commit.
-
 ```sh
-npm run lint          # Check for lint errors
-npm run lint:fix      # Fix lint errors
-npm run format        # Check formatting
-npm run format:write  # Fix formatting
+# Using pnpm
+pnpm lint          # Check for lint errors
+pnpm lint:fix      # Fix lint errors
+pnpm format        # Check formatting
+pnpm format:write  # Fix formatting
+
+# Or using npm
+npm run lint
+npm run lint:fix
+npm run format
+npm run format:write
 ```
 
 ### Deployment
 
-Pushing to `main` triggers automatic deployment to Cloudflare Workers via GitHub Actions. The workflow requires two repository secrets:
-
-- `CLOUDFLARE_API_TOKEN`
-- `CLOUDFLARE_ACCOUNT_ID`
-
-You can also deploy manually:
-
 ```sh
+# Using pnpm
+pnpm deploy
+
+# Or using npm
 npm run deploy
 ```
 
@@ -162,8 +172,8 @@ Unlike the blog or team members, **Builders and Projects are dynamic** and store
 The site uses Cloudflare D1 for dynamic data like the Builders directory.
 
 - **Local Development:** The database is stored locally in `.wrangler/`.
-- **Syncing Data:** Use `npm run db:pull` to pull the latest production data to your local environment.
-- **Wrangler:** Use `npx wrangler d1` to run migrations or execute SQL queries.
+- **Syncing Data:** Use `pnpm db:pull` (or `npm run db:pull`) to pull the latest production data to your local environment.
+- **Wrangler:** Use `pnpm exec wrangler d1` (or `npx wrangler d1`) to run migrations or execute SQL queries.
 
 ---
 

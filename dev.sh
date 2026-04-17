@@ -25,12 +25,12 @@ echo "✅ Cache cleared!"
 echo ""
 
 echo "🗄️  Step 2/4: Initializing database..."
-npx wrangler d1 execute solana_builders --local --file=./schema.sql > /dev/null 2>&1
+pnpm exec wrangler d1 execute solana_builders --local --file=./schema.sql > /dev/null 2>&1
 echo "✅ Database initialized!"
 echo ""
 
 echo "🚀 Step 3/3: Starting dev server (workerd runtime)..."
 echo "   Server will be available at http://localhost:4321"
 echo ""
-npx astro dev
+pnpm exec astro dev
 

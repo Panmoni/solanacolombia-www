@@ -9,7 +9,7 @@ echo "Base de Datos: $DB_NAME"
 
 # Fetch pending projects
 echo "Buscando proyectos pendientes..."
-PROJECTS_JSON=$(npx wrangler d1 execute "$DB_NAME" --remote --command="SELECT id, name, owner_wallet FROM projects WHERE status = 'pending';" --format=json 2>/dev/null)
+PROJECTS_JSON=$(pnpm exec wrangler d1 execute "$DB_NAME" --remote --command="SELECT id, name, owner_wallet FROM projects WHERE status = 'pending';" --format=json 2>/dev/null)
 
 if [ $? -ne 0 ] || [ -z "$PROJECTS_JSON" ] || [ "$PROJECTS_JSON" == "[]" ]; then
     echo "✅ No hay proyectos pendientes por aprobar."
@@ -54,7 +54,7 @@ if [[ "$CHOICE" =~ ^[0-9]+$ ]] && [ "$CHOICE" -lt "$j" ]; then
     
     echo "Aprobando: $SELECTED_NAME..."
     
-    npx wrangler d1 execute "$DB_NAME" --remote --command="UPDATE projects SET status = 'active', updated_at = '$(date -u +"%Y-%m-%dT%H:%M:%SZ")' WHERE id = '$SELECTED_ID';"
+    pnpm exec wrangler d1 execute "$DB_NAME" --remote --command="UPDATE projects SET status = 'active', updated_at = '$(date -u +"%Y-%m-%dT%H:%M:%SZ")' WHERE id = '$SELECTED_ID';"
     
     if [ $? -eq 0 ]; then
         echo "✅ Proyecto '$SELECTED_NAME' aprobado con éxito."

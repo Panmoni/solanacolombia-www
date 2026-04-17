@@ -11,12 +11,12 @@ This migration updates the schema to support:
 
 **For Local Database:**
 ```bash
-npx wrangler d1 execute solana_builders --local --file=./migrations/v2_update_schema.sql
+pnpm exec wrangler d1 execute solana_builders --local --file=./migrations/v2_update_schema.sql
 ```
 
 **For Production Database:**
 ```bash
-npx wrangler d1 execute solana_builders --remote --file=./migrations/v2_update_schema.sql
+pnpm exec wrangler d1 execute solana_builders --remote --file=./migrations/v2_update_schema.sql
 ```
 
 ### What This Migration Does:
