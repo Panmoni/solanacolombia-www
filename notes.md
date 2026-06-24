@@ -37,12 +37,14 @@
 | Universidad Sergio Arboleda - Sede Medellín | Private | Medellín | No | https://www.usergioarboleda.edu.co/sedes/medellin |
 | Universidad Universidad de Investigación y Desarrollo (UDI) | Private | Yumbo (but metro extension; limited presence) | No | Universidad de Investigación y Desarrollo - UDI (Minimal Medellín activity) |
 
-## Security findings — builders portal (recorded 2026-06-24, NOT yet fixed)
+## Security findings — builders portal (fixed & deployed 2026-06-24)
 
-Headline: **authentication is broken at the root.** Login trusts a client-claimed
-wallet address with no signature proof, and session cookies are unsigned — so anyone
-can impersonate any builder (including the admin) by sending/setting a cookie. Everything
-below follows from that.
+Status: **fixed and deployed** (commit 3795e41; pnpm-CI pin b4460ef). All findings
+below were addressed — SIWS signature verification, HMAC-signed sessions, admin/IDOR
+gates, security headers, XSS escaping, input limits. Existing sessions were invalidated
+by the cookie-format change, so builders must re-sign-in (sign a message with their
+wallet). Verified live: security headers present, /api/builders/list and
+/api/builders/projects return 401 unauthenticated. Residual items at the bottom.
 
 ### CRITICAL
 
@@ -99,6 +101,14 @@ below follows from that.
    `email`/`telegram`/`twitter`/`university`; `email` is unvalidated. **Fix:** clamp lengths + basic
    email validation.
 
-### Suggested fix order
-SIWS verification + signed sessions (1, 2) first — closes account/admin takeover. Then authz on the
-leaking endpoints (3, 4), then headers + XSS (5, 6), then env + input hygiene (7, 8).
+### Residual action items
+- **Set `ADMIN_WALLET`** as a Wrangler var/secret on the worker (the admin's wallet
+  address). Without it the admin panel redirects (as before). The admin wallet's DB row
+  must also have `role = 'admin'` for the CSV exports.
+- **CSP** is deferred: the Newsletter embeds an external `eocampaign1.com` script, so a
+  correct CSP needs a runtime audit of third-party resources + script nonces.
+- **pnpm 11 migration** (optional): CI is pinned to pnpm 10.28.0 because pnpm 11
+  hard-errors on ignored build scripts and dropped the package.json `pnpm` field. To
+  unpin, migrate build-approval to `pnpm-workspace.yaml` and re-test.
+- **Dependabot**: GitHub reports 19 dependency vulnerabilities (8 high) on main — run
+  `pnpm audit` / Dependabot and update. Separate from this auth work.
