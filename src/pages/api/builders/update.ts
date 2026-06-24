@@ -1,32 +1,48 @@
 // src/pages/api/builders/update.ts
-
+// Updates the signed-in builder's own profile. Input lengths are clamped and
+// email is validated. Wallet comes from the session (already verified by SIWS).
 import { env } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { getSession, setSession } from '../../../lib/auth';
+
+const slice = (v: FormDataEntryValue | null, max: number): string | null => {
+  const s = v?.toString()?.trim();
+  return s ? s.slice(0, max) : null;
+};
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function json(body: unknown, status: number) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     const session = await getSession(cookies);
     if (!session?.wallet) {
-      return new Response(JSON.stringify({ error: 'Not authenticated' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Not authenticated' }, 401);
     }
 
     const form = await request.formData();
-    const name = form.get('name')?.toString();
-    const email = form.get('email')?.toString();
-    const telegram = form.get('telegram')?.toString() || null;
-    const twitter = form.get('twitter')?.toString() || null;
-    const university = form.get('university')?.toString() || null;
+    const name = slice(form.get('name'), 200);
+    const email = slice(form.get('email'), 320);
+    const telegram = slice(form.get('telegram'), 64);
+    const twitter = slice(form.get('twitter'), 64);
+    const university = slice(form.get('university'), 200);
+
+    if (name !== null && name.length === 0) {
+      return json({ error: 'Name cannot be empty' }, 400);
+    }
+    if (email && !EMAIL_RE.test(email)) {
+      return json({ error: 'Invalid email' }, 400);
+    }
 
     const db = (env as Env).DB;
     if (!db) {
-      return new Response(JSON.stringify({ error: 'Database not available' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Database not available' }, 500);
     }
 
     // Verify builder exists
@@ -36,10 +52,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       .first();
 
     if (!builder) {
-      return new Response(JSON.stringify({ error: 'Builder not found' }), {
-        status: 404,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return json({ error: 'Builder not found' }, 404);
     }
 
     // Check if email is being changed and if it's already taken
@@ -50,10 +63,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         .first();
 
       if (existingEmail) {
-        return new Response(JSON.stringify({ error: 'Este email ya está en uso' }), {
-          status: 409,
-          headers: { 'Content-Type': 'application/json' },
-        });
+        return json({ error: 'Este email ya está en uso' }, 409);
       }
     }
 
@@ -62,7 +72,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     // Update builder profile
     await db
       .prepare(`
-      UPDATE builders 
+      UPDATE builders
       SET name = ?, email = ?, telegram = ?, twitter = ?, university = ?, updated_at = ?
       WHERE wallet_address = ?
     `)
@@ -70,24 +80,18 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       .run();
 
     // Update session
-    setSession(cookies, {
+    await setSession(cookies, {
       wallet: session.wallet,
-      name: name,
+      name: name ?? undefined,
       role: session.role,
-      university: university || undefined,
-      telegram: telegram || undefined,
-      twitter: twitter || undefined,
+      university: university ?? undefined,
+      telegram: telegram ?? undefined,
+      twitter: twitter ?? undefined,
     });
 
-    return new Response(JSON.stringify({ success: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return json({ success: true }, 200);
   } catch (error) {
     console.error('Update builder error:', error);
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return json({ error: 'Internal server error' }, 500);
   }
 };

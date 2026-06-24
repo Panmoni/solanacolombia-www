@@ -1,14 +1,15 @@
 ---
+
 // src/pages/builders/admin.astro
+import { env } from "cloudflare:workers";
 import Layout from "../../layouts/Layout.astro";
 import { getSession } from "../../lib/auth";
 
 const session = await getSession(Astro.cookies);
-const ADMIN_WALLET =
-  import.meta.env.ADMIN_WALLET || "YOUR_ADMIN_WALLET_ADDRESS";
+const ADMIN_WALLET = (env as Env).ADMIN_WALLET;
 
-// Check if user is admin
-if (!session?.wallet || session.wallet !== ADMIN_WALLET) {
+// Check if user is admin (wallet from the signed session must equal the configured admin)
+if (!ADMIN_WALLET || !session?.wallet || session.wallet !== ADMIN_WALLET) {
   return Astro.redirect("/builders");
 }
 ---
@@ -214,14 +215,21 @@ if (!session?.wallet || session.wallet !== ADMIN_WALLET) {
               const tdId = document.createElement("td");
               tdId.className =
                 "px-6 py-4 whitespace-nowrap text-xs font-mono text-gray-500";
-              tdId.innerHTML = `
-                <div class="flex items-center gap-2">
-                  <span>${p.id.slice(0, 8)}...</span>
-                  <button class="text-[#9945FF] hover:text-[#8338EB]" onclick="navigator.clipboard.writeText('${p.id}'); alert('ID copiado');" title="Copiar ID completo">
-                    📋
-                  </button>
-                </div>
-              `;
+              const idWrap = document.createElement("div");
+              idWrap.className = "flex items-center gap-2";
+              const idSpan = document.createElement("span");
+              idSpan.textContent = `${p.id.slice(0, 8)}...`;
+              const copyBtn = document.createElement("button");
+              copyBtn.className = "text-[#9945FF] hover:text-[#8338EB]";
+              copyBtn.title = "Copiar ID completo";
+              copyBtn.textContent = "📋";
+              copyBtn.addEventListener("click", () => {
+                navigator.clipboard.writeText(p.id);
+                alert("ID copiado");
+              });
+              idWrap.appendChild(idSpan);
+              idWrap.appendChild(copyBtn);
+              tdId.appendChild(idWrap);
               tr.appendChild(tdId);
 
               // Name

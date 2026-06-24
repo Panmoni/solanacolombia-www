@@ -1,9 +1,19 @@
 // src/pages/api/builders/pending-requests.ts
-
+// Returns the signed-in wallet's pending join requests. Wallet from session only.
 import { env } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
+import { getSession } from '../../../lib/auth';
 
-export const GET: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async ({ cookies }) => {
+  const session = await getSession(cookies);
+  if (!session?.wallet) {
+    return new Response(JSON.stringify({ error: 'Not authenticated', project_ids: [] }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  const wallet = session.wallet;
+
   const db = (env as Env).DB;
   if (!db) {
     return new Response(JSON.stringify({ error: 'Database not available', project_ids: [] }), {
@@ -12,21 +22,10 @@ export const GET: APIRoute = async ({ request }) => {
     });
   }
 
-  const url = new URL(request.url);
-  const wallet = url.searchParams.get('wallet');
-
-  if (!wallet) {
-    return new Response(JSON.stringify({ error: 'Wallet parameter required', project_ids: [] }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
-  // Get all pending join requests for this wallet
   const pendingLinks = await db
     .prepare(`
-    SELECT project_id 
-    FROM builder_project_links 
+    SELECT project_id
+    FROM builder_project_links
     WHERE builder_wallet = ? AND status = 'pending'
   `)
     .bind(wallet)

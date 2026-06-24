@@ -1,4 +1,5 @@
 ---
+
 import WalletConnect from "../../components/WalletConnect.astro";
 // src/pages/builders/index.astro
 import Layout from "../../layouts/Layout.astro";
@@ -388,19 +389,19 @@ const session = await getSession(Astro.cookies);
 
                       li.innerHTML = `
                       <div class="flex items-center justify-between mb-2">
-                        <h3 class="font-bold text-lg text-gray-900">${p.name}</h3>
+                        <h3 class="font-bold text-lg text-gray-900">${escapeHtml(p.name)}</h3>
                         <div class="flex gap-2 items-center">
                           ${isOwner ? '<span class="px-2 py-1 text-xs font-bold rounded-full bg-[#9945FF]/10 text-[#9945FF]">👑 Propietario</span>' : '<span class="px-2 py-1 text-xs font-bold rounded-full bg-green-100 text-green-800">✓ Miembro</span>'}
                           <span class="px-2 py-1 text-xs font-bold rounded-full ${p.status === "verified" || p.status === "active" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}">
-                            ${p.status === "verified" ? "✓ Verificado" : p.status === "active" ? "Activo" : "Pendiente"}
+                            ${escapeHtml(p.status === "verified" ? "✓ Verificado" : p.status === "active" ? "Activo" : "Pendiente")}
                           </span>
                         </div>
                       </div>
-                      ${p.description ? `<p class="text-gray-600 text-sm mb-4 line-clamp-2">${p.description}</p>` : ""}
+                      ${p.description ? `<p class="text-gray-600 text-sm mb-4 line-clamp-2">${escapeHtml(p.description)}</p>` : ""}
                       <div class="flex items-center gap-4 text-sm mt-3">
-                        ${p.website ? `<a href="${p.website}" target="_blank" class="text-[#9945FF] hover:underline font-medium">🌐 Web</a>` : ""}
-                        ${p.twitter ? `<a href="https://twitter.com/${p.twitter.replace("@", "")}" target="_blank" class="text-[#9945FF] hover:underline font-medium">🐦 Twitter</a>` : ""}
-                        ${isOwner ? `<a href="/builders/projects/edit?id=${p.id}" class="ml-auto px-4 py-1.5 bg-gray-900 text-white rounded-lg hover:bg-black transition-colors text-xs font-bold">Editar</a>` : ""}
+                        ${safeUrl(p.website) ? `<a href="${escapeHtml(safeUrl(p.website))}" target="_blank" rel="noopener noreferrer" class="text-[#9945FF] hover:underline font-medium">🌐 Web</a>` : ""}
+                        ${p.twitter ? `<a href="https://twitter.com/${encodeURIComponent(p.twitter.replace("@", ""))}" target="_blank" rel="noopener noreferrer" class="text-[#9945FF] hover:underline font-medium">🐦 Twitter</a>` : ""}
+                        ${isOwner ? `<a href="/builders/projects/edit?id=${encodeURIComponent(p.id)}" class="ml-auto px-4 py-1.5 bg-gray-900 text-white rounded-lg hover:bg-black transition-colors text-xs font-bold">Editar</a>` : ""}
                       </div>
                     `;
                       ul.appendChild(li);
@@ -438,11 +439,11 @@ const session = await getSession(Astro.cookies);
                     if (container) {
                       let html = "";
                       if (b.name)
-                        html += `<p><strong class="text-gray-700">Nombre:</strong> ${b.name}</p>`;
+                        html += `<p><strong class="text-gray-700">Nombre:</strong> ${escapeHtml(b.name)}</p>`;
                       if (b.role)
-                        html += `<p><strong class="text-gray-700">Rol:</strong> <span class="px-2 py-1 bg-[#9945FF]/10 text-[#9945FF] rounded text-sm font-medium">${b.role}</span></p>`;
+                        html += `<p><strong class="text-gray-700">Rol:</strong> <span class="px-2 py-1 bg-[#9945FF]/10 text-[#9945FF] rounded text-sm font-medium">${escapeHtml(b.role)}</span></p>`;
                       if (b.university)
-                        html += `<p><strong class="text-gray-700">Universidad:</strong> ${b.university}</p>`;
+                        html += `<p><strong class="text-gray-700">Universidad:</strong> ${escapeHtml(b.university)}</p>`;
                       container.innerHTML = html;
 
                       // Update socials
@@ -452,14 +453,14 @@ const session = await getSession(Astro.cookies);
                         let socialsHtml = "";
                         if (b.telegram) {
                           socialsHtml += `
-                          <a href="https://t.me/${b.telegram.replace("@", "")}" target="_blank" class="flex items-center gap-2 text-[#9945FF] hover:underline font-medium text-sm">
+                          <a href="https://t.me/${encodeURIComponent(b.telegram.replace("@", ""))}" target="_blank" class="flex items-center gap-2 text-[#9945FF] hover:underline font-medium text-sm">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.665 3.717l-17.73 6.837c-1.21.486-1.203 1.161-.222 1.462l4.552 1.42 10.532-6.645c.498-.303.953-.14.579.192l-8.533 7.701-.332 4.965c.488 0 .702-.223.974-.488l2.338-2.27 4.861 3.59c.896.494 1.54.239 1.764-.829l3.19-15.035c.326-1.303-.495-1.892-1.352-1.503z"/></svg>
                             Telegram
                           </a>`;
                         }
                         if (b.twitter) {
                           socialsHtml += `
-                          <a href="https://twitter.com/${b.twitter.replace("@", "")}" target="_blank" class="flex items-center gap-2 text-[#9945FF] hover:underline font-medium text-sm">
+                          <a href="https://twitter.com/${encodeURIComponent(b.twitter.replace("@", ""))}" target="_blank" class="flex items-center gap-2 text-[#9945FF] hover:underline font-medium text-sm">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                             Twitter
                           </a>`;
@@ -537,42 +538,49 @@ const session = await getSession(Astro.cookies);
                 }
               };
 
-              // Handle wallet connection
-              const handleWalletConnected = async (address: string) => {
-                if (!address) return;
+              // --- SIWS (Sign-In-with-Solana) + escaping helpers ---
+              let signingIn = false;
 
-                console.log("handleWalletConnected called with:", address);
+              const escapeHtml = (s: unknown): string =>
+                String(s ?? "")
+                  .replace(/&/g, "&amp;")
+                  .replace(/</g, "&lt;")
+                  .replace(/>/g, "&gt;")
+                  .replace(/"/g, "&quot;")
+                  .replace(/'/g, "&#39;");
 
-                // Set server-side session
-                try {
-                  await fetch("/api/builders/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ wallet: address }),
-                  });
-                } catch (err) {
-                  console.error("Error setting session cookie:", err);
-                }
+              const safeUrl = (s: unknown): string | null => {
+                const u = String(s ?? "").trim();
+                if (!/^https?:\/\//i.test(u)) return null; // block javascript: etc.
+                return u;
+              };
 
+              const getProvider = (name?: string): any => {
+                if (name === "phantom") return (window as any).phantom?.solana;
+                if (name === "solflare") return (window as any).solflare;
+                return (window as any).phantom?.solana || (window as any).solflare || null;
+              };
+
+              const bytesToBase64 = (bytes: Uint8Array): string => {
+                let bin = "";
+                for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+                return btoa(bin);
+              };
+
+              const updateWalletUI = (address: string) => {
                 const walletInput = document.getElementById(
                   "wallet-address",
                 ) as HTMLInputElement;
-                if (walletInput) {
-                  walletInput.value = address;
-                }
+                if (walletInput) walletInput.value = address;
 
                 const formattedAddress =
                   address.length > 8
                     ? `${address.slice(0, 4)}...${address.slice(-4)}`
                     : address;
 
-                // Hide wallet connect button
                 const walletConnectDiv = document.getElementById("wallet-connect");
-                if (walletConnectDiv) {
-                  walletConnectDiv.classList.add("hidden");
-                }
+                if (walletConnectDiv) walletConnectDiv.classList.add("hidden");
 
-                // Show wallet status in registration section
                 const walletStatus = document.getElementById("wallet-status");
                 const walletStatusAddress = document.getElementById(
                   "wallet-status-address",
@@ -582,9 +590,82 @@ const session = await getSession(Astro.cookies);
                   walletStatusAddress.title = address;
                   walletStatus.classList.remove("hidden");
                 }
+              };
 
-                // Check registration
-                checkRegistrationStatus(address);
+              // Handle wallet connection. `explicit` is true only when triggered by
+              // the connect button (a user action) — only then do we prompt a
+              // signature. Auto-restored connections don't sign; auth comes from the
+              // signed session cookie (set once per SIWS sign-in, valid 30 days).
+              const handleWalletConnected = async (
+                address: string,
+                providerName?: string,
+                explicit = false,
+              ) => {
+                if (!address) return;
+
+                const projectsList = document.getElementById("projects-list");
+                const hasServerSession = !!projectsList?.getAttribute("data-wallet");
+
+                // Already authenticated via signed session — sync UI + load dashboard.
+                if (hasServerSession) {
+                  updateWalletUI(address);
+                  checkRegistrationStatus(address);
+                  return;
+                }
+
+                // Not authenticated: only an explicit action prompts a signature.
+                if (!explicit || signingIn) return;
+                signingIn = true;
+                updateWalletUI(address);
+
+                try {
+                  const provider = getProvider(providerName);
+                  if (!provider?.signMessage) {
+                    alert(
+                      "Tu wallet no soporta la firma de mensajes. Usa Phantom o Solflare.",
+                    );
+                    return;
+                  }
+
+                  // 1. Server issues a nonce + the exact message to sign.
+                  const nonceRes = await fetch("/api/builders/auth/nonce", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ wallet: address }),
+                  });
+                  if (!nonceRes.ok) throw new Error("No se pudo iniciar la sesión");
+                  const { message } = await nonceRes.json();
+
+                  // 2. User signs the message with their wallet key.
+                  const sig: Uint8Array = await provider.signMessage(
+                    new TextEncoder().encode(message),
+                  );
+                  const signature = bytesToBase64(new Uint8Array(sig));
+
+                  // 3. Server verifies the signature and sets the signed session.
+                  const loginRes = await fetch("/api/builders/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ wallet: address, message, signature }),
+                  });
+                  if (!loginRes.ok) {
+                    const err = await loginRes.json().catch(() => ({}));
+                    throw new Error(err.error || "Inicio de sesión fallido");
+                  }
+
+                  checkRegistrationStatus(address);
+                } catch (err: any) {
+                  console.error("SIWS sign-in error:", err);
+                  if (err?.code === 4001) {
+                    alert(
+                      "Firma cancelada. Necesitas firmar el mensaje para iniciar sesión.",
+                    );
+                  } else {
+                    alert(`Error al iniciar sesión: ${err?.message || "intentá de nuevo"}`);
+                  }
+                } finally {
+                  signingIn = false;
+                }
               };
 
               // Handle wallet disconnect
@@ -651,11 +732,7 @@ const session = await getSession(Astro.cookies);
                     const result = await res.json();
 
                     if (res.ok && wallet) {
-                      await fetch("/api/builders/login", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ wallet }),
-                      });
+                      // Session was already established at SIWS sign-in (connect).
                       checkRegistrationStatus(wallet);
                     } else if (!res.ok) {
                       alert(`Error: ${result.error || "Unknown error"}`);
@@ -682,7 +759,7 @@ const session = await getSession(Astro.cookies);
 
               // Listen for wallet connection
               window.addEventListener("wallet-connected", ((e: CustomEvent) => {
-                handleWalletConnected(e.detail.address);
+                handleWalletConnected(e.detail.address, e.detail.provider, e.detail.explicit);
               }) as EventListener);
             })();
             // End IIFE

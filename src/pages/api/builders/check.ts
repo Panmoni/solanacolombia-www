@@ -1,10 +1,19 @@
 // src/pages/api/builders/check.ts
-
+// Returns whether the *signed-in* wallet is registered. Wallet is derived from
+// the session, never from a query param.
 import { env } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
+import { getSession } from '../../../lib/auth';
 
-export const GET: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async ({ cookies }) => {
   try {
+    const session = await getSession(cookies);
+    if (!session?.wallet) {
+      return new Response(JSON.stringify({ registered: false }), {
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const db = (env as Env).DB;
     if (!db) {
       return new Response(JSON.stringify({ error: 'Database not available', registered: false }), {
@@ -13,22 +22,9 @@ export const GET: APIRoute = async ({ request }) => {
       });
     }
 
-    const url = new URL(request.url);
-    const wallet = url.searchParams.get('wallet');
-
-    if (!wallet) {
-      return new Response(
-        JSON.stringify({ error: 'Wallet parameter required', registered: false }),
-        {
-          status: 400,
-          headers: { 'Content-Type': 'application/json' },
-        },
-      );
-    }
-
     const builder = await db
       .prepare('SELECT id FROM builders WHERE wallet_address = ?')
-      .bind(wallet)
+      .bind(session.wallet)
       .first();
 
     return new Response(JSON.stringify({ registered: !!builder }), {
@@ -36,7 +32,6 @@ export const GET: APIRoute = async ({ request }) => {
     });
   } catch (error) {
     console.error('Error checking registration:', error);
-    // Return false on error so user can still see the form
     return new Response(JSON.stringify({ registered: false, error: 'Database error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
