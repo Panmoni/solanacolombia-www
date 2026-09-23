@@ -2,7 +2,6 @@
 
 import { env } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import { v4 as uuidv4 } from 'uuid';
 import { getSession } from '../../../lib/auth';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
@@ -90,7 +89,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     const now = new Date().toISOString();
-    const linkId = uuidv4();
+    const linkId = crypto.randomUUID();
 
     // Create join request (status: pending)
     await db

@@ -2,7 +2,6 @@
 
 import { env } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
-import { v4 as uuidv4 } from 'uuid';
 import { getSession } from '../../../lib/auth';
 
 export const POST: APIRoute = async ({ request, cookies }) => {
@@ -64,7 +63,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     const now = new Date().toISOString();
-    const projectId = uuidv4();
+    const projectId = crypto.randomUUID();
 
     // Create the project
     const projectResult = await db
@@ -84,7 +83,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     // Create owner link with 'owner' status
-    const ownerLinkId = uuidv4();
+    const ownerLinkId = crypto.randomUUID();
     const linkResult = await db
       .prepare(`
       INSERT INTO builder_project_links (id, builder_wallet, project_id, role, status, requested_at, responded_at, created_at, updated_at)

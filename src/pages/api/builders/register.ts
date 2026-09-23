@@ -4,7 +4,6 @@
 import { env } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
-import { v4 as uuidv4 } from 'uuid';
 import { getSession, setSession } from '../../../lib/auth';
 
 const escapeHtml = (s: string): string =>
@@ -65,7 +64,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       return json({ error: 'Invalid email' }, 400);
     }
 
-    const id = uuidv4();
+    const id = crypto.randomUUID();
     const now = new Date().toISOString();
 
     await db

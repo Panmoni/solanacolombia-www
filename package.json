@@ -33,21 +33,20 @@
     "node": ">=24.0.0"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.1.8",
-    "@cloudflare/workers-types": "^4.20260409.1",
-    "@scure/base": "^2.2.0",
-    "@tailwindcss/vite": "^4.1.18",
-    "astro": "^6.1.5",
-    "resend": "^6.10.0",
-    "tailwindcss": "^4.1.18",
-    "tweetnacl": "^1.0.3",
-    "uuid": "^13.0.0"
+    "@astrojs/cloudflare": "^14.3.3",
+    "@cloudflare/workers-types": "^5.20260923.1",
+    "@scure/base": "^2.4.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.3.4",
+    "resend": "^6.28.1",
+    "tailwindcss": "^4.3.3",
+    "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.11",
+    "@biomejs/biome": "~2.4.16",
     "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
-    "ultracite": "^7.4.4",
-    "wrangler": "^4.81.1"
+    "lint-staged": "^17.5.1",
+    "ultracite": "~7.10.8",
+    "wrangler": "^4.137.0"
   }
 }
