@@ -1,0 +1,8 @@
+allowBuilds:
+  esbuild: true
+  workerd: true
+
+# pnpm 11 no longer reads these from .npmrc.
+autoInstallPeers: true
+shamefullyHoist: true
+strictPeerDependencies: false
