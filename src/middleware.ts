@@ -3,20 +3,35 @@
 // and close the high-value gaps: MIME sniffing, clickjacking, referrer leakage,
 // feature policy, and HSTS.
 //
-// CSP is intentionally omitted for now: the Newsletter embeds an external
-// script (eocampaign1.com) and a correct CSP needs a runtime audit of all
-// third-party resources plus script nonces. See notes.md security section.
+// The Content-Security-Policy header is set by Astro itself (security.csp in
+// astro.config.mjs), which hashes the site's own scripts per page.
 import { defineMiddleware } from 'astro:middleware';
+
+const SECURITY_HEADERS: [string, string][] = [
+  ['X-Content-Type-Options', 'nosniff'],
+  ['X-Frame-Options', 'SAMEORIGIN'],
+  ['Referrer-Policy', 'strict-origin-when-cross-origin'],
+  ['Permissions-Policy', 'camera=(), microphone=(), geolocation=()'],
+  ['Strict-Transport-Security', 'max-age=31536000; includeSubDomains'],
+];
+
+const applyHeaders = (headers: Headers) => {
+  for (const [name, value] of SECURITY_HEADERS) {
+    headers.set(name, value);
+  }
+};
 
 export const onRequest = defineMiddleware(async (_context, next) => {
   const response = await next();
-  const headers = response.headers;
 
-  headers.set('X-Content-Type-Options', 'nosniff');
-  headers.set('X-Frame-Options', 'SAMEORIGIN');
-  headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-
-  return response;
+  try {
+    applyHeaders(response.headers);
+    return response;
+  } catch {
+    // A proxied fetch response (e.g. /_image) has immutable headers; copy it.
+    // Only those are copied, so Astro's own responses keep their cookies.
+    const copy = new Response(response.body, response);
+    applyHeaders(copy.headers);
+    return copy;
+  }
 });
