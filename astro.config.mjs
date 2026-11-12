@@ -16,8 +16,9 @@ export default defineConfig({
   adapter: cloudflare(),
   // Astro hashes its own scripts and styles and sends the policy as a
   // Content-Security-Policy header on every server-rendered route.
-  // Third-party origins come from a runtime audit of the newsletter embed
-  // (eocampaign1.com) and the reCAPTCHA it loads.
+  // Third-party origins come from a headless-browser audit (PAN-60): the
+  // lu.ma events iframe, plus the Newsletter embed (eocampaign1.com) and the
+  // reCAPTCHA it loads, so the policy holds whenever <Newsletter /> renders.
   security: {
     csp: {
       directives: [
@@ -41,8 +42,8 @@ export default defineConfig({
         resources: [
           "'self'",
           'https://eocampaign1.com',
-          'https://www.recaptcha.net',
-          'https://www.gstatic.com',
+          'https://www.recaptcha.net/recaptcha/',
+          'https://www.gstatic.com/recaptcha/',
         ],
       },
     },

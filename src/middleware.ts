@@ -15,9 +15,17 @@ const SECURITY_HEADERS: [string, string][] = [
   ['Strict-Transport-Security', 'max-age=31536000; includeSubDomains'],
 ];
 
+// Responses Astro gives no policy (its built-in 404 page, API JSON, images)
+// get a locked-down one: nothing loads except inline styles and own images.
+const FALLBACK_CSP =
+  "default-src 'none'; style-src 'unsafe-inline'; img-src 'self' data:; base-uri 'none'; form-action 'none'; frame-ancestors 'self'";
+
 const applyHeaders = (headers: Headers) => {
   for (const [name, value] of SECURITY_HEADERS) {
     headers.set(name, value);
+  }
+  if (!headers.has('Content-Security-Policy')) {
+    headers.set('Content-Security-Policy', FALLBACK_CSP);
   }
 };
 
@@ -27,7 +35,10 @@ export const onRequest = defineMiddleware(async (_context, next) => {
   try {
     applyHeaders(response.headers);
     return response;
-  } catch {
+  } catch (error) {
+    if (!(error instanceof TypeError)) {
+      throw error;
+    }
     // A proxied fetch response (e.g. /_image) has immutable headers; copy it.
     // Only those are copied, so Astro's own responses keep their cookies.
     const copy = new Response(response.body, response);
