@@ -23,8 +23,8 @@ export const isAuthorizedWebhook = (header: string | null, secret: string | unde
 
 /**
  * `makeDeps` returns the bot's dependencies, or the names of the secrets that
- * are missing. A handler error answers 500: handleUpdate has already forgotten
- * the update id, so Telegram's redelivery is handled again.
+ * are missing. A handler error answers 500: the update id is recorded only
+ * after success, so Telegram's redelivery is handled again.
  */
 export const handleWebhookRequest = async (
   request: Request,

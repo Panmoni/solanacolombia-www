@@ -24,25 +24,22 @@ const toMemberInfo = (row: MemberRow): MemberInfo => ({
   firstName: row.first_name,
 });
 
-/**
- * Records an update id. Returns false when it was already handled, so a
- * redelivered update is skipped.
- */
+export const isUpdateProcessed = async (db: SqlDatabase, updateId: number): Promise<boolean> =>
+  (await db
+    .prepare('SELECT 1 AS found FROM tg_processed_updates WHERE update_id = ?')
+    .bind(updateId)
+    .first()) !== null;
+
+/** Records an update id once it has been handled, so a redelivery is skipped. */
 export const markUpdateProcessed = async (
   db: SqlDatabase,
   updateId: number,
   now: Date,
-): Promise<boolean> => {
-  const result = await db
+): Promise<void> => {
+  await db
     .prepare('INSERT OR IGNORE INTO tg_processed_updates (update_id, created_at) VALUES (?, ?)')
     .bind(updateId, now.toISOString())
     .run();
-  return result.meta.changes > 0;
-};
-
-/** Forgets an update id so Telegram's redelivery is handled again. */
-export const unmarkUpdateProcessed = async (db: SqlDatabase, updateId: number): Promise<void> => {
-  await db.prepare('DELETE FROM tg_processed_updates WHERE update_id = ?').bind(updateId).run();
 };
 
 export const pruneProcessedUpdates = async (db: SqlDatabase, before: Date): Promise<void> => {

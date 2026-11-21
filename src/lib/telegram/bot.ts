@@ -16,6 +16,7 @@ import {
   insertShip,
   insertThanksIfAllowed,
   insertVouch,
+  isUpdateProcessed,
   latestUnvouchedShip,
   loadActivity,
   markJoined,
@@ -23,7 +24,6 @@ import {
   recordJoinMessage,
   shipVouchedByMessage,
   thanksExistsForMessage,
-  unmarkUpdateProcessed,
   upsertMember,
 } from './store.ts';
 import type { BotDeps, TgMessage, TgUpdate, TgUser } from './types.ts';
@@ -312,17 +312,14 @@ export const handleUpdate = async (update: TgUpdate, deps: BotDeps): Promise<voi
   if (!message || message.chat.id !== deps.config.groupId) {
     return;
   }
-  if (!(await markUpdateProcessed(deps.db, update.update_id, deps.now()))) {
+  if (await isUpdateProcessed(deps.db, update.update_id)) {
     return;
   }
-  try {
-    await handleGroupMessage(deps, message);
-  } catch (error) {
-    // Let Telegram redeliver the update. Writes are keyed on message_id, so
-    // the retry records nothing twice.
-    await unmarkUpdateProcessed(deps.db, update.update_id);
-    throw error;
-  }
+  // Marked only after success: if the handler throws or the Worker dies,
+  // Telegram redelivers the update. Writes are keyed on message_id, so the
+  // retry records nothing twice.
+  await handleGroupMessage(deps, message);
+  await markUpdateProcessed(deps.db, update.update_id, deps.now());
 };
 
 const handleGroupMessage = async (deps: BotDeps, message: TgMessage): Promise<void> => {
