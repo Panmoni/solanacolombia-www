@@ -1,10 +1,11 @@
-// Builds the bot's dependencies from the Worker environment. All four values
-// are Worker secrets (wrangler secret put …), never source.
+// Builds the bot's dependencies from the Worker environment. The four required
+// values and YOUTUBE_API_KEY are Worker secrets (wrangler secret put …), never source.
 import encuesta from '../../../content/telegram/encuesta.md?raw';
 import primerEnvio from '../../../content/telegram/primer-envio.md?raw';
 import reglas from '../../../content/telegram/reglas.md?raw';
 import { createTelegramClient } from './telegram-api.ts';
-import type { BotDeps } from './types.ts';
+import type { AiClient, BotDeps } from './types.ts';
+import { createYoutubeComments } from './youtube.ts';
 
 const toId = (value: string | undefined): number | null => {
   const id = Number(value);
@@ -33,5 +34,8 @@ export const botDepsFromEnv = (env: Env): BotDeps | string[] => {
     config: { groupId, georgeId },
     texts: { primerEnvio, reglas, encuesta },
     now: () => new Date(),
+    // The binding's typed run() overloads are wider than the one call the summary makes.
+    ...(env.AI && { ai: env.AI as unknown as AiClient }),
+    ...(env.YOUTUBE_API_KEY && { youtubeComments: createYoutubeComments(env.YOUTUBE_API_KEY) }),
   };
 };

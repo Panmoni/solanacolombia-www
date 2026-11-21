@@ -4,6 +4,7 @@ import { describe, test } from 'node:test';
 import { handleUpdate } from '../../src/lib/telegram/bot.ts';
 import { CRON_JOBS } from '../../src/lib/telegram/cron.ts';
 import { parseEncuesta, runMonthlyPoll } from '../../src/lib/telegram/poll.ts';
+import { runMonthlySummary } from '../../src/lib/telegram/summary.ts';
 import type { TgUpdate, TgUser } from '../../src/lib/telegram/types.ts';
 import { runWeekly } from '../../src/lib/telegram/weekly.ts';
 import { createHarness, GROUP_ID, selectRows, user } from './helpers.ts';
@@ -108,6 +109,7 @@ describe('monthly poll', () => {
     assert.deepEqual(crons.sort(), Object.keys(CRON_JOBS).sort());
     assert.equal(CRON_JOBS['0 14 * * 1'].run, runWeekly);
     assert.equal(CRON_JOBS['0 14 25 * *'].run, runMonthlyPoll);
+    assert.equal(CRON_JOBS['0 14 1 * *'].run, runMonthlySummary);
   });
 });
 

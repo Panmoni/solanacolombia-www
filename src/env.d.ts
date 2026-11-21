@@ -10,4 +10,7 @@ interface Env {
   TELEGRAM_WEBHOOK_SECRET?: string;
   TELEGRAM_GROUP_ID?: string;
   GEORGE_TELEGRAM_ID?: string;
+  // Monthly builder-wants summary (PAN-421): Workers AI binding and a Worker secret.
+  AI?: import('@cloudflare/workers-types').Ai;
+  YOUTUBE_API_KEY?: string;
 }

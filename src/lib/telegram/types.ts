@@ -91,10 +91,19 @@ export interface BotTexts {
   encuesta: string;
 }
 
+/** The slice of the Workers AI binding (`env.AI`) the monthly summary calls. */
+export interface AiClient {
+  run(model: string, inputs: Record<string, unknown>): Promise<unknown>;
+}
+
 export interface BotDeps {
   db: SqlDatabase;
   telegram: TelegramClient;
   config: BotConfig;
   texts: BotTexts;
   now: () => Date;
+  /** Workers AI, for the monthly summary. Absent when the binding is missing. */
+  ai?: AiClient;
+  /** YouTube comments published since a date. Absent without YOUTUBE_API_KEY. */
+  youtubeComments?: (since: Date) => Promise<string[]>;
 }

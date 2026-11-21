@@ -13,10 +13,15 @@ migrations_dir = "migrations/d1"
 
 # Reputation bot jobs, dispatched by src/lib/telegram/cron.ts (keep in sync):
 #   0 14 * * 1   weekly posts, Mondays 14:00 UTC (09:00 in Bogotá)
-#   0 14 25 * *  builder-wants poll, the 25th. The monthly builder-wants summary
-#                (PAN-421) takes 0 14 1 * *, so it reads 4-7 days of answers.
+#   0 14 25 * *  builder-wants poll, the 25th
+#   0 14 1 * *   builder-wants summary DM to George, the 1st (PAN-421), so it
+#                reads 4-7 days of poll answers
 [triggers]
-crons = ["0 14 * * 1", "0 14 25 * *"]
+crons = ["0 14 * * 1", "0 14 25 * *", "0 14 1 * *"]
+
+# Workers AI (free tier) for the monthly builder-wants summary.
+[ai]
+binding = "AI"
 
 # For preview deployments (pull requests, preview branches)
 [env.preview]

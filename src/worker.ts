@@ -1,5 +1,5 @@
 // Worker entry point (wrangler.toml `main`). Astro serves every request; the
-// Cron Triggers run the reputation bot's scheduled posts (PAN-418, PAN-435).
+// Cron Triggers run the reputation bot's scheduled jobs (PAN-418, PAN-435, PAN-421).
 import { handle } from '@astrojs/cloudflare/handler';
 import type { ExecutionContext, ScheduledController } from '@cloudflare/workers-types';
 import { CRON_JOBS } from './lib/telegram/cron';

@@ -379,3 +379,60 @@ export const deletePollAnswer = async (
     .bind(pollId, memberId)
     .run();
 };
+
+/** Join messages and poll answers created at or after `since`, oldest first. */
+export const loadSummaryInputs = async (
+  db: SqlDatabase,
+  since: Date,
+): Promise<{ joinMessages: string[]; pollAnswers: { question: string; options: string[] }[] }> => {
+  const at = since.toISOString();
+  const joins = await db
+    .prepare(
+      'SELECT text FROM tg_join_messages WHERE created_at >= ? ORDER BY created_at, member_id',
+    )
+    .bind(at)
+    .all<{ text: string }>();
+  const polls = await db
+    .prepare(
+      `SELECT question, option_texts FROM tg_poll_results
+       WHERE created_at >= ? ORDER BY created_at, id`,
+    )
+    .bind(at)
+    .all<{ question: string; option_texts: string | null }>();
+  return {
+    joinMessages: joins.results.map((row) => row.text),
+    pollAnswers: polls.results.map((row) => ({
+      question: row.question,
+      options: row.option_texts ? (JSON.parse(row.option_texts) as string[]) : [],
+    })),
+  };
+};
+
+export const insertSummary = async (
+  db: SqlDatabase,
+  summary: {
+    periodStart: Date;
+    periodEnd: Date;
+    inputCount: number;
+    status: 'themes' | 'thin' | 'ai_failed';
+    themes: unknown[] | null;
+    message: string;
+  },
+  now: Date,
+): Promise<void> => {
+  await db
+    .prepare(
+      `INSERT INTO tg_summaries (period_start, period_end, input_count, status, themes, message, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    )
+    .bind(
+      summary.periodStart.toISOString(),
+      summary.periodEnd.toISOString(),
+      summary.inputCount,
+      summary.status,
+      summary.themes ? JSON.stringify(summary.themes) : null,
+      summary.message,
+      now.toISOString(),
+    )
+    .run();
+};
