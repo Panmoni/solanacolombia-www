@@ -14,7 +14,7 @@ Rappi couriers, informal commerce). Keep it factual; cite a source for any stati
 | Beat | Time | Scene | On screen |
 |---|---|---|---|
 | Hook | 0–3 s | title card | the problem as a question ("¿Y si al domiciliario le pagaran cada minuto?") |
-| Problem | 3–15 s | stat reveal | the Colombian context, with a source |
+| Problem | 3–15 s | stat reveal, or a title card with a question | the Colombian context with a source; with no source, ask the viewer about it rather than state it |
 | Idea | 15–30 s | flow diagram | the idea in three nodes |
 | Question | 30–42 s | recap card | the open question: stack, first feature, or who pays |
 | CTA | 42–50 s | recap card | "Respóndelo en el Telegram" + `t.me/solana_colombia` |

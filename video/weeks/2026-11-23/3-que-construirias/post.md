@@ -27,6 +27,6 @@ Voz generada con IA.
 ## X
 
 ¿Y si al domiciliario le pagaran cada minuto?
-Idea #6 de 200: salarios en streaming sobre Solana. ¿Cómo lo construirías?
-https://t.me/solana_colombia
+Idea #6 de 200: https://solanacolombia.com/blog/200-ideas
+Respóndelo en el Telegram: https://t.me/solana_colombia
 Voz generada con IA.

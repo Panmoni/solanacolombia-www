@@ -13,7 +13,7 @@ Tu primer programa en una blockchain real, esta noche.
 
 Guía completa: https://solanacolombia.com/blog/2026-challenge-01
 
-Comparte tu firma de transacción en el Telegram antes del domingo: https://t.me/solana_colombia
+Comparte tu firma de transacción en el Telegram hasta el domingo: https://t.me/solana_colombia
 
 Voz generada con IA.
 
@@ -21,7 +21,7 @@ Voz generada con IA.
 
 Reto de la semana: tu primer programa en Solana Devnet, en unos 90 minutos.
 Instala, crea, despliega. La guía completa está en solanacolombia.com/blog.
-Comparte tu firma de transacción en el Telegram antes del domingo: t.me/solana_colombia (link en la bio).
+Comparte tu firma de transacción en el Telegram hasta el domingo: t.me/solana_colombia (link en la bio).
 
 Voz generada con IA.
 
@@ -31,5 +31,5 @@ Voz generada con IA.
 
 Reto de la semana: tu primer programa en Solana Devnet en ~90 min.
 Guía: https://solanacolombia.com/blog/2026-challenge-01
-Comparte tu firma antes del domingo: https://t.me/solana_colombia
+Comparte tu firma hasta el domingo: https://t.me/solana_colombia
 Voz generada con IA.

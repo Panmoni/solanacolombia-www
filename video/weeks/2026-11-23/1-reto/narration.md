@@ -1,6 +1,6 @@
 # 1 · Reto: tu primer programa en Devnet
 
-Tu primer programa en una blockchain real. Esta noche. Sin teoría y sin slides.
+Tu primer programa en una blockchain real. Esta noche. Sin teoría.
 
 En unos noventa minutos pasas de cero a una transacción que tú escribiste.
 
@@ -12,4 +12,4 @@ Y por último, despliega en Devnet y llama a tu programa.
 
 Cuando funcione, vas a tener una firma de transacción. Esa firma es tu prueba.
 
-Publícala en el Telegram de Solana Colombia antes del domingo. Si algo falla en la instalación, pregunta allá. Alguien ya pasó por lo mismo.
+Publícala en el Telegram de Solana Colombia hasta el domingo. Si algo falla en la instalación, pregunta allá. Alguien ya pasó por lo mismo.

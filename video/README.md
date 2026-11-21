@@ -60,8 +60,10 @@ Monday, as `YYYY-MM-DD`.
    must print `1080,1920` and a duration of 60 or less.
 4. **Approve (George, about 15 minutes).** Watch the mp4s and read the post texts. Delete or
    fix anything off. A short that fails review is dropped, not patched into sameness.
-5. **Queue the bot rows.** The SQL writes to the production D1 database, so it is George's to
-   run: `pnpm exec wrangler d1 execute solana_builders --remote --file video/weeks/<week>/queue.sql`.
+5. **Queue the bot rows.** Skip this step until the reputation bot's migration has created
+   `weekly_queue` in production; until then the file fails with `no such table`. After that, the
+   SQL writes to the production D1 database, so it is George's to run:
+   `pnpm exec wrangler d1 execute solana_builders --remote --file video/weeks/<week>/queue.sql`.
 6. **Schedule.** Upload each mp4 with its post text to Buffer, one post per platform, spread over
    the week (suggested: Monday Reto, Wednesday the mindset or question video, Friday the
    opportunity). Record each post URL in `video/weeks/<week>/posts.md` once it goes out.

@@ -12,8 +12,10 @@ it that week.
 
 ## Consented ships: the only input
 
-Run this against the bot's D1 database. It reads only ships with video consent and a vouch, and
-leaves out any ship already featured in an earlier week's `plan.md`:
+Run this against the bot's D1 database. It reads only ships with video consent and a vouch.
+It does not know what earlier weeks featured: drop by hand any row whose ship or builder appears
+in an earlier week's `plan.md`. The `ships` and `members` names are provisional until the bot's
+migration lands.
 
 ```sql
 -- Column names follow the reputation bot's ships table; align them if its migration differs.
