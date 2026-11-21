@@ -1,4 +1,4 @@
-// Reputation scoring. Pure functions over the stored activity, evaluated as of
+// Reputation scoring (rules from PAN-418). Pure functions over the stored activity, evaluated as of
 // a given moment, so levels can be compared week over week.
 //
 // Points: a vouched ship is worth 10 to its author, a vouch given is worth 1 to

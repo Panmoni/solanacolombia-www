@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS tg_ships (
   link TEXT NOT NULL,
   note TEXT,
   video_consent INTEGER NOT NULL DEFAULT 0, -- 1 when sent as `/ship <link> video`
-  message_id INTEGER,
+  message_id INTEGER NOT NULL UNIQUE, -- the group message; makes redelivery a no-op
   created_at TEXT NOT NULL
 );
 
@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS tg_vouches (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   ship_id INTEGER NOT NULL UNIQUE REFERENCES tg_ships (id),
   voucher_id INTEGER NOT NULL REFERENCES tg_members (telegram_id),
+  message_id INTEGER NOT NULL UNIQUE, -- the /vouch message
   created_at TEXT NOT NULL
 );
 
@@ -43,6 +44,7 @@ CREATE TABLE IF NOT EXISTS tg_thanks (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   from_id INTEGER NOT NULL REFERENCES tg_members (telegram_id),
   to_id INTEGER NOT NULL REFERENCES tg_members (telegram_id),
+  message_id INTEGER NOT NULL UNIQUE, -- the /gracias message
   created_at TEXT NOT NULL
 );
 

@@ -26,13 +26,14 @@ if [[ ! "$token" =~ ^[0-9]+:[A-Za-z0-9_-]+$ ]]; then
   exit 1
 fi
 
-# Telegram API call with the token kept off the process list: curl reads the
-# URL from its config on stdin.
+# Telegram API call with the token and any form data kept off the process
+# list: curl reads the URL and the extra config lines from stdin.
 telegram() {
-  local method=$1
-  shift
-  printf 'url = "https://api.telegram.org/bot%s/%s"\n' "$token" "$method" |
-    curl --silent --show-error --fail-with-body --config - "$@"
+  local method=$1 extra_config=${2:-}
+  {
+    printf 'url = "https://api.telegram.org/bot%s/%s"\n' "$token" "$method"
+    printf '%s' "$extra_config"
+  } | curl --silent --show-error --fail-with-body --config -
   echo
 }
 
@@ -50,10 +51,12 @@ echo "Storing TELEGRAM_WEBHOOK_SECRET as a Worker secret…"
 printf '%s' "$secret" | pnpm exec wrangler secret put TELEGRAM_WEBHOOK_SECRET
 
 echo "Registering the webhook…"
-telegram setWebhook \
-  --data-urlencode "url=${WEBHOOK_URL}" \
-  --data-urlencode "secret_token=${secret}" \
-  --data-urlencode 'allowed_updates=["message"]'
+webhook_config=$(
+  printf 'data-urlencode = "url=%s"\n' "$WEBHOOK_URL"
+  printf 'data-urlencode = "secret_token=%s"\n' "$secret"
+  printf 'data-urlencode = "allowed_updates=[\\"message\\"]"\n'
+)
+telegram setWebhook "$webhook_config"$'\n'
 
 echo "Webhook status:"
 telegram getWebhookInfo

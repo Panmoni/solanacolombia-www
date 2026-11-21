@@ -289,3 +289,38 @@ describe('group hygiene', () => {
     );
   });
 });
+
+describe('review fixes', () => {
+  test('a command sent first is not stored as the join message', async () => {
+    const harness = createHarness();
+    await handleUpdate(harness.message(ANA, '', { new_chat_members: [ANA] }), harness.deps);
+    await send(harness, ANA, '/ship https://ana.dev');
+    await send(harness, ANA, 'Hola a todos');
+    const rows = selectRows(harness.db.raw, 'SELECT text FROM tg_join_messages');
+    assert.deepEqual(rows, [{ text: 'Hola a todos' }]);
+  });
+
+  test('a username that moved to another account resolves to its new owner', async () => {
+    const harness = createHarness();
+    await send(harness, user(50, 'dev'), 'hola');
+    harness.setNow('2026-11-02T12:00:00.000Z');
+    await send(harness, user(51, 'dev'), '/ship https://new-owner.dev');
+    // The old owner speaks again under a new username.
+    await send(harness, user(50, 'dev_old'), 'sigo aquí');
+    assert.equal(
+      await send(harness, GEORGE, '/vouch @dev'),
+      '✅ Vouch registrado para el ship de @dev: https://new-owner.dev',
+    );
+  });
+
+  test('a failed pin tells George instead of failing the update', async () => {
+    const harness = createHarness();
+    harness.deps.telegram.pinChatMessage = async () => {
+      throw new Error('Telegram pinChatMessage failed (400): not enough rights');
+    };
+    await send(harness, GEORGE, '/reglas');
+    const dm = harness.telegram.sent.at(-1);
+    assert.equal(dm?.chatId, GEORGE.id);
+    assert.match(dm?.text ?? '', /no pude fijarlas: Telegram pinChatMessage failed \(400\)/);
+  });
+});

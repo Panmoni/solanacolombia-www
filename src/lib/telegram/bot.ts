@@ -21,6 +21,9 @@ import {
   markJoined,
   markUpdateProcessed,
   recordJoinMessage,
+  shipVouchedByMessage,
+  thanksExistsForMessage,
+  unmarkUpdateProcessed,
   upsertMember,
 } from './store.ts';
 import type { BotDeps, TgMessage, TgUpdate, TgUser } from './types.ts';
@@ -164,8 +167,15 @@ const handleVouch = async (deps: BotDeps, message: TgMessage, from: TgUser) => {
     return;
   }
   const name = displayName(target.member);
+  const confirmed = await shipVouchedByMessage(deps.db, message.message_id);
+  if (confirmed) {
+    // A redelivery of a /vouch that already counted: answer it again.
+    await reply(deps, message, `✅ Vouch registrado para el ship de ${name}: ${confirmed.link}`);
+    return;
+  }
   const ship = await latestUnvouchedShip(deps.db, target.member.id);
-  if (!(ship && (await insertVouch(deps.db, ship.id, from.id, deps.now())))) {
+  const vouch = ship && { shipId: ship.id, voucherId: from.id, messageId: message.message_id };
+  if (!(ship && vouch && (await insertVouch(deps.db, vouch, deps.now())))) {
     await reply(deps, message, `${name} no tiene ships pendientes de /vouch.`);
     return;
   }
@@ -187,7 +197,13 @@ const handleGracias = async (deps: BotDeps, message: TgMessage, from: TgUser) =>
     return;
   }
   const name = displayName(target.member);
-  const credited = await insertThanksIfAllowed(deps.db, from.id, target.member.id, deps.now());
+  const credited =
+    (await thanksExistsForMessage(deps.db, message.message_id)) ||
+    (await insertThanksIfAllowed(
+      deps.db,
+      { fromId: from.id, toId: target.member.id, messageId: message.message_id },
+      deps.now(),
+    ));
   await reply(
     deps,
     message,
@@ -243,7 +259,18 @@ const handleReglas = async (deps: BotDeps, message: TgMessage, from: TgUser) => 
     markdownToTelegramHtml(deps.texts.reglas),
     { html: true },
   );
-  await deps.telegram.pinChatMessage(message.chat.id, sent.message_id);
+  try {
+    await deps.telegram.pinChatMessage(message.chat.id, sent.message_id);
+  } catch (error) {
+    // The rules are posted; tell George instead of failing the update, which
+    // would post them a second time on redelivery.
+    console.error('telegram /reglas: could not pin the rules', error);
+    const reason = error instanceof Error ? error.message : String(error);
+    await deps.telegram.sendMessage(
+      deps.config.georgeId,
+      `Publiqué las reglas, pero no pude fijarlas: ${reason}. ¿El bot es admin con permiso para fijar mensajes?`,
+    );
+  }
 };
 
 const handleNewMembers = async (deps: BotDeps, message: TgMessage, members: TgUser[]) => {
@@ -288,7 +315,17 @@ export const handleUpdate = async (update: TgUpdate, deps: BotDeps): Promise<voi
   if (!(await markUpdateProcessed(deps.db, update.update_id, deps.now()))) {
     return;
   }
+  try {
+    await handleGroupMessage(deps, message);
+  } catch (error) {
+    // Let Telegram redeliver the update. Writes are keyed on message_id, so
+    // the retry records nothing twice.
+    await unmarkUpdateProcessed(deps.db, update.update_id);
+    throw error;
+  }
+};
 
+const handleGroupMessage = async (deps: BotDeps, message: TgMessage): Promise<void> => {
   if (message.new_chat_members?.length) {
     await handleNewMembers(deps, message, message.new_chat_members);
     return;
@@ -301,8 +338,9 @@ export const handleUpdate = async (update: TgUpdate, deps: BotDeps): Promise<voi
   const existing = await getMember(deps.db, from.id);
   await upsertMember(deps.db, from, deps.now());
 
+  // The join message is the member's first real message; commands don't count.
   const text = message.text ?? message.caption ?? '';
-  if (existing?.awaiting_join_message === 1 && text) {
+  if (existing?.awaiting_join_message === 1 && text && !text.startsWith('/')) {
     await recordJoinMessage(deps.db, from.id, text, message.message_id, deps.now());
   }
 

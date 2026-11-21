@@ -40,6 +40,11 @@ export const markUpdateProcessed = async (
   return result.meta.changes > 0;
 };
 
+/** Forgets an update id so Telegram's redelivery is handled again. */
+export const unmarkUpdateProcessed = async (db: SqlDatabase, updateId: number): Promise<void> => {
+  await db.prepare('DELETE FROM tg_processed_updates WHERE update_id = ?').bind(updateId).run();
+};
+
 export const pruneProcessedUpdates = async (db: SqlDatabase, before: Date): Promise<void> => {
   await db
     .prepare('DELETE FROM tg_processed_updates WHERE created_at < ?')
@@ -47,9 +52,21 @@ export const pruneProcessedUpdates = async (db: SqlDatabase, before: Date): Prom
     .run();
 };
 
-/** Inserts or refreshes a member's name and username. */
+/**
+ * Inserts or refreshes a member's name and username. Telegram usernames can
+ * move to another account, so any other row still holding this one loses it.
+ */
 export const upsertMember = async (db: SqlDatabase, user: TgUser, now: Date): Promise<void> => {
   const at = now.toISOString();
+  if (user.username) {
+    await db
+      .prepare(
+        `UPDATE tg_members SET username = NULL, updated_at = ?
+         WHERE lower(username) = lower(?) AND telegram_id <> ?`,
+      )
+      .bind(at, user.username, user.id)
+      .run();
+  }
   await db
     .prepare(
       `INSERT INTO tg_members (telegram_id, username, first_name, created_at, updated_at)
@@ -66,8 +83,11 @@ export const upsertMember = async (db: SqlDatabase, user: TgUser, now: Date): Pr
 export const markJoined = async (db: SqlDatabase, user: TgUser, now: Date): Promise<void> => {
   await upsertMember(db, user, now);
   await db
-    .prepare('UPDATE tg_members SET joined_at = ?, awaiting_join_message = 1 WHERE telegram_id = ?')
-    .bind(now.toISOString(), user.id)
+    .prepare(
+      `UPDATE tg_members SET joined_at = ?, awaiting_join_message = 1, updated_at = ?
+       WHERE telegram_id = ?`,
+    )
+    .bind(now.toISOString(), now.toISOString(), user.id)
     .run();
 };
 
@@ -109,10 +129,15 @@ export const recordJoinMessage = async (
     .bind(memberId, text, messageId, now.toISOString())
     .run();
   await db
-    .prepare('UPDATE tg_members SET awaiting_join_message = 0 WHERE telegram_id = ?')
-    .bind(memberId)
+    .prepare(
+      'UPDATE tg_members SET awaiting_join_message = 0, updated_at = ? WHERE telegram_id = ?',
+    )
+    .bind(now.toISOString(), memberId)
     .run();
 };
+
+// Ships, vouches and gracias store the group message that created them, with
+// a UNIQUE constraint, so a redelivered update writes nothing twice.
 
 export const insertShip = async (
   db: SqlDatabase,
@@ -127,7 +152,7 @@ export const insertShip = async (
 ): Promise<void> => {
   await db
     .prepare(
-      `INSERT INTO tg_ships (member_id, link, note, video_consent, message_id, created_at)
+      `INSERT OR IGNORE INTO tg_ships (member_id, link, note, video_consent, message_id, created_at)
        VALUES (?, ?, ?, ?, ?, ?)`,
     )
     .bind(
@@ -166,40 +191,64 @@ export const latestUnvouchedShip = async (
     .bind(memberId)
     .first<ShipRow>();
 
+/** The ship a /vouch message already confirmed, when that message is redelivered. */
+export const shipVouchedByMessage = async (
+  db: SqlDatabase,
+  messageId: number,
+): Promise<ShipRow | null> =>
+  db
+    .prepare(
+      `SELECT s.id, s.member_id, s.link FROM tg_vouches v JOIN tg_ships s ON s.id = v.ship_id
+       WHERE v.message_id = ?`,
+    )
+    .bind(messageId)
+    .first<ShipRow>();
+
 /** Returns false when the ship was vouched in the meantime. */
 export const insertVouch = async (
   db: SqlDatabase,
-  shipId: number,
-  voucherId: number,
+  vouch: { shipId: number; voucherId: number; messageId: number },
   now: Date,
 ): Promise<boolean> => {
   const result = await db
-    .prepare('INSERT OR IGNORE INTO tg_vouches (ship_id, voucher_id, created_at) VALUES (?, ?, ?)')
-    .bind(shipId, voucherId, now.toISOString())
+    .prepare(
+      `INSERT OR IGNORE INTO tg_vouches (ship_id, voucher_id, message_id, created_at)
+       VALUES (?, ?, ?, ?)`,
+    )
+    .bind(vouch.shipId, vouch.voucherId, vouch.messageId, now.toISOString())
     .run();
   return result.meta.changes > 0;
 };
 
+export const thanksExistsForMessage = async (
+  db: SqlDatabase,
+  messageId: number,
+): Promise<boolean> =>
+  (await db
+    .prepare('SELECT 1 AS found FROM tg_thanks WHERE message_id = ?')
+    .bind(messageId)
+    .first()) !== null;
+
 /**
- * Credits a gracias unless the same pair already has one in the last 7 days.
- * One statement, so two quick /gracias can't both pass the check.
+ * Credits a gracias unless the same pair already has one in the last 7 days
+ * (PAN-418). One statement, so two quick /gracias can't both pass the check.
  */
 export const insertThanksIfAllowed = async (
   db: SqlDatabase,
-  fromId: number,
-  toId: number,
+  thanks: { fromId: number; toId: number; messageId: number },
   now: Date,
 ): Promise<boolean> => {
+  const { fromId, toId, messageId } = thanks;
   const since = new Date(now.getTime() - SEVEN_DAYS_MS).toISOString();
   const result = await db
     .prepare(
-      `INSERT INTO tg_thanks (from_id, to_id, created_at)
-       SELECT ?, ?, ?
+      `INSERT OR IGNORE INTO tg_thanks (from_id, to_id, message_id, created_at)
+       SELECT ?, ?, ?, ?
        WHERE NOT EXISTS (
          SELECT 1 FROM tg_thanks WHERE from_id = ? AND to_id = ? AND created_at > ?
        )`,
     )
-    .bind(fromId, toId, now.toISOString(), fromId, toId, since)
+    .bind(fromId, toId, messageId, now.toISOString(), fromId, toId, since)
     .run();
   return result.meta.changes > 0;
 };

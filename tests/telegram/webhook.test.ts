@@ -90,8 +90,40 @@ describe('handleWebhookRequest', () => {
     const response = await handleWebhookRequest(
       request({ [SECRET_HEADER]: SECRET }, harness.message(GEORGE, '/rep')),
       SECRET,
-      () => null,
+      () => ['TELEGRAM_BOT_TOKEN'],
     );
     assert.equal(response.status, 503);
+  });
+});
+
+describe('redelivery after a failure', () => {
+  test('a failed update answers 500 and its redelivery records nothing twice', async () => {
+    const harness = createHarness();
+    const realSend = harness.deps.telegram.sendMessage;
+    let failNext = true;
+    harness.deps.telegram.sendMessage = async (...args) => {
+      if (failNext) {
+        failNext = false;
+        throw new Error('Telegram sendMessage failed (502): Bad Gateway');
+      }
+      return realSend(...args);
+    };
+    const update = harness.message(GEORGE, '/ship https://george.dev');
+    const send = () =>
+      handleWebhookRequest(
+        request({ [SECRET_HEADER]: SECRET }, update),
+        SECRET,
+        () => harness.deps,
+      );
+
+    assert.equal((await send()).status, 500);
+    assert.equal((await send()).status, 200);
+    assert.equal((await send()).status, 200);
+
+    const ships = harness.db.raw.prepare('SELECT COUNT(*) AS n FROM tg_ships').get() as {
+      n: number;
+    };
+    assert.equal(Number(ships.n), 1);
+    assert.equal(harness.telegram.sent.length, 1);
   });
 });

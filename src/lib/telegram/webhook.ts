@@ -22,15 +22,18 @@ export const isAuthorizedWebhook = (header: string | null, secret: string | unde
 };
 
 /**
- * `makeDeps` returns null when the bot's secrets are not configured. A handler
- * error is logged and still answered 200: the update id is already recorded,
- * so a Telegram retry would be skipped anyway.
+ * `makeDeps` returns the bot's dependencies, or the names of the secrets that
+ * are missing. A handler error answers 500: handleUpdate has already forgotten
+ * the update id, so Telegram's redelivery is handled again.
  */
 export const handleWebhookRequest = async (
   request: Request,
   secret: string | undefined,
-  makeDeps: () => BotDeps | null,
+  makeDeps: () => BotDeps | string[],
 ): Promise<Response> => {
+  if (!secret) {
+    console.error('telegram webhook: TELEGRAM_WEBHOOK_SECRET is not set; rejecting every update');
+  }
   if (!isAuthorizedWebhook(request.headers.get(SECRET_HEADER), secret)) {
     return new Response('Unauthorized', { status: 401 });
   }
@@ -49,14 +52,18 @@ export const handleWebhookRequest = async (
   }
 
   const deps = makeDeps();
-  if (!deps) {
-    console.error('telegram webhook: bot secrets are not configured');
+  if (Array.isArray(deps)) {
+    console.error(`telegram webhook: missing or invalid secrets: ${deps.join(', ')}`);
     return new Response('Service Unavailable', { status: 503 });
   }
   try {
     await handleUpdate(update, deps);
   } catch (error) {
-    console.error(`telegram webhook: update ${update.update_id} failed`, error);
+    console.error(
+      `telegram webhook: update ${update.update_id} failed; Telegram will retry`,
+      error,
+    );
+    return new Response('Internal Server Error', { status: 500 });
   }
   return new Response('ok');
 };

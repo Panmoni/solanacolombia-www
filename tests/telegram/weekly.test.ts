@@ -107,3 +107,26 @@ describe('weekly digest to George', () => {
     );
   });
 });
+
+describe('weekly failures', () => {
+  test('a failed group post still sends the digest, then the run fails', async () => {
+    const harness = createHarness();
+    enqueue(harness, 'reto', 'Reto pendiente.');
+    const realSend = harness.deps.telegram.sendMessage;
+    harness.deps.telegram.sendMessage = async (chatId, text, options) => {
+      if (chatId === GROUP_ID) {
+        throw new Error('Telegram sendMessage failed (500): Internal Server Error');
+      }
+      return realSend(chatId, text, options);
+    };
+
+    await assert.rejects(runWeekly(harness.deps), AggregateError);
+    assert.equal(harness.telegram.sent.at(-1)?.chatId, GEORGE_ID);
+    // The Reto was never posted, so it stays queued.
+    const pending = selectRows(
+      harness.db.raw,
+      'SELECT body FROM tg_weekly_queue WHERE posted_at IS NULL',
+    );
+    assert.deepEqual(pending, [{ body: 'Reto pendiente.' }]);
+  });
+});

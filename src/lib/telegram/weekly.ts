@@ -77,20 +77,45 @@ export const buildDigest = (ups: LevelUp[]): string => {
   return `Resumen semanal: subieron de nivel\n${lines.join('\n')}`;
 };
 
+/**
+ * Each step runs even when an earlier one fails, so a failed group post never
+ * costs George his digest. Any failure is rethrown at the end.
+ */
 export const runWeekly = async (deps: BotDeps): Promise<void> => {
   const now = deps.now();
-  const activity = await loadActivity(deps.db);
-  const reto = await nextQueueItem(deps.db, 'reto');
-  const opportunity = await nextQueueItem(deps.db, 'oportunidad');
-
-  const post = buildWeeklyPost(formatTop(leaderboard(activity, now)), reto, opportunity);
-  await deps.telegram.sendMessage(deps.config.groupId, post);
-  for (const item of [reto, opportunity]) {
-    if (item) {
-      await markQueueItemPosted(deps.db, item.id, now);
+  const errors: unknown[] = [];
+  const step = async (run: () => Promise<void>) => {
+    try {
+      await run();
+    } catch (error) {
+      errors.push(error);
     }
-  }
+  };
 
-  await deps.telegram.sendMessage(deps.config.georgeId, buildDigest(levelUps(activity, now)));
-  await pruneProcessedUpdates(deps.db, new Date(now.getTime() - PROCESSED_UPDATES_RETENTION_MS));
+  const activity = await loadActivity(deps.db);
+
+  await step(async () => {
+    const reto = await nextQueueItem(deps.db, 'reto');
+    const opportunity = await nextQueueItem(deps.db, 'oportunidad');
+    const post = buildWeeklyPost(formatTop(leaderboard(activity, now)), reto, opportunity);
+    await deps.telegram.sendMessage(deps.config.groupId, post);
+    // Marked only after the post went out, so an item is never consumed unseen.
+    for (const item of [reto, opportunity]) {
+      if (item) {
+        await markQueueItemPosted(deps.db, item.id, now);
+      }
+    }
+  });
+  await step(() =>
+    deps.telegram
+      .sendMessage(deps.config.georgeId, buildDigest(levelUps(activity, now)))
+      .then(() => undefined),
+  );
+  await step(() =>
+    pruneProcessedUpdates(deps.db, new Date(now.getTime() - PROCESSED_UPDATES_RETENTION_MS)),
+  );
+
+  if (errors.length > 0) {
+    throw new AggregateError(errors, `telegram weekly: ${errors.length} step(s) failed`);
+  }
 };

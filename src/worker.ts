@@ -7,15 +7,16 @@ import { runWeekly } from './lib/telegram/weekly';
 
 export default {
   fetch: handle,
+  // Errors propagate so a failed run shows as failed in the Cron Events log.
   scheduled(_controller: ScheduledController, env: Env, ctx: ExecutionContext) {
     const deps = botDepsFromEnv(env);
-    if (!deps) {
-      console.error('telegram weekly: bot secrets are not configured; skipping');
-      return;
+    if (Array.isArray(deps)) {
+      throw new Error(`telegram weekly: missing or invalid secrets: ${deps.join(', ')}`);
     }
     ctx.waitUntil(
       runWeekly(deps).catch((error: unknown) => {
         console.error('telegram weekly: run failed', error);
+        throw error;
       }),
     );
   },
