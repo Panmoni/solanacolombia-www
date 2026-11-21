@@ -1,0 +1,216 @@
+---
+// The one blog post kept after the blog was retired (PAN-438). A static route
+// wins over blog/[...slug].astro, so every other /blog/* path still redirects.
+// Facts here mirror src/lib/telegram/scoring.ts, src/lib/telegram/bot.ts,
+// wrangler.toml (the weekly cron) and content/telegram/*.md. Update them together.
+import Layout from "../../layouts/Layout.astro";
+
+const telegram = "https://t.me/Solana_Colombia";
+
+const commands = [
+  ["/ship <link>", "Registra algo que construiste, con su link público."],
+  ["/vouch @usuario", "Confirma que el ship de alguien es real. Cuenta cuando ya tienes un ship confirmado."],
+  ["/gracias @usuario", "Le da crédito a alguien que te ayudó."],
+  ["/rep", "Muestra tus puntos y tu nivel."],
+  ["/top", "Muestra el ranking."],
+];
+
+const points = [
+  ["10", "por cada ship tuyo confirmado"],
+  ["2", "por cada /gracias que recibes"],
+  ["1", "por cada /vouch que das"],
+];
+
+const levels = [
+  ["Visitante", "Acabas de llegar."],
+  ["Constructor", "Tienes un ship confirmado."],
+  ["Shipper", "Tienes tres ships confirmados."],
+  ["Núcleo", "Tres ships confirmados en los últimos 90 días y al menos tres /gracias recibidos."],
+];
+
+const channels = [
+  ["YouTube", "https://www.youtube.com/@SolanaColombia", "@SolanaColombia"],
+  ["Instagram", "https://www.instagram.com/solana_colombia", "@solana_colombia"],
+  ["X", "https://x.com/Solana_Colombia", "@Solana_Colombia"],
+];
+---
+
+<Layout
+  title="Así funciona Solana Colombia ahora"
+  description="Solana Colombia arranca de nuevo: todo en el grupo de Telegram, Primer Envío, Retos semanales y reputación en vez de plata. Esto es lo que tienes que hacer."
+  ogType="article"
+>
+  <article class="wrap grid">
+    <div class="label">Anuncio</div>
+    <div class="body">
+      <header>
+        <h1>Así funciona Solana Colombia ahora</h1>
+        <p class="lede">
+          Arrancamos de nuevo con una idea simple: juntar a la gente que construye en Solana
+          desde Colombia y armar equipos de verdad para las hackatones. Esta es toda la guía.
+          Léela una vez y ya sabes qué hacer.
+        </p>
+      </header>
+
+      <section>
+        <h2>Por qué arrancamos de nuevo</h2>
+        <p>
+          Una comunidad no crece con eventos sueltos ni con promesas. Crece cuando la gente
+          construye cosas, las muestra y se ayuda. Por eso cambiamos la forma de trabajar.
+        </p>
+        <p>
+          El objetivo es claro: que los builders se conozcan por lo que han construido y armen
+          equipos sólidos para competir en hackatones como las de Colosseum. Para llegar ahí no
+          hace falta un currículum. Hace falta enviar cosas.
+        </p>
+      </section>
+
+      <section>
+        <h2>Cómo funciona, paso a paso</h2>
+
+        <h3><em>01</em> Entra al grupo de Telegram</h3>
+        <p>
+          Todo pasa en el <a href={telegram}>grupo de Telegram</a>, en público. Las preguntas se
+          hacen ahí, nunca por privado, para que la respuesta le sirva a todos y cualquiera pueda
+          ayudar.
+        </p>
+
+        <h3><em>02</em> Cuenta qué quieres construir</h3>
+        <p>
+          Preséntate en una línea: quién eres y qué te gustaría construir. Así otros saben en qué
+          te pueden ayudar y con quién podrías hacer equipo.
+        </p>
+
+        <h3><em>03</em> Haz tu Primer Envío</h3>
+        <p>
+          Tu primera tarea: shipea algo público. Un repo público, una URL en vivo o un video demo.
+          Puede ser pequeño. Un script, una página o un contrato de prueba sirven. Lo importante es
+          terminarlo y mostrarlo. Capturas de pantalla, ideas y promesas no cuentan.
+        </p>
+        <p>Cuando lo tengas, escribe en el grupo:</p>
+        <pre><code>/ship &lt;link&gt;</code></pre>
+        <p>
+          Cuenta en una línea qué hiciste. Cuando alguien con un ship confirmado le dé
+          <code>/vouch</code>, pasas a Constructor. No hay fecha límite, formulario ni inscripción.
+        </p>
+
+        <h3><em>04</em> Mete la mano en los Retos semanales</h3>
+        <p>
+          Cada lunes a las 9 a. m. (hora de Colombia) el bot publica en el grupo el Reto de la
+          semana, una oportunidad para aplicar (hackatones, bounties o grants) y el top 10 de
+          reputación. Haces el Reto, lo publicas y lo registras con <code>/ship</code>, como
+          cualquier otro ship.
+        </p>
+
+        <h3><em>05</em> Gana reputación</h3>
+        <p>
+          Un bot lleva la cuenta. Los mensajes y las reacciones no suman puntos. Solo suma lo que
+          construyes y la ayuda que das.
+        </p>
+        <dl class="cmds">
+          {commands.map(([cmd, text]) => (
+            <div><dt><code>{cmd}</code></dt><dd>{text}</dd></div>
+          ))}
+        </dl>
+        <p>Así se suman los puntos:</p>
+        <ul class="points">
+          {points.map(([n, text]) => (
+            <li><b>{n}</b><span>{text}</span></li>
+          ))}
+        </ul>
+        <p>Un ship cuenta desde que alguien le da <code>/vouch</code>. Los puntos de hace más de 90 días valen la mitad.</p>
+        <ol class="levels">
+          {levels.map(([name, text]) => (
+            <li><b>{name}</b><span>{text}</span></li>
+          ))}
+        </ol>
+
+        <h3><em>06</em> Sal en un video</h3>
+        <p>
+          Cada semana publicamos videos cortos sobre la comunidad, y algunos muestran lo que
+          construyó un builder colombiano. Solo mostramos ships cuyo autor dio permiso. Si quieres
+          que el tuyo pueda salir, agrega la palabra <code>video</code> al registrarlo:
+        </p>
+        <pre><code>/ship &lt;link&gt; video</code></pre>
+
+        <h3><em>07</em> Mira los videos</h3>
+        <p>Los videos salen en:</p>
+        <ul class="channels">
+          {channels.map(([name, href, handle]) => (
+            <li><a href={href}><b>{name}</b> <span>{handle}</span></a></li>
+          ))}
+        </ul>
+      </section>
+
+      <section>
+        <h2>Lo que no hay</h2>
+        <p>
+          Aquí no hay plata, no hay premios y no hay transmisiones en vivo. No pagamos por
+          participar y no rifamos nada.
+        </p>
+        <p>
+          Lo que ganas es reputación, salir en nuestros videos y un puesto en un equipo para
+          hackatones, con gente que ya demostró que envía.
+        </p>
+      </section>
+
+      <section class="cta">
+        <h2>Empieza hoy</h2>
+        <p>Entra al grupo, lee las reglas fijadas y manda tu primer ship.</p>
+        <a class="btn" href={telegram}>Únete al grupo de Telegram →</a>
+      </section>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 20px; padding-block: 48px 56px; }
+  .label { grid-column: 1 / 3; font: 500 11px/1.5 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding-top: 14px; }
+  .body { grid-column: 3 / 11; min-width: 0; font-size: 16px; line-height: 1.65; }
+  a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  h1 { font-weight: 500; font-size: clamp(32px, 4.4vw, 48px); line-height: 1.05; letter-spacing: -0.03em; margin: 0 0 16px; text-wrap: balance; }
+  .lede { font-size: 18px; line-height: 1.55; color: var(--muted); margin: 0 0 8px; max-width: 60ch; }
+  section { border-top: 1px solid var(--line); margin-top: 32px; padding-top: 28px; }
+  h2 { font-weight: 500; font-size: 24px; letter-spacing: -0.015em; line-height: 1.2; margin: 0 0 12px; }
+  h3 { font-weight: 500; font-size: 18px; margin: 28px 0 6px; }
+  h3 em { font: 500 12px var(--mono); font-style: normal; color: var(--accent); margin-right: 8px; }
+  p { margin: 0 0 12px; max-width: 64ch; }
+  code { font: 500 0.9em var(--mono); color: var(--accent); }
+  pre { background: var(--panel); border: 1px solid var(--line); padding: 10px 14px; margin: 0 0 12px; overflow-x: auto; }
+
+  .cmds { margin: 12px 0 18px; border-top: 1px solid var(--line); }
+  .cmds div { display: grid; grid-template-columns: 170px 1fr; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .cmds dd { margin: 0; color: var(--muted); font-size: 15px; }
+
+  .points, .levels, .channels { list-style: none; padding: 0; margin: 0 0 16px; }
+  .points { display: flex; flex-wrap: wrap; gap: 8px; }
+  .points li { flex: 1 1 160px; border: 1px solid var(--line); padding: 10px 12px; }
+  .points b { font: 500 22px var(--mono); color: var(--accent); display: block; }
+  .points span { font-size: 14px; color: var(--muted); }
+
+  .levels { border: 1px solid var(--line); }
+  .levels li { display: grid; grid-template-columns: 130px 1fr; gap: 12px; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+  .levels li:last-child { border-bottom: 0; background: var(--accent-soft); }
+  .levels b { font-weight: 500; }
+  .levels span { color: var(--muted); font-size: 15px; }
+
+  .channels { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+  .channels a { text-decoration: none; }
+  .channels b { color: var(--fg); font-weight: 500; }
+  .channels span { font: 400 13px var(--mono); }
+
+  .cta { background: var(--accent-soft); border-top: 0; padding: 22px 24px; }
+  .btn { display: inline-flex; margin-top: 4px; padding: 10px 16px; font-size: 14px; font-weight: 500; background: var(--fg); color: var(--bg); text-decoration: none; transition: background 0.15s; }
+  .btn:hover { background: var(--accent); }
+
+  @media (max-width: 820px) {
+    .label, .body { grid-column: 1 / -1; }
+    .label { padding-top: 0; margin-bottom: 10px; }
+    .cmds div, .levels li { grid-template-columns: 1fr; gap: 2px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .btn { transition: none; }
+  }
+</style>

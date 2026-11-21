@@ -74,6 +74,7 @@ const channels = [
             <li><em>{String(i + 1).padStart(2, "0")}</em><b>{title}</b><span>{text}</span></li>
           ))}
         </ol>
+        <a class="more" href="/blog/asi-funciona-solana-colombia">Lee la guía completa →</a>
       </div>
     </div>
   </section>
@@ -219,6 +220,8 @@ const channels = [
   .steps em { font: 500 11px var(--mono); font-style: normal; color: var(--accent); display: block; margin-bottom: 4px; }
   .steps b { font-weight: 500; display: block; margin-bottom: 2px; }
   .steps span { font-size: 13.5px; color: var(--muted); }
+  .more { display: inline-block; margin-top: 18px; font: 500 13px var(--mono); color: var(--accent); }
+  .more:hover { text-decoration: underline; }
 
   .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 28px; }
   .two div { padding-block: 10px; border-top: 1px solid var(--line); }
