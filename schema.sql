@@ -66,3 +66,6 @@ CREATE INDEX IF NOT EXISTS idx_links_builder ON builder_project_links(builder_wa
 CREATE INDEX IF NOT EXISTS idx_links_project ON builder_project_links(project_id);
 CREATE INDEX IF NOT EXISTS idx_links_status ON builder_project_links(status);
 CREATE INDEX IF NOT EXISTS idx_links_builder_project ON builder_project_links(builder_wallet, project_id);
+
+-- Telegram reputation bot tables (tg_*): migrations/d1/0001_telegram_reputation.sql,
+-- applied with `wrangler d1 migrations apply solana_builders`.

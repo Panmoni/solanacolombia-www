@@ -1,5 +1,6 @@
 name = "solanacolombia-www"
-main = "@astrojs/cloudflare/entrypoints/server"
+# src/worker.ts wraps Astro's handler and adds the reputation bot's Cron Trigger.
+main = "./src/worker.ts"
 compatibility_date = "2026-11-18"
 compatibility_flags = ["nodejs_compat"]
 
@@ -7,6 +8,12 @@ compatibility_flags = ["nodejs_compat"]
 binding = "DB"
 database_name = "solana_builders"
 database_id = "dcb2f24a-d72d-4632-8e57-46e53ffcd865"
+# The old ad-hoc SQL in migrations/ is applied by hand; wrangler manages only migrations/d1.
+migrations_dir = "migrations/d1"
+
+# Weekly reputation posts: Mondays 14:00 UTC (09:00 in Bogotá).
+[triggers]
+crons = ["0 14 * * 1"]
 
 # For preview deployments (pull requests, preview branches)
 [env.preview]
