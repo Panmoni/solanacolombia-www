@@ -145,35 +145,38 @@ const channels = [
     top: ["/top", "", "Top de la semana: 1. @builder_mde 48 · 2. @cali_codes 31 · 3. @dev_bogota 22"],
   };
 
-  const chat = document.getElementById("chat");
-  if (chat) chat.scrollTop = chat.scrollHeight;
+  // ClientRouter swaps pages without reloading, so bind on every page load.
+  document.addEventListener("astro:page-load", () => {
+    const chat = document.getElementById("chat");
+    if (chat) chat.scrollTop = chat.scrollHeight;
 
-  const addMessage = (who: string, text: string, command?: string) => {
-    if (!chat) return;
-    const msg = document.createElement("div");
-    msg.className = command === undefined ? "msg bot" : "msg";
-    const author = document.createElement("small");
-    author.textContent = who;
-    msg.append(author);
-    if (command) {
-      const code = document.createElement("code");
-      code.textContent = command;
-      msg.append(code, " ");
+    const addMessage = (who: string, text: string, command?: string) => {
+      if (!chat) return;
+      const msg = document.createElement("div");
+      msg.className = command === undefined ? "msg bot" : "msg";
+      const author = document.createElement("small");
+      author.textContent = who;
+      msg.append(author);
+      if (command) {
+        const code = document.createElement("code");
+        code.textContent = command;
+        msg.append(code, " ");
+      }
+      msg.append(text);
+      chat.append(msg);
+      chat.scrollTop = chat.scrollHeight;
+    };
+
+    for (const button of document.querySelectorAll<HTMLButtonElement>(".cmds button")) {
+      button.addEventListener("click", () => {
+        const reply = replies[button.dataset.c ?? ""];
+        if (!reply) return;
+        const [command, arg, answer] = reply;
+        addMessage("@tu", arg, command);
+        setTimeout(() => addMessage("bot", answer), 350);
+      });
     }
-    msg.append(text);
-    chat.append(msg);
-    chat.scrollTop = chat.scrollHeight;
-  };
-
-  for (const button of document.querySelectorAll<HTMLButtonElement>(".cmds button")) {
-    button.addEventListener("click", () => {
-      const reply = replies[button.dataset.c ?? ""];
-      if (!reply) return;
-      const [command, arg, answer] = reply;
-      addMessage("@tu", arg, command);
-      setTimeout(() => addMessage("bot", answer), 350);
-    });
-  }
+  });
 </script>
 
 <style>

@@ -16,9 +16,8 @@ export default defineConfig({
   adapter: cloudflare(),
   // Astro hashes its own scripts and styles and sends the policy as a
   // Content-Security-Policy header on every server-rendered route.
-  // Third-party origins come from a headless-browser audit (PAN-60): the
-  // lu.ma events iframe, plus the Newsletter embed (eocampaign1.com) and the
-  // reCAPTCHA it loads, so the policy holds whenever <Newsletter /> renders.
+  // The one-page hub (PAN-420) loads nothing third-party, so the policy is
+  // same-origin only.
   security: {
     csp: {
       directives: [
@@ -26,11 +25,10 @@ export default defineConfig({
         "base-uri 'self'",
         "object-src 'none'",
         "frame-ancestors 'self'",
-        "form-action 'self' https://eocampaign1.com",
-        "img-src 'self' data: https://eocampaign1.com https://gallery.eo.page https://www.gstatic.com",
+        "form-action 'self'",
+        "img-src 'self' data:",
         "font-src 'self' data:",
-        "connect-src 'self' https://eocampaign1.com https://www.recaptcha.net",
-        'frame-src https://lu.ma https://luma.com https://www.recaptcha.net https://www.google.com',
+        "connect-src 'self'",
       ],
       // Inline style attributes and the <style> blocks Astro emits for
       // transition:name cannot be hashed, so styles allow 'unsafe-inline'.
@@ -39,12 +37,7 @@ export default defineConfig({
         resources: ["'self'", "'unsafe-inline'"],
       },
       scriptDirective: {
-        resources: [
-          "'self'",
-          'https://eocampaign1.com',
-          'https://www.recaptcha.net/recaptcha/',
-          'https://www.gstatic.com/recaptcha/',
-        ],
+        resources: ["'self'"],
       },
     },
   },

@@ -9,7 +9,6 @@ interface Props {
   description?: string;
   image?: string;
   ogType?: string;
-  footerMargin?: boolean;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site).toString();
@@ -18,8 +17,7 @@ const {
   title, 
   description = "Comunidad de builders en Solana, desde Colombia. Construye, envía en público, gana reputación y compite en equipo.",
   image,
-  ogType = "website",
-  footerMargin = true 
+  ogType = "website" 
 } = Astro.props;
 
 const imagePath = image || "/opengraph.png";
