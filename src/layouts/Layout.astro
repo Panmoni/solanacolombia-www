@@ -16,7 +16,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site).toString();
 
 const { 
   title, 
-  description = "Tu comunidad Solana en Colombia. Comparte, aprende y construye en un espacio abierto y colaborativo.",
+  description = "Comunidad de builders en Solana, desde Colombia. Construye, envía en público, gana reputación y compite en equipo.",
   image,
   ogType = "website",
   footerMargin = true 
@@ -30,11 +30,11 @@ const resolvedImageWithDomain = new URL(
 
 const makeTitle = title
   ? `${title} | Solana Colombia`
-  : "Solana Colombia: Eventos, Incubación, Hackathons";
+  : "Solana Colombia: construye, envía, en público";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -82,7 +82,7 @@ const makeTitle = title
     <!-- Enable ViewTransitions for smooth page transitions -->
     <ClientRouter />
   </head>
-  <body class="bg-gray-50">
+  <body>
     <Header />
     
     <main>

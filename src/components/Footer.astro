@@ -1,208 +1,37 @@
 ---
-// Footer component inspired by Footer.tsx
-import { Image } from "astro:assets";
-import solanaSvg from "../images/solana.svg?url";
-import solanaColombiaLogo from "../images/solanaColombiaLogo.png";
+// Site footer in the Retícula Compacta style (PAN-420).
 ---
 
-<footer class="bg-white border-t-2 border-dashed border-gray-300">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-      <!-- Brand Column -->
-      <div class="space-y-4">
-        <h3 class="font-bold text-lg text-gray-900">
-          <Image
-            src={solanaColombiaLogo}
-            alt="Solana Colombia logo"
-            class="h-6 w-6 rounded-full inline"
-          />
-          <span class="align-middle">Solana Colombia</span>
-        </h3>
-        <p
-          class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-neutral-50 border border-neutral-200 text-[10px] font-mono uppercase tracking-widest text-neutral-500"
-        >
-          <span class="relative flex h-2 w-2">
-            <span
-              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#14F195] opacity-75"
-            ></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#14F195]"
-            ></span>
-          </span>
-          de cero a mainnet
-        </p>
-      </div>
-
-      <!-- Community Links -->
-      <div>
-        <h4 class="font-semibold mb-4 text-gray-900">Comunidad</h4>
-        <ul class="space-y-2">
-          <li>
-            <a
-              href="https://lu.ma/solanacolombia"
-              target="_blank"
-              class="text-sm text-gray-600 hover:text-[#9945FF] transition-colors"
-            >
-              Lu.ma
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://t.me/solana_colombia/"
-              target="_blank"
-              class="text-sm text-gray-600 hover:text-[#9945FF] transition-colors"
-            >
-              Telegram
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://x.com/i/communities/1950258571112804684"
-              target="_blank"
-              class="text-sm text-gray-600 hover:text-[#9945FF] transition-colors"
-            >
-              Comunidad en X
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Resources -->
-      <div>
-        <h4 class="font-semibold mb-4 text-gray-900">Navegación</h4>
-        <ul class="space-y-2">
-          <li>
-            <a
-              href="/builders"
-              class="text-sm text-gray-600 hover:text-[#9945FF] transition-colors"
-            >
-              Regístrate como Builder
-            </a>
-          </li>
-          <li>
-            <a
-              href="/#eventos"
-              class="text-sm text-gray-600 hover:text-[#9945FF] transition-colors"
-            >
-              Eventos
-            </a>
-          </li>
-          <li>
-            <a
-              href="/blog/"
-              class="text-sm text-gray-600 hover:text-[#9945FF] transition-colors"
-            >
-              Blog
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Social Links -->
-      <div>
-        <h4 class="font-semibold mb-4 text-gray-900">Síguenos</h4>
-        <div class="flex space-x-4">
-          <!-- biome-ignore lint/a11y/useAnchorContent: icon link named by aria-label -->
-          <a
-            href="https://t.me/Solana_Colombia"
-            target="_blank"
-            rel="noopener"
-            class="text-gray-600 hover:text-[#9945FF] transition-colors"
-            aria-label="Telegram"
-          >
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"
-              ></path>
-            </svg>
-          </a>
-          <!-- biome-ignore lint/a11y/useAnchorContent: icon link named by aria-label -->
-          <a
-            href="https://x.com/Solana_Colombia"
-            target="_blank"
-            rel="noopener"
-            class="text-gray-600 hover:text-[#9945FF] transition-colors"
-            aria-label="X (Twitter)"
-          >
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
-              ></path>
-            </svg>
-          </a>
-          <!-- biome-ignore lint/a11y/useAnchorContent: icon link named by aria-label -->
-          <a
-            href="https://www.instagram.com/solana_colombia"
-            target="_blank"
-            rel="noopener"
-            class="text-gray-600 hover:text-pink-600 transition-colors"
-            aria-label="Instagram"
-          >
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
-              ></path>
-            </svg>
-          </a>
-          <!-- biome-ignore lint/a11y/useAnchorContent: icon link named by aria-label -->
-          <a
-            href="https://www.twitch.tv/solanacolombia"
-            target="_blank"
-            rel="noopener"
-            class="text-gray-600 hover:text-purple-600 transition-colors"
-            aria-label="Twitch"
-          >
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M11.571 4.714h1.715v5.143H11.57zm4.715 0h1.714v5.143h-1.714zm-10.286 0h10.286l3.428 3.428v10.286h-3.428V22h-3.428l-3.428-3.428H2.571V8.143zm1.715 1.715v8.571h3.428l3.428 3.428v-3.428h5.143V6.429H7.714z"
-              ></path>
-            </svg>
-          </a>
-          <!-- biome-ignore lint/a11y/useAnchorContent: icon link named by aria-label -->
-          <a
-            href="https://www.youtube.com/@SolanaColombia"
-            target="_blank"
-            rel="noopener"
-            class="text-gray-600 hover:text-red-600 transition-colors"
-            aria-label="YouTube"
-          >
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
-              ></path>
-            </svg>
-          </a>
-          <!-- biome-ignore lint/a11y/useAnchorContent: icon link named by aria-label -->
-          <a
-            href="https://github.com/Panmoni/solanacolombia-www"
-            target="_blank"
-            rel="noopener"
-            class="text-gray-600 hover:text-gray-900 transition-colors"
-            aria-label="GitHub"
-          >
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-              ></path>
-            </svg>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <div class="mt-8 pt-8">
-      <p class="text-sm text-gray-600 text-center">
-        ¿Dudas? Escríbenos a
-        <a
-          href="mailto:hola@solanacolombia.com"
-          class="text-[#9945FF] hover:text-[#8338EB] transition-colors"
-        >
-          hola@solanacolombia.com
-        </a>
-      </p>
-      <p class="">
-        <img src={solanaSvg} alt="Solana logo" class="w-32 mx-auto my-4" />
-      </p>
-    </div>
-    <p class="text-neutral-500 text-xs mt-4">v{__APP_VERSION__} · {__GIT_HASH__}</p>
+<footer class="site-footer">
+  <div class="wrap row">
+    <span>Solana Colombia · Hecho en Colombia</span>
+    <nav aria-label="Redes">
+      <a href="https://t.me/Solana_Colombia">Telegram</a>
+      <a href="https://www.youtube.com/@SolanaColombia">YouTube</a>
+      <a href="https://www.instagram.com/solana_colombia">Instagram</a>
+      <a href="https://x.com/Solana_Colombia">X</a>
+    </nav>
   </div>
 </footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    padding-block: 18px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  nav {
+    display: flex;
+    gap: 14px;
+  }
+  a:hover {
+    color: var(--fg);
+  }
+</style>
