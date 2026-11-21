@@ -7,7 +7,9 @@
       // Biome's Astro parser chokes on HTML comments in JSX and fragment syntax
       "!src/components/Projects.astro",
       "!src/components/EventGallery.astro",
-      "!src/pages/blog/\\[...slug\\].astro"
+      "!src/pages/blog/\\[...slug\\].astro",
+      // Blog posts are content; formatting Markdown can change how they render
+      "!**/*.md"
     ]
   },
   "formatter": {

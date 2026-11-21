@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-          
+
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm exec wrangler deploy

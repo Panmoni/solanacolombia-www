@@ -44,10 +44,10 @@
     "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "~2.4.16",
+    "@biomejs/biome": "~2.6.8",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.1",
-    "ultracite": "~7.10.8",
+    "ultracite": "~8.3.1",
     "wrangler": "^4.165.0"
   }
 }
