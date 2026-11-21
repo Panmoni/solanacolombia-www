@@ -1,6 +1,7 @@
 // Handles one Telegram update for the Solana Colombia group. Commands work in
 // the group only; everything else the bot receives is ignored.
 import { markdownToTelegramHtml } from './format.ts';
+import { recordPollAnswer } from './poll.ts';
 import {
   displayName,
   formatPoints,
@@ -308,17 +309,22 @@ const handleCommand = async (deps: BotDeps, message: TgMessage, from: TgUser, te
 };
 
 export const handleUpdate = async (update: TgUpdate, deps: BotDeps): Promise<void> => {
-  const message = update.message;
-  if (!message || message.chat.id !== deps.config.groupId) {
+  const answer = update.poll_answer;
+  const message = update.message?.chat.id === deps.config.groupId ? update.message : undefined;
+  if (!(answer || message)) {
     return;
   }
   if (await isUpdateProcessed(deps.db, update.update_id)) {
     return;
   }
   // Marked only after success: if the handler throws or the Worker dies,
-  // Telegram redelivers the update. Writes are keyed on message_id, so the
-  // retry records nothing twice.
-  await handleGroupMessage(deps, message);
+  // Telegram redelivers the update. Writes are keyed on message_id (or on
+  // poll and member), so the retry records nothing twice.
+  if (answer) {
+    await recordPollAnswer(deps, answer);
+  } else if (message) {
+    await handleGroupMessage(deps, message);
+  }
   await markUpdateProcessed(deps.db, update.update_id, deps.now());
 };
 

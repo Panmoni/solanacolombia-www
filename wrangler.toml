@@ -11,9 +11,12 @@ database_id = "dcb2f24a-d72d-4632-8e57-46e53ffcd865"
 # The old ad-hoc SQL in migrations/ is applied by hand; wrangler manages only migrations/d1.
 migrations_dir = "migrations/d1"
 
-# Weekly reputation posts: Mondays 14:00 UTC (09:00 in Bogotá).
+# Reputation bot jobs, dispatched by src/lib/telegram/cron.ts (keep in sync):
+#   0 14 * * 1   weekly posts, Mondays 14:00 UTC (09:00 in Bogotá)
+#   0 14 25 * *  builder-wants poll, the 25th. The monthly builder-wants summary
+#                (PAN-421) takes 0 14 1 * *, so it reads 4-7 days of answers.
 [triggers]
-crons = ["0 14 * * 1"]
+crons = ["0 14 * * 1", "0 14 25 * *"]
 
 # For preview deployments (pull requests, preview branches)
 [env.preview]

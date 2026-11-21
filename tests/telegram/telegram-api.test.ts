@@ -10,6 +10,35 @@ const fakeFetch =
     respond();
 
 describe('createTelegramClient', () => {
+  test('sendPoll posts a non-anonymous multiple-answer poll and returns its ids', async () => {
+    const calls: { url: string; body: unknown }[] = [];
+    const client = createTelegramClient(TOKEN, async (input, init) => {
+      calls.push({ url: String(input), body: JSON.parse(String(init?.body)) });
+      return Response.json({ ok: true, result: { message_id: 7, poll: { id: 'p1' } } });
+    });
+
+    assert.deepEqual(await client.sendPoll(-100, '¿Qué?', ['Uno', 'Dos']), {
+      messageId: 7,
+      pollId: 'p1',
+    });
+    assert.equal(calls[0].url, `https://api.telegram.org/bot${TOKEN}/sendPoll`);
+    assert.deepEqual(calls[0].body, {
+      chat_id: -100,
+      question: '¿Qué?',
+      options: [{ text: 'Uno' }, { text: 'Dos' }],
+      is_anonymous: false,
+      allows_multiple_answers: true,
+    });
+  });
+
+  test('sendPoll rejects a reply without a poll', async () => {
+    const client = createTelegramClient(
+      TOKEN,
+      fakeFetch(() => Response.json({ ok: true, result: { message_id: 7 } })),
+    );
+    await assert.rejects(client.sendPoll(-100, '¿Qué?', ['Uno', 'Dos']), /without a poll/);
+  });
+
   test('returns the result of a successful call', async () => {
     const client = createTelegramClient(
       TOKEN,

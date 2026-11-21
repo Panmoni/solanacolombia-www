@@ -1,21 +1,25 @@
 // Worker entry point (wrangler.toml `main`). Astro serves every request; the
-// weekly Cron Trigger runs the reputation bot's posts (PAN-418).
+// Cron Triggers run the reputation bot's scheduled posts (PAN-418, PAN-435).
 import { handle } from '@astrojs/cloudflare/handler';
 import type { ExecutionContext, ScheduledController } from '@cloudflare/workers-types';
+import { CRON_JOBS } from './lib/telegram/cron';
 import { botDepsFromEnv } from './lib/telegram/env';
-import { runWeekly } from './lib/telegram/weekly';
 
 export default {
   fetch: handle,
   // Errors propagate so a failed run shows as failed in the Cron Events log.
-  scheduled(_controller: ScheduledController, env: Env, ctx: ExecutionContext) {
+  scheduled(controller: ScheduledController, env: Env, ctx: ExecutionContext) {
+    const job = CRON_JOBS[controller.cron];
+    if (!job) {
+      throw new Error(`telegram cron: no job for "${controller.cron}"`);
+    }
     const deps = botDepsFromEnv(env);
     if (Array.isArray(deps)) {
-      throw new Error(`telegram weekly: missing or invalid secrets: ${deps.join(', ')}`);
+      throw new Error(`telegram ${job.name}: missing or invalid secrets: ${deps.join(', ')}`);
     }
     ctx.waitUntil(
-      runWeekly(deps).catch((error: unknown) => {
-        console.error('telegram weekly: run failed', error);
+      job.run(deps).catch((error: unknown) => {
+        console.error(`telegram ${job.name}: run failed`, error);
         throw error;
       }),
     );

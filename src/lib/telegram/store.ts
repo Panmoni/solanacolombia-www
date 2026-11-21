@@ -1,5 +1,4 @@
-// D1 queries for the reputation bot. Tables come from
-// migrations/d1/0001_telegram_reputation.sql.
+// D1 queries for the reputation bot. Tables come from migrations/d1/.
 import type { Activity, MemberInfo } from './scoring.ts';
 import type { SqlDatabase, TgUser } from './types.ts';
 
@@ -302,5 +301,81 @@ export const markQueueItemPosted = async (
   await db
     .prepare('UPDATE tg_weekly_queue SET posted_at = ? WHERE id = ?')
     .bind(now.toISOString(), id)
+    .run();
+};
+
+export interface StoredPoll {
+  question: string;
+  options: string[];
+}
+
+export const insertPoll = async (
+  db: SqlDatabase,
+  poll: { pollId: string; messageId: number; question: string; options: string[] },
+  now: Date,
+): Promise<void> => {
+  await db
+    .prepare(
+      `INSERT INTO tg_polls (poll_id, message_id, question, options, created_at)
+       VALUES (?, ?, ?, ?, ?)`,
+    )
+    .bind(
+      poll.pollId,
+      poll.messageId,
+      poll.question,
+      JSON.stringify(poll.options),
+      now.toISOString(),
+    )
+    .run();
+};
+
+export const getPoll = async (db: SqlDatabase, pollId: string): Promise<StoredPoll | null> => {
+  const row = await db
+    .prepare('SELECT question, options FROM tg_polls WHERE poll_id = ?')
+    .bind(pollId)
+    .first<{ question: string; options: string }>();
+  return row ? { question: row.question, options: JSON.parse(row.options) as string[] } : null;
+};
+
+/** One row per member per poll; a changed vote replaces the earlier one. */
+export const savePollAnswer = async (
+  db: SqlDatabase,
+  answer: {
+    pollId: string;
+    memberId: number;
+    question: string;
+    optionIds: number[];
+    optionTexts: string[];
+  },
+  now: Date,
+): Promise<void> => {
+  await db
+    .prepare(
+      `INSERT INTO tg_poll_results (poll_id, member_id, question, option_ids, option_texts, created_at)
+       VALUES (?, ?, ?, ?, ?, ?)
+       ON CONFLICT (poll_id, member_id) DO UPDATE SET
+         option_ids = excluded.option_ids,
+         option_texts = excluded.option_texts,
+         created_at = excluded.created_at`,
+    )
+    .bind(
+      answer.pollId,
+      answer.memberId,
+      answer.question,
+      JSON.stringify(answer.optionIds),
+      JSON.stringify(answer.optionTexts),
+      now.toISOString(),
+    )
+    .run();
+};
+
+export const deletePollAnswer = async (
+  db: SqlDatabase,
+  pollId: string,
+  memberId: number,
+): Promise<void> => {
+  await db
+    .prepare('DELETE FROM tg_poll_results WHERE poll_id = ? AND member_id = ?')
+    .bind(pollId, memberId)
     .run();
 };

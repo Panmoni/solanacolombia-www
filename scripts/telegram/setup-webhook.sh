@@ -54,7 +54,8 @@ echo "Registering the webhook…"
 webhook_config=$(
   printf 'data-urlencode = "url=%s"\n' "$WEBHOOK_URL"
   printf 'data-urlencode = "secret_token=%s"\n' "$secret"
-  printf 'data-urlencode = "allowed_updates=[\\"message\\"]"\n'
+  # poll_answer: votes in the bot's monthly poll (PAN-435).
+  printf 'data-urlencode = "allowed_updates=[\\"message\\",\\"poll_answer\\"]"\n'
 )
 telegram setWebhook "$webhook_config"$'\n'
 

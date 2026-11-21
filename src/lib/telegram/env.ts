@@ -1,5 +1,6 @@
 // Builds the bot's dependencies from the Worker environment. All four values
 // are Worker secrets (wrangler secret put …), never source.
+import encuesta from '../../../content/telegram/encuesta.md?raw';
 import primerEnvio from '../../../content/telegram/primer-envio.md?raw';
 import reglas from '../../../content/telegram/reglas.md?raw';
 import { createTelegramClient } from './telegram-api.ts';
@@ -30,7 +31,7 @@ export const botDepsFromEnv = (env: Env): BotDeps | string[] => {
     db: env.DB,
     telegram: createTelegramClient(env.TELEGRAM_BOT_TOKEN),
     config: { groupId, georgeId },
-    texts: { primerEnvio, reglas },
+    texts: { primerEnvio, reglas, encuesta },
     now: () => new Date(),
   };
 };

@@ -155,3 +155,12 @@ CREATE TABLE IF NOT EXISTS tg_processed_updates (
   update_id INTEGER PRIMARY KEY,
   created_at TEXT NOT NULL
 );
+
+-- Polls the reputation bot posts; poll_answer updates are matched by poll_id.
+CREATE TABLE IF NOT EXISTS tg_polls (
+  poll_id TEXT PRIMARY KEY,
+  message_id INTEGER NOT NULL,
+  question TEXT NOT NULL,
+  options TEXT NOT NULL, -- JSON array of option texts, in Telegram's order
+  created_at TEXT NOT NULL
+);

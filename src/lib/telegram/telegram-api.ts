@@ -1,6 +1,6 @@
 // Minimal Telegram Bot API client. The token is only ever part of the request
 // URL; errors carry Telegram's description, never the URL.
-import type { SendOptions, TelegramClient } from './types.ts';
+import type { SendOptions, SentPoll, TelegramClient } from './types.ts';
 
 interface ApiResponse<T> {
   ok: boolean;
@@ -57,6 +57,20 @@ export const createTelegramClient = (
       }),
     pinChatMessage: async (chatId: number, messageId: number) => {
       await call<boolean>('pinChatMessage', { chat_id: chatId, message_id: messageId });
+    },
+    sendPoll: async (chatId: number, question: string, options: string[]): Promise<SentPoll> => {
+      // Non-anonymous: Telegram sends poll_answer updates only for those.
+      const sent = await call<{ message_id: number; poll?: { id: string } }>('sendPoll', {
+        chat_id: chatId,
+        question,
+        options: options.map((text) => ({ text })),
+        is_anonymous: false,
+        allows_multiple_answers: true,
+      });
+      if (!sent.poll?.id) {
+        throw new Error('Telegram sendPoll returned a message without a poll');
+      }
+      return { messageId: sent.message_id, pollId: sent.poll.id };
     },
   };
 };

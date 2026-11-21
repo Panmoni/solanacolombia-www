@@ -33,9 +33,18 @@ export interface TgMessage {
   new_chat_members?: TgUser[];
 }
 
+/** A vote in a non-anonymous poll the bot posted. Empty option_ids = vote retracted. */
+export interface TgPollAnswer {
+  poll_id: string;
+  /** Absent when the member voted on behalf of an anonymous chat. */
+  user?: TgUser;
+  option_ids: number[];
+}
+
 export interface TgUpdate {
   update_id: number;
   message?: TgMessage;
+  poll_answer?: TgPollAnswer;
 }
 
 export interface SendOptions {
@@ -45,9 +54,16 @@ export interface SendOptions {
   html?: boolean;
 }
 
+export interface SentPoll {
+  messageId: number;
+  pollId: string;
+}
+
 export interface TelegramClient {
   sendMessage(chatId: number, text: string, options?: SendOptions): Promise<{ message_id: number }>;
   pinChatMessage(chatId: number, messageId: number): Promise<void>;
+  /** Posts a non-anonymous, multiple-answer poll. */
+  sendPoll(chatId: number, question: string, options: string[]): Promise<SentPoll>;
 }
 
 export interface SqlStatement {
@@ -71,6 +87,8 @@ export interface BotTexts {
   primerEnvio: string;
   /** content/telegram/reglas.md */
   reglas: string;
+  /** content/telegram/encuesta.md */
+  encuesta: string;
 }
 
 export interface BotDeps {
