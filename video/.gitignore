@@ -1,0 +1,7 @@
+# Rendered media stays out of git; scripts, storyboards and SQL are the record.
+*.mp4
+*.wav
+*.jpg
+kit
+cues.js
+cues.json
