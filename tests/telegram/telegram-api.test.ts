@@ -126,6 +126,7 @@ describe('createYoutubeComments', () => {
     assert.deepEqual(await comments(new Date('2026-11-01T00:00:00Z')), ['Nuevo', 'Dentro']);
     assert.equal(urls[0].pathname, '/youtube/v3/channels');
     assert.equal(urls[0].searchParams.get('forHandle'), 'SolanaColombia');
+    assert.ok(urls.every((url) => url.searchParams.get('key') === 'KEY'));
     assert.equal(urls[1].searchParams.get('allThreadsRelatedToChannelId'), 'UC123');
     assert.equal(urls[1].searchParams.get('order'), 'time');
     assert.equal(urls[1].searchParams.get('pageToken'), null);

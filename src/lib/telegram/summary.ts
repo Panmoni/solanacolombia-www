@@ -1,4 +1,4 @@
-// The monthly builder-wants summary (PAN-421): the last 30 days of join
+// The monthly builder-wants summary (PAN-421): the last month of join
 // messages, poll answers and YouTube comments go to Workers AI (free tier),
 // which groups them into at most 5 themes in Spanish. The result is stored in
 // tg_summaries and sent to George by Telegram DM. Thin months and AI failures
@@ -7,11 +7,11 @@ import { insertSummary, loadSummaryInputs } from './store.ts';
 import type { AiClient, BotDeps } from './types.ts';
 
 export const SUMMARY_MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
-export const WINDOW_DAYS = 30;
 export const MIN_INPUTS = 10;
 export const MAX_THEMES = 5;
 
-const DAY_MS = 24 * 60 * 60 * 1000;
+// Shorter quotes match too easily to prove the model copied them.
+const MIN_QUOTE = 8;
 // Telegram rejects messages over 4096 characters.
 const MAX_MESSAGE = 4096;
 const MAX_INPUT_CHARS = 500;
@@ -121,7 +121,7 @@ export const parseThemes = (raw: unknown, inputs: SummaryInput[]): Theme[] => {
   if (!Array.isArray(temas)) {
     return [];
   }
-  const haystack = normalize(inputs.map((input) => input.text).join('\n'));
+  const texts = inputs.map((input) => normalize(input.text));
   return temas
     .flatMap((item: unknown): Theme[] => {
       const { tema, cantidad, cita } = (item ?? {}) as Record<string, unknown>;
@@ -129,13 +129,15 @@ export const parseThemes = (raw: unknown, inputs: SummaryInput[]): Theme[] => {
         return [];
       }
       const theme = { tema: tema.trim(), cantidad, cita: stripQuotes(cita) };
+      const quote = normalize(theme.cita);
       const valid =
         theme.tema.length > 0 &&
-        theme.cita.length > 0 &&
+        quote.length >= MIN_QUOTE &&
         Number.isInteger(cantidad) &&
         cantidad >= 1 &&
         cantidad <= inputs.length &&
-        haystack.includes(normalize(theme.cita));
+        // Within one input: a quote spliced across two messages is invented.
+        texts.some((text) => text.includes(quote));
       return valid ? [theme] : [];
     })
     .sort((a, b) => b.cantidad - a.cantidad)
@@ -220,7 +222,10 @@ export const formatRawMessage = (
 
 export const runMonthlySummary = async (deps: BotDeps): Promise<void> => {
   const end = deps.now();
-  const start = new Date(end.getTime() - WINDOW_DAYS * DAY_MS);
+  // One calendar month back, so consecutive runs on the 1st leave no gap
+  // (a fixed 30 days would skip a day after every 31-day month).
+  const start = new Date(end);
+  start.setUTCMonth(start.getUTCMonth() - 1);
   const period = { start, end };
   const { inputs, youtubeNote } = await gatherInputs(deps, start);
 

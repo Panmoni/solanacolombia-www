@@ -82,7 +82,7 @@ const summaries = (harness: Harness) =>
   );
 
 describe('summary inputs', () => {
-  test('builds the input text from the last 30 days of joins, poll answers and YouTube', async () => {
+  test('builds the input text from the last month of joins, poll answers and YouTube', async () => {
     const harness = await fixture();
     const since = new Date('2026-11-01T14:00:00.000Z');
     let youtubeSince: Date | undefined;
@@ -160,6 +160,8 @@ describe('parseThemes', () => {
             { tema: 'Cero', cantidad: 0, cita: 'pagos con USDC' },
             { tema: '', cantidad: 1, cita: 'pagos con USDC' },
             { tema: 'Sin cita', cantidad: 1 },
+            { tema: 'Corta', cantidad: 1, cita: 'Anchor' },
+            { tema: 'Empalmada', cantidad: 1, cita: 'aprender Anchor Busco hacer' },
             'texto',
             { tema: 'Bueno', cantidad: 1, cita: '«Busco hacer  pagos»' },
           ],
@@ -283,6 +285,12 @@ describe('monthly summary', () => {
     };
     await assert.rejects(runMonthlySummary(harness.deps), /bot was blocked/);
     assert.equal(summaries(harness).length, 1);
+  });
+
+  test('reads back one calendar month, so a 31-day month leaves no gap', async () => {
+    const harness = createHarness('2027-01-01T14:00:00.000Z');
+    await runMonthlySummary(harness.deps);
+    assert.equal(summaries(harness)[0].period_start, '2026-12-01T14:00:00.000Z');
   });
 
   test('runs on the 1st of the month', () => {
